@@ -1,0 +1,5 @@
+/config/config.php
+/config/conn.php
+clinicdb.sql
+feedbackdb.sql
+.env
