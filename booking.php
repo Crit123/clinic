@@ -1,5 +1,7 @@
 <?php
 session_start();
+// Global app config — defines $base_url
+require_once __DIR__ . '/config/app.php';
 // Require single source of truth for service definitions
 require_once __DIR__ . '/api/data/services-data.php';
 // Include API helpers to access CSRF token logic
@@ -12,7 +14,7 @@ $csrfToken = getCsrfToken();
 $isLoggedIn = isset($_SESSION['user_id']);
 ?>
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -20,10 +22,9 @@ $isLoggedIn = isset($_SESSION['user_id']);
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="<?= htmlspecialchars($base_url ?? '') ?>/assets/css/responsive.css">
+<link rel="stylesheet" href="<?= htmlspecialchars($base_url) ?>/assets/css/responsive.css">
 <script id="tailwind-config">
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
                     "colors": {
@@ -704,14 +705,8 @@ $isLoggedIn = isset($_SESSION['user_id']);
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <?php
                                 $services = getAllServices();
-                                $icons = [
-                                    'checkup' => 'tooth', // Fallback if material symbols doesn't have tooth, could use medical_services
-                                    'whitening' => 'auto_fix_high',
-                                    'implants' => 'handyman',
-                                    'emergency' => 'emergency'
-                                ];
                                 foreach ($services as $key => $svc):
-                                    $icon = $icons[$key] ?? 'medical_services';
+                                    $icon = $svc['icon'] ?? 'medical_services';
                                 ?>
                                 <button type="button" class="service-card relative flex items-start p-4 border border-slate-200 rounded-xl bg-white text-left hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30" onclick="selectServiceCard('<?= htmlspecialchars($key, ENT_QUOTES) ?>')">
                                     <div class="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-primary shrink-0 mr-3">
@@ -1195,35 +1190,48 @@ $isLoggedIn = isset($_SESSION['user_id']);
         // Sync Notes Textareas
         const notesMobile = document.getElementById('notes-mobile');
         const notesDesktop = document.getElementById('notes-desktop');
+        const notesStep1 = document.getElementById('notes-step1');
         const charCountMobile = document.getElementById('char-count-mobile');
         const charCountDesktop = document.getElementById('char-count-desktop');
+        const charCountStep1 = document.getElementById('char-count-step1');
 
         function updateNotesSync(e) {
-            const val = e.target.value;
+            // Allow passing the event or a direct string value for forced syncs
+            const val = (e && e.target !== undefined) ? e.target.value : (e || '');
             inputs.notes.value = val;
-            if(e.target !== notesMobile) notesMobile.value = val;
-            if(e.target !== notesDesktop) notesDesktop.value = val;
+            
+            if (notesMobile && (!e || e.target !== notesMobile)) notesMobile.value = val;
+            if (notesDesktop && (!e || e.target !== notesDesktop)) notesDesktop.value = val;
+            if (notesStep1 && (!e || e.target !== notesStep1)) notesStep1.value = val;
+            
             const cnt = `${val.length}/200`;
             if (charCountMobile) charCountMobile.textContent = cnt;
             if (charCountDesktop) charCountDesktop.textContent = cnt;
+            if (charCountStep1) charCountStep1.textContent = cnt;
         }
 
         if (notesMobile) notesMobile.addEventListener('input', updateNotesSync);
         if (notesDesktop) notesDesktop.addEventListener('input', updateNotesSync);
+        if (notesStep1) notesStep1.addEventListener('input', updateNotesSync);
 
-        // Sync the Step 1 notes textarea with the hidden input and the sidebar ones
-        const notesStep1 = document.getElementById('notes-step1');
-        const charCountStep1 = document.getElementById('char-count-step1');
-        if (notesStep1) {
-            notesStep1.addEventListener('input', (e) => {
-                const val = e.target.value;
-                inputs.notes.value = val;
-                if (notesMobile) notesMobile.value = val;
-                if (notesDesktop) notesDesktop.value = val;
-                if (charCountStep1) charCountStep1.textContent = `${val.length}/200`;
-                if (charCountMobile) charCountMobile.textContent = `${val.length}/200`;
-                if (charCountDesktop) charCountDesktop.textContent = `${val.length}/200`;
-            });
+        // Fail-safe sync right before step transitions and submission
+        function forceSyncNotes() {
+            let activeVal = '';
+            if (currentStep === 1 && notesStep1) {
+                activeVal = notesStep1.value;
+            } else if (currentStep === 2) {
+                // Sniff which textarea is visually accessible/in-use
+                if (notesDesktop && notesDesktop.offsetWidth > 0) {
+                    activeVal = notesDesktop.value;
+                } else if (notesMobile && notesMobile.offsetWidth > 0) {
+                    activeVal = notesMobile.value;
+                } else {
+                    activeVal = inputs.notes.value;
+                }
+            } else {
+                activeVal = inputs.notes.value;
+            }
+            updateNotesSync(activeVal); // Forces all elements and `inputs.notes` to hold this specific value
         }
 
         // Service Card Selection Logic
@@ -2365,6 +2373,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
         });
 
         function proceedToStep2() {
+            forceSyncNotes();
             saveFormData();
             updateStepWithAnimation(1, 2);
             if(inputs.date.value) {
@@ -2382,6 +2391,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
         });
 
         btnGotoStep3.addEventListener('click', () => {
+            forceSyncNotes();
             if (validateStep(2)) {
                 saveFormData();
                 populateReviewStep();
@@ -2444,6 +2454,8 @@ $isLoggedIn = isset($_SESSION['user_id']);
         }
 
         reviewConfirmBtn.addEventListener('click', () => {
+            forceSyncNotes();
+            
             reviewConfirmBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-base block">refresh</span> <span class="hidden sm:inline">Processing Booking...</span>';
             reviewConfirmBtn.disabled = true;
             
@@ -2729,11 +2741,16 @@ $isLoggedIn = isset($_SESSION['user_id']);
             const body    = document.getElementById('summary-card-body');
             if (!stepper || !card) return;
 
-            const top = stepper.getBoundingClientRect().bottom + 8; // 8px gap
-            card.style.top = top + 'px';
+            // The stepper has a top-[80px] sticky offset. 
+            // The card's sticky top should be this offset + the stepper's height + a gap.
+            const headerOffset = 80;
+            const gap = 16;
+            const calculatedTop = headerOffset + stepper.offsetHeight + gap;
+            
+            card.style.top = calculatedTop + 'px';
 
             if (body) {
-                body.style.maxHeight = Math.max(window.innerHeight - top - 24, 80) + 'px';
+                body.style.maxHeight = Math.max(window.innerHeight - calculatedTop - 24, 80) + 'px';
             }
         }
 

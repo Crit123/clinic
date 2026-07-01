@@ -1,4 +1,6 @@
 <?php
+// Global app config — defines $base_url
+require_once __DIR__ . '/config/app.php';
 // Use the canonical services data as the single source of truth
 require_once __DIR__ . '/api/data/services-data.php';
 $canonicalServices = getAllServices();
@@ -12,7 +14,7 @@ $canonicalServices = getAllServices();
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="<?= htmlspecialchars($base_url ?? '') ?>/assets/css/responsive.css">
+    <link rel="stylesheet" href="<?= htmlspecialchars($base_url) ?>/assets/css/responsive.css">
     
     <script id="tailwind-config">
         tailwind.config = {
@@ -199,7 +201,7 @@ $canonicalServices = getAllServices();
         </a>
 
         <!-- Card 3: Online Booking (Clickable, links to booking page) -->
-        <a href="<?= $base_url ?? '' ?>/booking.php" class="hero-floating-cards-desktop absolute bottom-[28%] right-[6%] z-20 flex items-center gap-4 glass-panel p-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] animate-float-delayed hover:scale-105 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:border-primary/30 transition-all duration-300 cursor-pointer group/card">
+        <a href="<?= htmlspecialchars($base_url) ?>/booking.php" class="hero-floating-cards-desktop absolute bottom-[28%] right-[6%] z-20 flex items-center gap-4 glass-panel p-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] animate-float-delayed hover:scale-105 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:border-primary/30 transition-all duration-300 cursor-pointer group/card">
             <div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center group-hover/card:bg-tertiary transition-colors duration-300">
                 <span class="material-symbols-outlined text-on-tertiary-container group-hover/card:text-white fill-icon">event_available</span>
             </div>
@@ -239,11 +241,11 @@ $canonicalServices = getAllServices();
                     Welcome to DentalCare Pro, where precision meets comfort. Experience world-class dental treatments in a state-of-the-art, relaxing environment.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 mb-8">
-                    <a href="booking.php" class="group h-12 px-8 rounded-lg bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant hover:shadow-[0_8px_20px_rgba(0,71,141,0.25)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2">
+                    <a href="<?= htmlspecialchars($base_url) ?>/booking.php" class="group h-12 px-8 rounded-lg bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant hover:shadow-[0_8px_20px_rgba(0,71,141,0.25)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2">
                         Book Appointment
                         <span class="material-symbols-outlined text-[20px] transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
                     </a>
-                    <a href="services/services.php" class="h-12 px-8 rounded-lg border-[1.5px] border-primary text-primary font-label-md text-label-md hover:bg-surface-container-low hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300 flex items-center justify-center bg-white/50 backdrop-blur-sm">
+                    <a href="<?= htmlspecialchars($base_url) ?>/services/services.php" class="h-12 px-8 rounded-lg border-[1.5px] border-primary text-primary font-label-md text-label-md hover:bg-surface-container-low hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300 flex items-center justify-center bg-white/50 backdrop-blur-sm">
                         Our Services
                     </a>
                 </div>
@@ -264,7 +266,7 @@ $canonicalServices = getAllServices();
                             <p class="text-[10px] text-on-surface-variant font-medium mt-0.5">HIPAA Secure</p>
                         </div>
                     </a>
-                    <a href="<?= $base_url ?? '' ?>/booking.php" class="flex-1 min-w-[140px] flex items-center gap-3 p-3 rounded-2xl bg-white/70 border border-outline-variant/30 hover:bg-white hover:shadow-sm active:scale-95 transition-all">
+                    <a href="<?= htmlspecialchars($base_url) ?>/booking.php" class="flex-1 min-w-[140px] flex items-center gap-3 p-3 rounded-2xl bg-white/70 border border-outline-variant/30 hover:bg-white hover:shadow-sm active:scale-95 transition-all">
                         <span class="material-symbols-outlined text-primary text-[22px] fill-icon">event_available</span>
                         <div class="text-left">
                             <p class="text-xs font-bold text-on-background leading-none">Book Online</p>
@@ -401,7 +403,7 @@ $canonicalServices = getAllServices();
                         
                         <!-- Fixed Dynamic Link to Dedicated Service Page -->
                         <div class="mt-8 flex items-center">
-                            <a href="<?= $base_url ?? '' ?>/services/<?= urlencode($key) ?>.php" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-surface-container-high text-primary font-label-md text-sm hover:bg-primary hover:text-white transition-all duration-300 w-full md:w-auto">
+                            <a href="<?= htmlspecialchars($base_url) ?>/services/<?= urlencode($key) ?>.php" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-surface-container-high text-primary font-label-md text-sm hover:bg-primary hover:text-white transition-all duration-300 w-full md:w-auto">
                                 Learn more 
                                 <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
                             </a>
@@ -512,8 +514,8 @@ $canonicalServices = getAllServices();
                 </div>
 
                 <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-                    <a href="booking.php" class="w-full sm:w-auto h-12 px-8 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center">Book with Dr. Santos</a>
-                    <a class="text-primary hover:text-on-primary-fixed-variant hover:underline font-label-md text-label-md flex items-center gap-1 group/link transition-colors" href="#">View Full Profile <span class="material-symbols-outlined text-[18px] group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform duration-300">arrow_outward</span></a>
+                    <a href="<?= htmlspecialchars($base_url) ?>/booking.php" class="w-full sm:w-auto h-12 px-8 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center">Book with Dr. Santos</a>
+
                 </div>
             </div>
         </div>
@@ -659,10 +661,10 @@ $canonicalServices = getAllServices();
         
         <!-- CTA Links -->
         <div class="mt-12 flex flex-col items-center justify-center gap-4">
-            <a href="reviews.php" class="h-12 px-8 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(0,71,141,0.25)] transition-all duration-300 flex items-center justify-center shadow-sm">
+            <a href="<?= htmlspecialchars($base_url) ?>/reviews.php" class="h-12 px-8 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(0,71,141,0.25)] transition-all duration-300 flex items-center justify-center shadow-sm">
                 See All Reviews
             </a>
-            <a href="api/feedback/submit-feedback.php" class="text-primary hover:text-on-primary-fixed-variant hover:underline font-label-sm text-sm font-medium transition-colors">
+            <a href="<?= htmlspecialchars($base_url) ?>/api/feedback/submit-feedback.php" class="text-primary hover:text-on-primary-fixed-variant hover:underline font-label-sm text-sm font-medium transition-colors">
                 Share Your Experience
             </a>
         </div>
@@ -716,14 +718,6 @@ $canonicalServices = getAllServices();
             <div>
                 <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-4 tracking-tight">Frequently Asked Questions</h2>
                 
-                <!-- Search FAQ Field -->
-                <div class="relative mb-8 group">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <span class="material-symbols-outlined text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
-                    </div>
-                    <input type="text" placeholder="Search for answers..." class="w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border border-outline-variant/30 rounded-xl text-on-background placeholder:text-on-surface-variant/60 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all shadow-sm">
-                </div>
-
                 <!-- Existing FAQs -->
                 <div class="space-y-4">
                     <div class="border border-outline-variant/30 rounded-2xl bg-surface-container-lowest overflow-hidden hover:border-primary/40 shadow-sm transition-all duration-300">
@@ -858,7 +852,7 @@ $canonicalServices = getAllServices();
                     <h3 class="font-headline-md text-lg text-on-background font-semibold">Upcoming</h3>
                 </div>
                 <p class="font-body-md text-body-md text-on-surface-variant flex-grow">No upcoming appointments.</p>
-                <a href="booking.php" class="mt-auto h-12 px-4 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant hover:shadow-[0_4px_15px_rgba(0,71,141,0.2)] transition-all flex items-center justify-center font-medium">Book Now</a>
+                <a href="<?= htmlspecialchars($base_url) ?>/booking.php" class="mt-auto h-12 px-4 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant hover:shadow-[0_4px_15px_rgba(0,71,141,0.2)] transition-all flex items-center justify-center font-medium">Book Now</a>
             </div>
             <div class="bg-surface-container-lowest rounded-3xl p-6 border border-outline-variant/30 shadow-sm flex flex-col gap-4 hover:shadow-md transition-shadow">
                 <div class="flex items-center gap-3">
@@ -890,8 +884,8 @@ $canonicalServices = getAllServices();
                 <p class="font-body-md text-body-md text-on-surface-variant">Create an account or log in to manage your full dental profile. <strong>Booked as a guest?</strong> Sign up using the same email address to automatically link your past appointments!</p>
             </div>
             <div class="flex gap-3 flex-shrink-0 w-full md:w-auto">
-                <a href="login.php?mode=login" class="flex-1 md:flex-none h-12 px-6 rounded-xl border-2 border-primary text-primary font-label-md text-label-md hover:bg-primary/5 transition-colors flex items-center justify-center font-medium">Log In</a>
-                <a href="login.php?mode=register" class="flex-1 md:flex-none h-12 px-6 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant hover:shadow-[0_4px_15px_rgba(0,71,141,0.2)] transition-all flex items-center justify-center font-medium">Sign Up</a>
+                <a href="<?= htmlspecialchars($base_url) ?>/auth/login.php?mode=login" class="flex-1 md:flex-none h-12 px-6 rounded-xl border-2 border-primary text-primary font-label-md text-label-md hover:bg-primary/5 transition-colors flex items-center justify-center font-medium">Log In</a>
+                <a href="<?= htmlspecialchars($base_url) ?>/auth/login.php?mode=register" class="flex-1 md:flex-none h-12 px-6 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant hover:shadow-[0_4px_15px_rgba(0,71,141,0.2)] transition-all flex items-center justify-center font-medium">Sign Up</a>
             </div>
         </div>
 
@@ -1120,7 +1114,7 @@ $canonicalServices = getAllServices();
             Join thousands of satisfied patients. Book your appointment today and experience the future of modern dental care.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <a href="booking.php" class="h-14 px-8 rounded-xl bg-white text-primary font-bold text-base hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center w-full sm:w-auto">
+            <a href="<?= htmlspecialchars($base_url) ?>/booking.php" class="h-14 px-8 rounded-xl bg-white text-primary font-bold text-base hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center w-full sm:w-auto">
                 Book Appointment
             </a>
             <a href="#contact" class="h-14 px-8 rounded-xl border border-white/30 text-white font-bold text-base hover:bg-white/10 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center w-full sm:w-auto backdrop-blur-sm">
@@ -1161,7 +1155,7 @@ $canonicalServices = getAllServices();
                 <nav class="flex flex-col gap-2">
                     <a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-all font-label-sm text-sm inline-block w-fit" href="#home">Home</a>
                     <a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-all font-label-sm text-sm inline-block w-fit" href="#about">About Us</a>
-                    <a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-all font-label-sm text-sm inline-block w-fit" href="services/services.php">Our Services</a>
+                    <a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-all font-label-sm text-sm inline-block w-fit" href="<?= htmlspecialchars($base_url) ?>/services/services.php">Our Services</a>
                     <a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-all font-label-sm text-sm inline-block w-fit" href="#dentists">Meet the Doctor</a>
                     <a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-all font-label-sm text-sm inline-block w-fit" href="#testimonials">Patient Stories</a>
                 </nav>

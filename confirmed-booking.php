@@ -1,6 +1,10 @@
-<?php session_start(); ?>
+<?php
+session_start();
+// Global app config — defines $base_url
+require_once __DIR__ . '/config/app.php';
+?>
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -8,9 +12,9 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="<?= htmlspecialchars($base_url) ?>/assets/css/responsive.css">
 <script id="tailwind-config">
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
                     "colors": {
@@ -103,7 +107,7 @@ if (file_exists('components/header-component.php')) {
         <span class="material-symbols-outlined text-red-500 text-[40px] mb-4">error</span>
         <h2 class="text-xl font-bold text-slate-800 mb-2">Booking Not Found</h2>
         <p class="text-sm text-slate-600 mb-6" id="error-message">We couldn't retrieve your appointment data. It may have been canceled or the reference code is invalid.</p>
-        <a href="booking.php" class="bg-primary text-white text-sm font-bold px-6 py-3 rounded-xl shadow-sm hover:bg-primary/95 transition-all inline-flex items-center gap-2">
+        <a href="<?= htmlspecialchars($base_url) ?>/booking.php" class="bg-primary text-white text-sm font-bold px-6 py-3 rounded-xl shadow-sm hover:bg-primary/95 transition-all inline-flex items-center gap-2">
             <span class="material-symbols-outlined text-base">calendar_month</span> Book New Appointment
         </a>
     </div>
@@ -197,7 +201,7 @@ if (file_exists('components/header-component.php')) {
 
             <!-- Review Action Interaction Footers -->
             <div class="flex justify-center mt-8 pt-6 border-t border-slate-100">
-                <a id="back-to-scheduler" href="booking.php" class="bg-slate-100 text-slate-700 hover:bg-slate-200 text-sm font-bold px-8 py-3 rounded-xl shadow-sm active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                <a id="back-to-scheduler" href="<?= htmlspecialchars($base_url) ?>/booking.php" class="bg-slate-100 text-slate-700 hover:bg-slate-200 text-sm font-bold px-8 py-3 rounded-xl shadow-sm active:scale-[0.99] transition-all flex items-center justify-center gap-2">
                     Back to Scheduler
                 </a>
             </div>
@@ -297,11 +301,9 @@ if (file_exists('components/header-component.php')) {
 
         document.getElementById('display-dentist').textContent = booking.dentist_name;
 
-        // Ensure cross-browser date parsing alignment
-        const dateObj = new Date(booking.appointment_date + "T12:00:00");
-        document.getElementById('display-date').textContent = dateObj.toLocaleDateString('en-US', {
-            weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
-        });
+        // Use the securely formatted date from the server API to prevent client timezone offset bugs
+        document.getElementById('display-date').textContent = booking.formatted_appointment_date || booking.appointment_date;
+        
         document.getElementById('display-time').textContent = booking.appointment_time;
     }
 

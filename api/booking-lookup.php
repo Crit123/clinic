@@ -65,7 +65,8 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
 // Apply rate limiting based on client IP
 $clientIp = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 
-if (!checkRateLimit($pdo, $clientIp, 'booking-lookup', 15, 60)) {
+// Stricter rate limiting applied: Max 5 attempts per 60 seconds
+if (!checkRateLimit($pdo, $clientIp, 'booking-lookup', 5, 60)) {
     sendError('Too many lookup attempts. Please try again shortly.', 'RATE_LIMITED', 429);
 }
 
@@ -94,6 +95,15 @@ try {
 
     // Enrich the booking record with the canonical service label from services-data.php
     $booking['service_label'] = getServiceLabel($booking['service_key']) ?? $booking['service_key'];
+
+    // Format the date securely on the server side to avoid JS timezone offset issues
+    try {
+        $dateObj = new DateTime($booking['appointment_date']);
+        $booking['formatted_appointment_date'] = $dateObj->format('l, F j, Y');
+    } catch (Exception $e) {
+        // Fallback in case of an invalid date string in DB
+        $booking['formatted_appointment_date'] = $booking['appointment_date'];
+    }
 
     // Wrap in a 'data' array so the shared sendSuccess outputs the exact same JSON 
     // payload structure as the old locally-defined sendSuccess function did.
