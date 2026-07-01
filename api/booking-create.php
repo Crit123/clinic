@@ -40,6 +40,19 @@ if (!validateCsrfToken($csrfHeader)) {
     sendError('Invalid or missing security token. Please refresh the page and try again.', 'CSRF_VALIDATION_FAILED', 403);
 }
 
+// Rate limiting: allow max 5 booking submissions per IP per 10 minutes.
+// This prevents scripted slot-spamming or denial-of-service via appointment flooding.
+// Placed after CSRF (rejects unauthenticated bots cheaply first) and before any
+// payload parsing or DB work, so the counter only increments on plausible requests.
+$clientIp = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'];
+if (!checkRateLimit($clientIp, 'booking_create', 5, 600)) {
+    sendError(
+        'Too many booking attempts from your connection. Please wait a few minutes and try again.',
+        'RATE_LIMITED',
+        429
+    );
+}
+
 // Parse input payload
 $rawInput = file_get_contents('php://input');
 $input = json_decode($rawInput, true);
@@ -220,4 +233,4 @@ try {
     }
     // Prevent sensitive DB schema leakage
     sendError('A database error occurred while creating the booking. Please try again.', 'DB_INSERT_ERROR', 500, $e);
-}
+} 

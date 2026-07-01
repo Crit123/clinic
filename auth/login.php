@@ -3,6 +3,10 @@
 // (request_otp / verify_otp / reset_password) see the same OTP state.
 session_start();
 require_once __DIR__ . '/../config/conn.php';
+require_once __DIR__ . '/../api/helper/_api-helpers.php';
+
+// Generate CSRF token for the page
+$csrfToken = getCsrfToken();
 
 // Attempt to load Google Config for the Frontend Client ID
 $googleClientId = '290710438488-6o84anqq9a8oauq0t5sodn90ae7ou3km.apps.googleusercontent.com'; // Fallback Placeholder
@@ -25,15 +29,26 @@ if (!function_exists('jsonResponse')) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
     $action = $_GET['action'];
 
+    // Validate CSRF Token for all state-changing actions
+    if (!validateCsrfToken($_POST['csrf_token'] ?? '')) {
+        jsonResponse(false, 'Invalid or missing CSRF token.');
+    }
+
     if ($action === 'login') {
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
+
+        // Rate limiting: max 5 attempts per 5 minutes (300 seconds)
+        if (!checkRateLimit($pdo, $email, 'login', 5, 300)) {
+            jsonResponse(false, 'Too many login attempts. Please try again in 5 minutes.');
+        }
 
         $stmt = $pdo->prepare("SELECT id, first_name, password_hash FROM users WHERE email = ? LIMIT 1");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password_hash'])) {
+            session_regenerate_id(true); // Prevent session fixation
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['first_name'];
             jsonResponse(true, 'Login successful', ['redirect' => '../client/pages/dashboard.php']);
@@ -75,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
         $hash = password_hash($password, PASSWORD_BCRYPT);
         $stmt = $pdo->prepare("INSERT INTO users (first_name, last_name, email, password_hash) VALUES (?, ?, ?, ?)");
         if ($stmt->execute([$firstName, $lastName, $email, $hash])) {
+            session_regenerate_id(true); // Prevent session fixation
             $_SESSION['user_id'] = $pdo->lastInsertId();
             $_SESSION['user_name'] = $firstName;
 
@@ -96,9 +112,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
     if ($action === 'remember_me') {
         if (isset($_SESSION['user_id'])) {
             $token = bin2hex(random_bytes(32));
-            $stmt = $pdo->prepare("UPDATE users SET remember_token = ? WHERE id = ?");
-            $stmt->execute([$token, $_SESSION['user_id']]);
+            $tokenHash = hash('sha256', $token);
+            
+            // Store the hashed token and set an explicit expiry date (+30 days)
+            $stmt = $pdo->prepare("UPDATE users SET remember_token = ?, remember_token_expires_at = DATE_ADD(NOW(), INTERVAL 30 DAY) WHERE id = ?");
+            $stmt->execute([$tokenHash, $_SESSION['user_id']]);
+            
+            // Send the raw token to the user
             setcookie('remember_token', $token, time() + 60*60*24*30, '/', '', true, true);
+            
             jsonResponse(true, 'Remember token set');
         }
         jsonResponse(false, 'Not logged in');
@@ -114,15 +136,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } 
     // Check "Remember Me" Cookie
     elseif (isset($_COOKIE['remember_token'])) {
-        $stmt = $pdo->prepare("SELECT id, first_name FROM users WHERE remember_token = ? LIMIT 1");
-        $stmt->execute([$_COOKIE['remember_token']]);
+        $tokenHash = hash('sha256', $_COOKIE['remember_token']);
+        
+        // Ensure token exists and hasn't expired
+        $stmt = $pdo->prepare("SELECT id, first_name FROM users WHERE remember_token = ? AND remember_token_expires_at > NOW() LIMIT 1");
+        $stmt->execute([$tokenHash]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
+            session_regenerate_id(true); // Prevent session fixation
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['first_name'];
             header("Location: ../client/pages/dashboard.php");
             exit;
+        } else {
+            // Token invalid or expired: clear the cookie and remove from DB
+            setcookie('remember_token', '', time() - 3600, '/', '', true, true);
+            $clearStmt = $pdo->prepare("UPDATE users SET remember_token = NULL, remember_token_expires_at = NULL WHERE remember_token = ?");
+            $clearStmt->execute([$tokenHash]);
         }
     }
 }
@@ -562,6 +593,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 </div>
 
 <script>
+    // ── Inject CSRF Token into Javascript ─────────────────────────────────────
+    const CSRF_TOKEN = <?php echo json_encode($csrfToken); ?>;
+
     // ── Google Authentication Handler ─────────────────────────────────────────
     function handleGoogleResponse(response) {
         if (!response.credential) {
@@ -869,6 +903,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         const formData = new FormData();
         formData.append('email', email);
         formData.append('password', password);
+        formData.append('csrf_token', CSRF_TOKEN);
 
         fetch('login.php?action=login', {
             method: 'POST',
@@ -879,7 +914,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (data.success) {
                 showToast('Login successful! Redirecting...', 'success');
                 if (remember) {
-                    fetch('login.php?action=remember_me', { method: 'POST' })
+                    const rememberData = new FormData();
+                    rememberData.append('csrf_token', CSRF_TOKEN);
+                    fetch('login.php?action=remember_me', { method: 'POST', body: rememberData })
                         .then(() => setTimeout(() => window.location.href = data.redirect, 1200));
                 } else {
                     setTimeout(() => window.location.href = data.redirect, 1200);
@@ -983,6 +1020,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         formData.append('last_name', last);
         formData.append('email', email);
         formData.append('password', password);
+        formData.append('csrf_token', CSRF_TOKEN);
 
         fetch('login.php?action=register', {
             method: 'POST',

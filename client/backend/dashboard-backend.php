@@ -19,6 +19,8 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 require_once __DIR__ . '/../../config/conn.php';
+// 1. Include API Helpers for CSRF validation
+require_once __DIR__ . '/../../api/helper/_api-helpers.php';
 
 $userId = (int) $_SESSION['user_id'];
 $action = $_GET['action'] ?? '';
@@ -120,9 +122,20 @@ try {
 
         case 'cancel_booking':
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonResponse(false, 'Invalid request method.');
-            if (empty($_POST['ref'])) jsonResponse(false, 'Reference code is required.');
+            
+            // 2. Validate CSRF Token
+            $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+            if (!validateCsrfToken($csrfToken)) {
+                jsonResponse(false, 'Invalid or missing CSRF token.');
+            }
+            
+            if (empty($_POST['ref']) && empty(json_decode(file_get_contents('php://input'), true)['reference_code'])) {
+                jsonResponse(false, 'Reference code is required.');
+            }
 
-            $ref = trim($_POST['ref']);
+            // Support both multipart/form-data and application/json payloads
+            $input = json_decode(file_get_contents('php://input'), true);
+            $ref = trim($_POST['ref'] ?? $input['reference_code'] ?? '');
 
             $stmt = $pdo->prepare("SELECT * FROM bookings WHERE reference_code = ? AND user_id = ?");
             $stmt->execute([$ref, $userId]);
@@ -269,8 +282,16 @@ try {
         case 'update_profile':
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonResponse(false, 'Invalid request method.');
 
-            $firstName = trim($_POST['first_name'] ?? '');
-            $lastName = trim($_POST['last_name'] ?? '');
+            // 2. Validate CSRF Token
+            $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+            if (!validateCsrfToken($csrfToken)) {
+                jsonResponse(false, 'Invalid or missing CSRF token.');
+            }
+
+            // Support both multipart/form-data and application/json payloads
+            $input = json_decode(file_get_contents('php://input'), true);
+            $firstName = trim($_POST['first_name'] ?? $input['first_name'] ?? '');
+            $lastName = trim($_POST['last_name'] ?? $input['last_name'] ?? '');
 
             if (empty($firstName) || empty($lastName)) {
                 jsonResponse(false, 'First name and last name are required.');
@@ -287,9 +308,17 @@ try {
         case 'change_password':
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonResponse(false, 'Invalid request method.');
 
-            $currentPassword = $_POST['current_password'] ?? '';
-            $newPassword = $_POST['new_password'] ?? '';
-            $confirmPassword = $_POST['confirm_password'] ?? '';
+            // 2. Validate CSRF Token
+            $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+            if (!validateCsrfToken($csrfToken)) {
+                jsonResponse(false, 'Invalid or missing CSRF token.');
+            }
+
+            // Support both multipart/form-data and application/json payloads
+            $input = json_decode(file_get_contents('php://input'), true);
+            $currentPassword = $_POST['current_password'] ?? $input['current_password'] ?? '';
+            $newPassword = $_POST['new_password'] ?? $input['new_password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? $input['confirm_password'] ?? '';
 
             $stmt = $pdo->prepare("SELECT auth_provider, password_hash FROM users WHERE id = ?");
             $stmt->execute([$userId]);
@@ -367,8 +396,16 @@ try {
         case 'claim_guest_booking':
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonResponse(false, 'Invalid request method.');
             
-            $ref = trim($_POST['reference_code'] ?? '');
-            $inputEmail = trim($_POST['email'] ?? '');
+            // 2. Validate CSRF Token
+            $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+            if (!validateCsrfToken($csrfToken)) {
+                jsonResponse(false, 'Invalid or missing CSRF token.');
+            }
+            
+            // Support both multipart/form-data and application/json payloads
+            $input = json_decode(file_get_contents('php://input'), true);
+            $ref = trim($_POST['reference_code'] ?? $input['reference_code'] ?? '');
+            $inputEmail = trim($_POST['email'] ?? $input['email'] ?? '');
 
             if (empty($ref) || empty($inputEmail)) {
                 jsonResponse(false, 'Reference code and email are required.');
