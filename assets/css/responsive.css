@@ -1,0 +1,36 @@
+/**
+ * DentalCare Pro - Shared Responsive Stylesheet
+ *
+ * Site-wide mobile/tablet overrides, organized by breakpoint.
+ * Linked from every page's <head>. Tailwind's own responsive utility
+ * classes remain the default approach for most layout — this file is
+ * for overrides/refinements that are easier to manage centrally than
+ * scattered as inline breakpoint classes per page.
+ */
+
+/* ---------- Tablet and below (max-width: 1023px) ---------- */
+@media (max-width: 1023px) {
+    /* Floating hero trust/capability cards (index.php) collapse into
+       a compact horizontal row instead of absolute-positioned floating
+       cards on smaller screens — see index.php's mobile card markup. */
+    .hero-floating-cards-desktop {
+        display: none !important;
+    }
+    .hero-floating-cards-mobile {
+        display: flex !important;
+    }
+}
+
+/* ---------- Mobile (max-width: 767px) ---------- */
+@media (max-width: 767px) {
+    /* Persistent mobile booking button spacing in the header bar */
+    .mobile-booking-btn {
+        margin-right: 0.5rem;
+    }
+
+    /* Testimonial/review cards stack with tighter spacing on small screens */
+    .testimonial-card,
+    .review-card {
+        padding: 1.25rem !important;
+    }
+}
