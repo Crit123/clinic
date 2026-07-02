@@ -94,7 +94,7 @@ if (file_exists('components/header-component.php')) {
 }
 ?>
 
-<main class="flex-grow pt-[96px] sm:pt-[106px] pb-24 sm:pb-16 px-4 md:px-8 max-w-[1440px] mx-auto w-full flex flex-col justify-center">
+<main class="flex-grow pt-[var(--header-offset-mobile)] lg:pt-[var(--header-offset)] pb-24 sm:pb-16 px-4 md:px-8 max-w-[1440px] mx-auto w-full flex flex-col justify-center page-enter">
 
     <!-- Loading State -->
     <div id="loading-state" class="text-center max-w-2xl mx-auto mt-10 fade-in">
@@ -200,10 +200,19 @@ if (file_exists('components/header-component.php')) {
             </div>
 
             <!-- Review Action Interaction Footers -->
-            <div class="flex justify-center mt-8 pt-6 border-t border-slate-100">
+            <div class="flex flex-col items-center gap-3 mt-8 pt-6 border-t border-slate-100">
                 <a id="back-to-scheduler" href="<?= htmlspecialchars($base_url) ?>/booking.php" class="bg-slate-100 text-slate-700 hover:bg-slate-200 text-sm font-bold px-8 py-3 rounded-xl shadow-sm active:scale-[0.99] transition-all flex items-center justify-center gap-2">
                     Back to Scheduler
                 </a>
+
+                <!-- Auto-redirect countdown (shown once booking is confirmed) -->
+                <div id="redirect-countdown" class="hidden items-center gap-2 text-xs sm:text-sm text-slate-500 bg-slate-50 border border-slate-200 rounded-full px-4 py-2">
+                    <span class="material-symbols-outlined text-[16px] text-primary" aria-hidden="true">schedule</span>
+                    <span>Returning to homepage in <span id="countdown-seconds" class="font-bold text-primary tabular-nums">5</span>s&hellip;</span>
+                    <button type="button" id="cancel-redirect" class="ml-1 font-bold text-slate-600 hover:text-slate-900 underline underline-offset-2 transition-colors">
+                        Stay here
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -224,8 +233,10 @@ if (file_exists('components/header-component.php')) {
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         // Trigger page entry animation
-        document.body.style.opacity = '';
-        document.body.classList.add('page-enter');
+        // Fade the body in with opacity only (no transform) so the fixed header
+        // never gets a transformed ancestor as its containing block.
+        document.body.style.transition = 'opacity 400ms cubic-bezier(0.16, 1, 0.3, 1)';
+        document.body.style.opacity = '1';
 
         // Purge old localstorage mock data as requested
         localStorage.removeItem('dentalBookingData');
@@ -262,12 +273,19 @@ if (file_exists('components/header-component.php')) {
         if (backBtn) {
             backBtn.addEventListener('click', (e) => {
                 e.preventDefault();
+                cancelRedirectCountdown();
                 const href = e.currentTarget.href;
-                document.body.classList.add('page-exit');
+                document.querySelector('main').classList.add('page-exit');
                 setTimeout(() => {
                     window.location.href = href;
                 }, 250);
             });
+        }
+
+        // Let the person stop the auto-redirect and stay on the confirmation page
+        const cancelBtn = document.getElementById('cancel-redirect');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', cancelRedirectCountdown);
         }
     });
 
@@ -305,6 +323,45 @@ if (file_exists('components/header-component.php')) {
         document.getElementById('display-date').textContent = booking.formatted_appointment_date || booking.appointment_date;
         
         document.getElementById('display-time').textContent = booking.appointment_time;
+
+        // Kick off the visible auto-redirect countdown now that the booking is confirmed
+        startRedirectCountdown();
+    }
+
+    let redirectTimer = null;
+
+    function startRedirectCountdown() {
+        const countdownEl = document.getElementById('redirect-countdown');
+        const secondsEl = document.getElementById('countdown-seconds');
+        if (!countdownEl || !secondsEl) return;
+
+        let secondsLeft = 5;
+        secondsEl.textContent = secondsLeft;
+        countdownEl.classList.remove('hidden');
+        countdownEl.classList.add('flex');
+
+        redirectTimer = setInterval(() => {
+            secondsLeft -= 1;
+            secondsEl.textContent = Math.max(secondsLeft, 0);
+
+            if (secondsLeft <= 0) {
+                clearInterval(redirectTimer);
+                redirectTimer = null;
+                window.location.href = '<?= htmlspecialchars($base_url) ?>/index.php';
+            }
+        }, 1000);
+    }
+
+    function cancelRedirectCountdown() {
+        if (redirectTimer) {
+            clearInterval(redirectTimer);
+            redirectTimer = null;
+        }
+        const countdownEl = document.getElementById('redirect-countdown');
+        if (countdownEl) {
+            countdownEl.classList.add('hidden');
+            countdownEl.classList.remove('flex');
+        }
     }
 
     function showError(msg) {

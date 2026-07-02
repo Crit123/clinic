@@ -464,14 +464,14 @@ $isLoggedIn = isset($_SESSION['user_id']);
         .service-card .check-badge { opacity: 0; transform: scale(0.5); transition: all 0.2s ease; }
     </style>
 </head>
-<body class="bg-background text-on-background antialiased min-h-screen flex flex-col font-sans page-enter">
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col font-sans">
 
 <?php include 'components/header-component.php'; ?>
 
 <!-- Toast Notification Container -->
 <div id="toast-container" class="fixed top-24 left-1/2 z-[100] w-max max-w-[90vw] pointer-events-none"></div>
 
-<main class="flex-grow pt-[96px] sm:pt-[106px] pb-24 sm:pb-16 px-4 md:px-8 max-w-[1440px] mx-auto w-full">
+<main class="flex-grow pt-[var(--header-offset-mobile)] lg:pt-[var(--header-offset)] pb-24 sm:pb-16 px-4 md:px-8 max-w-[1440px] mx-auto w-full page-enter">
     
     <!-- Centered Status Modal -->
     <div id="status-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center" aria-live="assertive" role="alert">
@@ -704,8 +704,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                             
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <?php
-                                $services = getAllServices();
-                                foreach ($services as $key => $svc):
+                                foreach ($canonicalServices as $key => $svc):
                                     $icon = $svc['icon'] ?? 'medical_services';
                                 ?>
                                 <button type="button" class="service-card relative flex items-start p-4 border border-slate-200 rounded-xl bg-white text-left hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30" onclick="selectServiceCard('<?= htmlspecialchars($key, ENT_QUOTES) ?>')">
@@ -728,7 +727,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                             <!-- Hidden select for form logic compatibility -->
                             <select class="hidden" id="service" name="service" required>
                                 <option disabled selected value="">Select a clinical service</option>
-                                <?php foreach ($services as $key => $svc): ?>
+                                <?php foreach ($canonicalServices as $key => $svc): ?>
                                 <option value="<?= htmlspecialchars($key, ENT_QUOTES) ?>" data-duration="<?= htmlspecialchars($svc['duration'], ENT_QUOTES) ?>"><?= htmlspecialchars($svc['label'], ENT_QUOTES) ?></option>
                                 <?php endforeach; ?>
                             </select>
@@ -2517,7 +2516,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                     localStorage.removeItem('dentalBookingData');
 
                     // 1b & 1c. Trigger fluid page exit animation, then redirect
-                    document.body.classList.add('page-exit');
+                    document.querySelector('main').classList.add('page-exit');
                     setTimeout(() => {
                         window.location.href = 'confirmed-booking.php?ref=' + encodeURIComponent(formData.referenceCode);
                     }, 250);
