@@ -1,20 +1,23 @@
-<section class="py-16 md:py-24 bg-surface-container-low border-t border-slate-100 fade-in-up">
+<section class="py-16 md:py-24 bg-surface-container-low border-t border-outline-variant/40 fade-in-up">
     <div class="max-w-[1200px] mx-auto px-6 md:px-8">
         <div class="text-center max-w-2xl mx-auto mb-16">
-            <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">Treatment Benefits</h2>
-            <p class="text-slate-600">Discover how this specialized clinical service can enhance your oral health and overall well-being.</p>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-on-background mb-4">Treatment Benefits</h2>
+            <p class="text-on-surface-variant">Discover how this specialized clinical service can enhance your oral health and overall well-being.</p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php foreach($benefitsList as $benefit): ?>
-            <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                <div class="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-[28px]"><?= htmlspecialchars($benefit['icon']) ?></span>
+        <div class="flex flex-col divide-y divide-outline-variant/20 max-w-3xl mx-auto">
+            <?php foreach($benefitsList as $index => $benefit): ?>
+            <div class="flex items-start gap-6 py-8 group">
+                <span class="font-mono text-xs text-primary/50 pt-2 w-8 flex-shrink-0"><?= sprintf('%02d', $index + 1) ?></span>
+                <div class="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                    <span class="icon-line text-[28px]"><?= htmlspecialchars($benefit['icon']) ?></span>
                 </div>
-                <h4 class="font-bold text-slate-900 text-lg mb-3"><?= htmlspecialchars($benefit['title']) ?></h4>
-                <p class="text-slate-600 text-sm leading-relaxed"><?= htmlspecialchars($benefit['desc']) ?></p>
+                <div>
+                    <h4 class="font-bold text-on-background text-lg mb-2"><?= htmlspecialchars($benefit['title']) ?></h4>
+                    <p class="text-on-surface-variant text-sm leading-relaxed"><?= htmlspecialchars($benefit['desc']) ?></p>
+                </div>
             </div>
             <?php endforeach; ?>
         </div>
     </div>
-</section>
+</section>  

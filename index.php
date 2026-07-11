@@ -12,109 +12,9 @@ $canonicalServices = getAllServices();
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>DentalCare Pro - Exceptional Dental Care</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="<?= htmlspecialchars($base_url) ?>/assets/js/theme-config.js"></script>
+    <link rel="stylesheet" href="<?= htmlspecialchars($base_url) ?>/assets/css/theme-base.css">
     <link rel="stylesheet" href="<?= htmlspecialchars($base_url) ?>/assets/css/responsive.css">
-    
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-background": "#0b1c30",
-                        "on-primary-fixed": "#001b3d",
-                        "surface-container-high": "#dce9ff",
-                        "on-secondary-fixed": "#191c1e",
-                        "on-surface": "#0b1c30",
-                        "secondary-fixed-dim": "#c4c7c9",
-                        "on-primary-fixed-variant": "#00468c",
-                        "secondary": "#5c5f61",
-                        "surface-container-lowest": "#ffffff",
-                        "background": "#f8f9ff",
-                        "surface-tint": "#005db6",
-                        "on-tertiary-fixed": "#002113",
-                        "error": "#ba1a1a",
-                        "primary-container": "#005eb8",
-                        "inverse-primary": "#a9c7ff",
-                        "surface-container": "#e5eeff",
-                        "on-tertiary-container": "#65f2b5",
-                        "surface-container-highest": "#d3e4fe",
-                        "outline": "#727783",
-                        "on-primary": "#ffffff",
-                        "outline-variant": "#c2c6d4",
-                        "inverse-on-surface": "#eaf1ff",
-                        "primary-fixed-dim": "#a9c7ff",
-                        "surface-bright": "#f8f9ff",
-                        "on-primary-container": "#c8daff",
-                        "on-tertiary-fixed-variant": "#005236",
-                        "primary": "#00478d",
-                        "error-container": "#ffdad6",
-                        "on-secondary": "#ffffff",
-                        "surface-container-low": "#eff4ff",
-                        "tertiary-fixed": "#6ffbbe",
-                        "on-surface-variant": "#424752",
-                        "on-tertiary": "#ffffff",
-                        "tertiary-fixed-dim": "#4edea3",
-                        "tertiary": "#005237",
-                        "surface": "#f8f9ff",
-                        "on-error-container": "#93000a",
-                        "surface-variant": "#d3e4fe",
-                        "surface-dim": "#cbdbf5",
-                        "on-secondary-fixed-variant": "#444749",
-                        "primary-fixed": "#d6e3ff",
-                        "inverse-surface": "#213145",
-                        "on-error": "#ffffff",
-                        "secondary-fixed": "#e0e3e5",
-                        "secondary-container": "#e0e3e5",
-                        "tertiary-container": "#006d4a",
-                        "on-secondary-container": "#626567"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "2xl": "1rem",
-                        "3xl": "1.5rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "gutter": "24px",
-                        "md": "24px",
-                        "margin-mobile": "16px",
-                        "xs": "4px",
-                        "lg": "48px",
-                        "xl": "80px",
-                        "margin-desktop": "64px",
-                        "sm": "12px",
-                        "base": "8px"
-                    },
-                    "fontFamily": {
-                        "label-sm": ["Inter"],
-                        "body-md": ["Inter"],
-                        "headline-md": ["Inter"],
-                        "headline-xl": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "headline-lg-mobile": ["Inter"],
-                        "headline-lg": ["Inter"],
-                        "label-md": ["Inter"]
-                    },
-                    "animation": {
-                        "float": "float 6s ease-in-out infinite",
-                        "float-delayed": "float 6s ease-in-out 3s infinite",
-                        "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-                        "bounce-slow": "bounce 3s infinite"
-                    },
-                    "keyframes": {
-                        float: {
-                            "0%, 100%": { transform: "translateY(0px)" },
-                            "50%": { transform: "translateY(-15px)" }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     
     <style>
         .fade-in-up {
@@ -130,12 +30,372 @@ $canonicalServices = getAllServices();
         .stagger-2 { transition-delay: 200ms; }
         .stagger-3 { transition-delay: 300ms; }
         .stagger-4 { transition-delay: 400ms; }
-        
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        .stagger-5 { transition-delay: 500ms; }
+        .stagger-6 { transition-delay: 600ms; }
+        .stagger-7 { transition-delay: 700ms; }
+        .stagger-8 { transition-delay: 800ms; }
+
+        /* --- Hero Photo Carousel --- */
+        .hero-carousel-viewport {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
         }
-        .material-symbols-outlined.fill-icon {
-            font-variation-settings: 'FILL' 1;
+        .hero-carousel-track {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            will-change: transform;
+            /* Transition is now handled inline dynamically via JS for seamless looping */
+        }
+        .hero-slide {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .hero-slide img {
+            transform: scale(1.15) translateY(0);
+            will-change: transform;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .hero-slide img { transform: scale(1.15) translateY(0) !important; }
+        }
+        .hero-arrow {
+            width: 44px;
+            height: 44px;
+            border-radius: 9999px;
+            background: var(--tw-color-surface-container-lowest, #fff);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            border: 1px solid rgba(194, 198, 212, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0b1c30;
+            transition: all 0.3s ease;
+        }
+        .hero-arrow:hover {
+            background: #00478d;
+            color: #fff;
+            border-color: #00478d;
+        }
+        .hero-arrow:disabled { cursor: default; opacity: 0.3; pointer-events: none; }
+        .hero-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 9999px;
+            background: transparent;
+            border: 1.5px solid var(--tw-color-primary, #00478d);
+            border-color: rgba(0, 71, 141, 0.5);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hero-dot.is-active {
+            width: 20px;
+            background: #00478d;
+            border-color: #00478d;
+        }
+
+        /* --- Hero per-slide text & badge crossfade --- */
+        .hero-fade-swap {
+            transition: opacity 0.45s ease;
+        }
+        .hero-fade-swap.is-swapping {
+            opacity: 0;
+        }
+        #hero-headline {
+            font-weight: 700;
+        }
+        @media (min-width: 768px) {
+            #hero-headline { font-size: 3.75rem; line-height: 1.1; }
+        }
+
+        /* --- Premium Services Section (Apple-Inspired) --- */
+        .premium-services-section {
+            --services-bg: #f8f9ff;
+            --blob-1: rgba(0, 93, 182, 0.12);
+            --blob-2: rgba(105, 242, 181, 0.12);
+            background-color: var(--services-bg);
+            transition: background-color 1.2s cubic-bezier(.22,.61,.36,1);
+            position: relative;
+            overflow: hidden;
+        }
+        .premium-blob-1, .premium-blob-2 {
+            position: absolute;
+            filter: blur(120px);
+            border-radius: 50%;
+            pointer-events: none;
+            transition: background 1.2s cubic-bezier(.22,.61,.36,1);
+            z-index: 0;
+        }
+        .premium-blob-1 {
+            width: 600px; height: 600px; top: -100px; right: -100px;
+            background: var(--blob-1);
+            animation: floatBlob1 25s ease-in-out infinite alternate;
+        }
+        .premium-blob-2 {
+            width: 800px; height: 800px; bottom: -200px; left: -200px;
+            background: var(--blob-2);
+            animation: floatBlob2 30s ease-in-out infinite alternate-reverse;
+        }
+        @keyframes floatBlob1 {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(-50px, 30px) scale(1.05) rotate(5deg); }
+            100% { transform: translate(20px, -40px) scale(0.95) rotate(-5deg); }
+        }
+        @keyframes floatBlob2 {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(40px, -30px) scale(1.02) rotate(-3deg); }
+            100% { transform: translate(-20px, 40px) scale(0.98) rotate(3deg); }
+        }
+        .premium-large-num {
+            position: absolute;
+            top: 40%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20rem;
+            font-weight: 800;
+            color: var(--tw-color-primary);
+            opacity: 0.03;
+            z-index: 1;
+            pointer-events: none;
+            line-height: 1;
+            transition: all 0.8s cubic-bezier(.22,.61,.36,1);
+        }
+        @media (min-width: 768px) {
+            .premium-large-num {
+                font-size: 35rem;
+            }
+        }
+        .premium-large-num.animating {
+            transform: translate(-50%, -55%);
+            opacity: 0;
+        }
+        .premium-carousel-track {
+            display: flex;
+            gap: 24px;
+            padding-left: 0;
+            will-change: transform;
+            position: relative;
+            z-index: 10;
+            touch-action: pan-y;
+            cursor: grab;
+        }
+        .premium-carousel-track:active {
+            cursor: grabbing;
+        }
+        @media (min-width: 768px) {
+            .premium-carousel-track {
+                padding-left: 12.5%; /* Centers the 75% wide active card, revealing 25% of the next */
+            }
+        }
+        .premium-card {
+            flex: 0 0 100%;
+            width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 768px) {
+            .premium-card {
+                flex: 0 0 75%;
+                width: 75%;
+            }
+        }
+        /* Cinematic Image Animations */
+        .premium-img-wrap {
+            transform: scale(0.96);
+            border-radius: 2rem;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: all 0.9s cubic-bezier(.22,.61,.36,1);
+        }
+        .premium-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transform: scale(1.08);
+            filter: blur(4px);
+            opacity: 0.7;
+            transition: all 0.9s cubic-bezier(.22,.61,.36,1);
+        }
+        /* Sequential Text Animations */
+        .premium-text-wrap > * {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: all 0.7s cubic-bezier(.22,.61,.36,1);
+        }
+        /* Active States */
+        .premium-card.is-active .premium-img-wrap {
+            transform: scale(1);
+            box-shadow: 0 25px 60px rgba(0,71,141,0.15);
+        }
+        .premium-card.is-active .premium-img {
+            transform: scale(1);
+            filter: blur(0);
+            opacity: 1;
+        }
+        .premium-card.is-active .premium-text-wrap > * {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .premium-card.is-active .anim-1 { transition-delay: 150ms; }
+        .premium-card.is-active .anim-2 { transition-delay: 250ms; }
+        .premium-card.is-active .anim-3 { transition-delay: 350ms; }
+        .premium-card.is-active .anim-4 { transition-delay: 450ms; }
+
+        /* Premium CTA Button */
+        .premium-cta-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(.22,.61,.36,1);
+        }
+        .premium-cta-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.2), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .premium-cta-btn:hover {
+            box-shadow: 0 15px 30px rgba(0, 71, 141, 0.25), 0 0 0 2px rgba(0, 71, 141, 0.1);
+            transform: translateY(-2px); /* Slight 3D lift without generic scaling */
+        }
+        .premium-cta-btn:hover::before {
+            opacity: 1;
+        }
+        .premium-cta-btn:hover .cta-icon {
+            transform: translateX(4px);
+        }
+
+        /* Decorative Floating Element */
+        .premium-deco-icon {
+            position: absolute;
+            font-size: 40rem;
+            color: var(--tw-color-primary);
+            opacity: 0.02;
+            top: 20%;
+            left: -10%;
+            pointer-events: none;
+            z-index: 1;
+            animation: decoFloat 20s ease-in-out infinite alternate;
+        }
+        @keyframes decoFloat {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-50px) rotate(15deg); }
+        }
+
+        /* --- Section kicker (readable section header, shown above each section title) --- */
+        .section-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.8125rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #00478d;
+        }
+        .section-kicker::before {
+            content: '';
+            display: inline-block;
+            width: 28px;
+            height: 3px;
+            border-radius: 2px;
+            background: #00478d;
+        }
+
+        /* --- "Learn more" hover border-trail --- */
+        .learn-more-loop-border {
+            position: relative;
+            z-index: 0;
+        }
+        .learn-more-loop-border .border-trail-svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            pointer-events: none;
+            overflow: visible;
+        }
+        .learn-more-loop-border:hover .border-trail-svg {
+            opacity: 1;
+        }
+        .border-trail-rect {
+            fill: none;
+            stroke: var(--tw-color-primary, #00478d);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-dasharray: 18 82;
+            animation: border-trail-move 1.6s linear infinite;
+        }
+        @keyframes border-trail-move {
+            to { stroke-dashoffset: -100; }
+        }
+
+        /* --- Why Choose Us Sticky Heading --- */
+        @media (min-width: 1024px) {
+            .why-choose-sticky-heading {
+                position: sticky;
+                top: 104px;
+                align-self: start;
+            }
+        }
+
+        /* --- Stats: tick-rule dividers (mono stat row) --- */
+        .stat-divider {
+            position: relative;
+            min-width: 1px;
+            width: 1px;
+            align-self: stretch;
+            background: rgba(114, 119, 131, 0.22);
+        }
+        .stat-divider::before,
+        .stat-divider::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            width: 10px;
+            height: 1px;
+            background: rgba(114, 119, 131, 0.4);
+            transform: translateX(-50%);
+        }
+        .stat-divider::before { top: 0; }
+        .stat-divider::after { bottom: 0; }
+        
+        /* --- FAQ accordion toggle: plus that rotates into an x on open --- */
+        .faq-toggle-icon {
+            position: relative;
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            transition: transform 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        .faq-toggle-icon::before,
+        .faq-toggle-icon::after {
+            content: '';
+            position: absolute;
+            background: currentColor;
+            border-radius: 1px;
+        }
+        .faq-toggle-icon::before {
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            transform: translateY(-50%);
+        }
+        .faq-toggle-icon::after {
+            left: 50%;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            transform: translateX(-50%);
+        }
+        .faq-toggle-icon.is-open {
+            transform: rotate(45deg);
         }
         .glass-panel {
             background: rgba(255, 255, 255, 0.7);
@@ -170,138 +430,118 @@ $canonicalServices = getAllServices();
 <!-- Combined Hero & Statistics wrappers under `#home` for dynamic load-time animation checks -->
 <div id="home" class="scroll-mt-24">
     <!-- Enhanced Hero Section -->
-    <section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden fade-in-up">
+    <section class="relative min-h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden fade-in-up">
         <div class="absolute inset-0 z-0">
-            <!-- Enhanced overlay gradient -->
-            <div class="absolute inset-0 bg-gradient-to-r from-surface via-surface/90 to-surface/40 z-10"></div>
-            <img alt="Modern dental clinic interior with sophisticated equipment and a calm atmosphere." class="w-full h-full object-cover object-center scale-105 animate-[pulse-slow_10s_ease-in-out_infinite]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-nkk1M36aJZHiOeHITanF0DVeWv4Wogp6-ZWAK9wqE1qRDfqdGGHvWhI6Nov4j2Sp_AvhK3ZRSiSJaeR4CFq8f0SA8qJsAoEYqc1bX2YDSlWT86J35iG8oxIZW6iEoAeEPHVOB1DUzpqW34acOBAhqUTaipVgiJ3ShFFt49AENBiZBixQlJKS7Bn03z2mjfXZqU4_l4ePHHJXo9jaA88SYAAfETASgQfuaUdZNm9XpxgoY9Bj4vEt5HD6kINAyEuq002SMUivrRU"/>
+            <!-- Strengthened overlay gradient scrim (keeps text legible over any slide) -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10 z-10"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent z-10"></div>
+            <div class="hero-carousel-viewport">
+                <div id="hero-carousel-track" class="hero-carousel-track">
+                    <div class="hero-slide" data-slide-index="0">
+                        <img src="assets/img/hero-slide-1.png" alt="Modern dental clinic reception and waiting area" class="absolute inset-0 w-full h-full object-cover object-center"/>
+                    </div>
+                    <div class="hero-slide" data-slide-index="1">
+                        <img src="assets/img/hero-slide-2.png" alt="Dental treatment room with chair and equipment" class="absolute inset-0 w-full h-full object-cover object-center"/>
+                    </div>
+                    <div class="hero-slide" data-slide-index="2">
+                        <img src="assets/img/hero-slide-3.png" alt="Close-up of dental tools and equipment" class="absolute inset-0 w-full h-full object-cover object-center"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Carousel Arrows -->
+        <button type="button" id="hero-prev" class="hero-arrow absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-30" aria-label="Previous slide">
+            <span class="icon-line">chevron_left</span>
+        </button>
+        <button type="button" id="hero-next" class="hero-arrow absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-30" aria-label="Next slide">
+            <span class="icon-line">chevron_right</span>
+        </button>
+
+        <!-- Hero Carousel Dot Indicators -->
+        <div class="absolute bottom-20 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 glass-panel py-2 px-3 rounded-full shadow-sm" id="hero-carousel-dots" aria-hidden="true">
+            <span class="hero-dot is-active"></span>
+            <span class="hero-dot"></span>
+            <span class="hero-dot"></span>
         </div>
         
         <!-- Desktop Floating Glassmorphism Cards -->
-        <!-- Card 1: AI Assistant (Clickable, links to AI Section) -->
         <a href="#ai-assistant" class="hero-floating-cards-desktop absolute top-[18%] right-[12%] z-20 flex items-center gap-4 glass-panel p-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] animate-float hover:scale-105 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:border-primary/30 transition-all duration-300 cursor-pointer group/card">
             <div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center group-hover/card:bg-primary transition-colors duration-300">
-                <span class="material-symbols-outlined text-primary group-hover/card:text-white fill-icon">smart_toy</span>
+                <span class="icon-line text-primary group-hover/card:text-white fill-icon">smart_toy</span>
             </div>
             <div>
-                <p class="font-label-md font-bold text-on-background group-hover/card:text-primary transition-colors duration-300">AI Dental Assistant</p>
+                <p class="font-label-md font-bold text-on-background group-hover/card:text-primary transition-colors duration-300">ProCare AI</p>
                 <p class="text-xs text-primary font-medium flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Active 24/7</p>
             </div>
         </a>
         
-        <!-- Card 2: Safe & Accredited (Clickable, links to About Section) -->
-        <a href="#about" class="hero-floating-cards-desktop absolute top-[48%] right-[18%] z-20 flex items-center gap-4 glass-panel p-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] animate-[float_7s_ease-in-out_1s_infinite] hover:scale-105 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:border-green-600/30 transition-all duration-300 cursor-pointer group/card">
-            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center group-hover/card:bg-green-600 transition-colors duration-300">
-                <span class="material-symbols-outlined text-green-700 group-hover/card:text-white fill-icon">health_and_safety</span>
-            </div>
-            <div>
-                <p class="font-label-md font-bold text-on-background group-hover/card:text-primary transition-colors duration-300">Safe & Accredited</p>
-                <p class="text-xs text-on-surface-variant font-medium">HIPAA Secure Care</p>
-            </div>
-        </a>
-
-        <!-- Card 3: Online Booking (Clickable, links to booking page) -->
-        <a href="<?= htmlspecialchars($base_url) ?>/booking.php" class="hero-floating-cards-desktop absolute bottom-[28%] right-[6%] z-20 flex items-center gap-4 glass-panel p-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] animate-float-delayed hover:scale-105 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:border-primary/30 transition-all duration-300 cursor-pointer group/card">
-            <div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center group-hover/card:bg-tertiary transition-colors duration-300">
-                <span class="material-symbols-outlined text-on-tertiary-container group-hover/card:text-white fill-icon">event_available</span>
-            </div>
-            <div>
-                <p class="font-label-md font-bold text-on-background group-hover/card:text-primary transition-colors duration-300">Online Booking</p>
-                <p class="text-xs text-on-surface-variant">Instant Confirmation</p>
-            </div>
-        </a>
-
-        <!-- Scroll down indicator -->
-        <a href="#about" class="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 text-on-surface-variant hover:text-primary transition-colors animate-bounce-slow">
-            <span class="text-xs font-medium uppercase tracking-widest">Scroll</span>
-            <span class="material-symbols-outlined">south</span>
-        </a>
-
         <div class="relative z-20 w-full max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop">
             <div class="max-w-2xl">
                 <!-- Google Review Badge -->
                 <div class="inline-flex items-center gap-2 py-1.5 px-3 rounded-full bg-white shadow-sm border border-outline-variant/30 mb-6">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" class="w-4 h-4"/>
                     <div class="flex gap-0.5">
-                        <span class="material-symbols-outlined text-yellow-500 text-[14px] fill-icon">star</span>
-                        <span class="material-symbols-outlined text-yellow-500 text-[14px] fill-icon">star</span>
-                        <span class="material-symbols-outlined text-yellow-500 text-[14px] fill-icon">star</span>
-                        <span class="material-symbols-outlined text-yellow-500 text-[14px] fill-icon">star</span>
-                        <span class="material-symbols-outlined text-yellow-500 text-[14px] fill-icon">star</span>
+                        <span class="icon-line text-yellow-500 text-[14px] fill-icon">star</span>
+                        <span class="icon-line text-yellow-500 text-[14px] fill-icon">star</span>
+                        <span class="icon-line text-yellow-500 text-[14px] fill-icon">star</span>
+                        <span class="icon-line text-yellow-500 text-[14px] fill-icon">star</span>
+                        <span class="icon-line text-yellow-500 text-[14px] fill-icon">star</span>
                     </div>
                     <span class="text-xs font-bold text-on-surface dynamic-rating" data-suffix=" Rating">4.9 Rating</span>
                 </div>
-                
-                <div class="mb-6"><span class="inline-block py-1 px-3 rounded-xl bg-primary-container/20 text-primary font-label-sm text-label-sm border border-primary/10 backdrop-blur-sm">Premium Care</span></div>
-                
-                <h1 class="font-headline-xl text-headline-xl text-on-background mb-6 leading-tight tracking-tight">
-                    Exceptional Dental Care for a <span class="bg-gradient-to-r from-primary to-surface-tint gradient-text">Brighter Smile.</span>
-                </h1>
-                <p class="font-body-lg text-body-lg text-on-surface-variant mb-10 max-w-xl">
-                    Welcome to DentalCare Pro, where precision meets comfort. Experience world-class dental treatments in a state-of-the-art, relaxing environment.
-                </p>
+
+                <!-- Per-slide text block -->
+                <div id="hero-text-block" class="hero-fade-swap">
+                    <div class="mb-6"><span id="hero-eyebrow" class="inline-block py-1 px-3 rounded-xl bg-white/20 text-white font-label-sm text-label-sm border border-white/20 backdrop-blur-md">Premium Care</span></div>
+
+                    <h1 id="hero-headline" class="font-display text-headline-xl text-white mb-6 leading-tight tracking-tight">
+                        Exceptional Dental Care for a <span class="text-accent">Brighter Smile.</span>
+                    </h1>
+                    <p id="hero-subtext" class="font-body-lg text-body-lg text-white/80 mb-10 max-w-xl">
+                        Welcome to DentalCare Pro, where precision meets comfort. Experience world-class dental treatments in a state-of-the-art, relaxing environment.
+                    </p>
+                </div>
+
                 <div class="flex flex-col sm:flex-row gap-4 mb-8">
                     <a href="<?= htmlspecialchars($base_url) ?>/booking.php" class="group h-12 px-8 rounded-lg bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant hover:shadow-[0_8px_20px_rgba(0,71,141,0.25)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2">
                         Book Appointment
-                        <span class="material-symbols-outlined text-[20px] transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
+                        <span class="icon-line text-[20px] transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
                     </a>
-                    <a href="<?= htmlspecialchars($base_url) ?>/services/services.php" class="h-12 px-8 rounded-lg border-[1.5px] border-primary text-primary font-label-md text-label-md hover:bg-surface-container-low hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300 flex items-center justify-center bg-white/50 backdrop-blur-sm">
+                    <a href="#services" class="h-12 px-8 rounded-lg border-[1.5px] border-primary text-primary font-label-md text-label-md hover:bg-surface-container-low hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300 flex items-center justify-center bg-white/50 backdrop-blur-sm">
                         Our Services
                     </a>
                 </div>
-
-                <!-- Lightweight Mobile & Tablet Friendly Trust Row -->
-                <div class="hero-floating-cards-mobile flex-wrap gap-3 mt-6 mb-10 border-t border-outline-variant/20 pt-6" style="display: none;">
-                    <a href="#ai-assistant" class="flex-1 min-w-[140px] flex items-center gap-3 p-3 rounded-2xl bg-white/70 border border-outline-variant/30 hover:bg-white hover:shadow-sm active:scale-95 transition-all">
-                        <span class="material-symbols-outlined text-primary text-[22px] fill-icon">smart_toy</span>
-                        <div class="text-left">
-                            <p class="text-xs font-bold text-on-background leading-none">AI Support</p>
-                            <p class="text-[10px] text-green-600 font-semibold mt-0.5">Active 24/7</p>
-                        </div>
-                    </a>
-                    <a href="#about" class="flex-1 min-w-[140px] flex items-center gap-3 p-3 rounded-2xl bg-white/70 border border-outline-variant/30 hover:bg-white hover:shadow-sm active:scale-95 transition-all">
-                        <span class="material-symbols-outlined text-green-700 text-[22px] fill-icon">health_and_safety</span>
-                        <div class="text-left">
-                            <p class="text-xs font-bold text-on-background leading-none">Accredited</p>
-                            <p class="text-[10px] text-on-surface-variant font-medium mt-0.5">HIPAA Secure</p>
-                        </div>
-                    </a>
-                    <a href="<?= htmlspecialchars($base_url) ?>/booking.php" class="flex-1 min-w-[140px] flex items-center gap-3 p-3 rounded-2xl bg-white/70 border border-outline-variant/30 hover:bg-white hover:shadow-sm active:scale-95 transition-all">
-                        <span class="material-symbols-outlined text-primary text-[22px] fill-icon">event_available</span>
-                        <div class="text-left">
-                            <p class="text-xs font-bold text-on-background leading-none">Book Online</p>
-                            <p class="text-[10px] text-on-surface-variant font-medium mt-0.5">Instant Slot</p>
-                        </div>
-                    </a>
-                </div>
                 
-                <!-- Trust Indicators -->
-                <div class="flex items-center gap-6 text-sm text-on-surface-variant font-medium">
-                    <div class="flex items-center gap-2"><span class="material-symbols-outlined text-green-600 text-[18px]">verified</span> Verified Professionals</div>
-                    <div class="flex items-center gap-2"><span class="material-symbols-outlined text-green-600 text-[18px]">verified</span> Modern Equipment</div>
+                <div id="hero-trust-tags" class="hero-fade-swap flex items-center gap-6 text-sm text-white/90 font-medium">
+                    <div class="flex items-center gap-2"><span class="icon-line text-green-600 text-[18px]">verified</span> <span data-trust-tag="1">Verified Professionals</span></div>
+                    <div class="flex items-center gap-2"><span class="icon-line text-green-600 text-[18px]">verified</span> <span data-trust-tag="2">Warm, Comfortable Care</span></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Statistics Section (Above the fold, load-animated) -->
-    <section class="py-12 bg-surface-container-lowest border-b border-outline-variant/10 fade-in-up relative z-20 -mt-10 mx-margin-mobile md:mx-margin-desktop rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] max-w-[1200px] xl:mx-auto">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 px-8 text-center divide-x divide-outline-variant/10">
-            <div class="flex flex-col items-center">
-                <span class="text-4xl font-headline-xl font-bold text-primary mb-1 counter" data-target="2400">0</span>
-                <span class="text-sm font-label-sm text-on-surface-variant font-medium uppercase tracking-wider">Happy Patients</span>
+    <!-- Statistics Section -->
+    <section class="py-12 bg-surface-container-lowest border-b border-outline-variant/10 fade-in-up relative z-20 -mt-16 md:-mt-20 mx-margin-mobile md:mx-margin-desktop rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.12)] max-w-[1200px] xl:mx-auto">
+        <div class="stats-row grid grid-cols-2 md:flex md:flex-row md:justify-between items-stretch gap-8 md:gap-0 px-4 md:px-8 text-center" id="stats-row">
+            <div class="stat-cell flex-1 flex flex-col items-center justify-center gap-1 md:px-6">
+                <span class="font-mono text-3xl md:text-4xl font-bold text-primary tabular-nums"><span class="counter" data-target="2400">0</span>+</span>
+                <span class="text-xs font-label-sm text-on-surface-variant font-medium uppercase tracking-widest">Happy Patients</span>
             </div>
-            <div class="flex flex-col items-center">
-                <span class="text-4xl font-headline-xl font-bold text-primary mb-1"><span class="counter" data-target="15">0</span>+</span>
-                <span class="text-sm font-label-sm text-on-surface-variant font-medium uppercase tracking-wider">Years Experience</span>
+            <div class="stat-divider hidden md:block"></div>
+            <div class="stat-cell flex-1 flex flex-col items-center justify-center gap-1 md:px-6">
+                <span class="font-mono text-3xl md:text-4xl font-bold text-primary tabular-nums"><span class="counter" data-target="15">0</span>+</span>
+                <span class="text-xs font-label-sm text-on-surface-variant font-medium uppercase tracking-widest">Years Experience</span>
             </div>
-            <div class="flex flex-col items-center">
-                <span class="text-4xl font-headline-xl font-bold text-primary mb-1 counter dynamic-rating" data-target="4.9" data-decimal="true">0</span>
-                <span class="text-sm font-label-sm text-on-surface-variant font-medium uppercase tracking-wider">Average Rating</span>
+            <div class="stat-divider hidden md:block"></div>
+            <div class="stat-cell flex-1 flex flex-col items-center justify-center gap-1 md:px-6">
+                <span class="font-mono text-3xl md:text-4xl font-bold text-primary tabular-nums counter dynamic-rating" data-target="4.9" data-decimal="true">0</span>
+                <span class="text-xs font-label-sm text-on-surface-variant font-medium uppercase tracking-widest">Average Rating</span>
             </div>
-            <div class="flex flex-col items-center">
-                <span class="text-4xl font-headline-xl font-bold text-primary mb-1"><span class="counter" data-target="98">0</span>%</span>
-                <span class="text-sm font-label-sm text-on-surface-variant font-medium uppercase tracking-wider">Recommendation Rate</span>
+            <div class="stat-divider hidden md:block"></div>
+            <div class="stat-cell flex-1 flex flex-col items-center justify-center gap-1 md:px-6">
+                <span class="font-mono text-3xl md:text-4xl font-bold text-primary tabular-nums"><span class="counter" data-target="98">0</span>%</span>
+                <span class="text-xs font-label-sm text-on-surface-variant font-medium uppercase tracking-widest">Recommendation Rate</span>
             </div>
         </div>
     </section>
@@ -314,6 +554,7 @@ $canonicalServices = getAllServices();
     <div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-xl items-center mb-16">
             <div>
+                <span class="section-kicker">Mission &amp; Vision</span>
                 <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-6 tracking-tight">Precision and Care at Our Core</h2>
                 <p class="font-body-md text-body-md text-on-surface-variant mb-6">
                     At DentalCare Pro, we believe that a healthy smile is the foundation of overall well-being. Our mission is to provide unparalleled dental care through a combination of advanced medical technology and a deeply empathetic approach to patient comfort.
@@ -324,7 +565,7 @@ $canonicalServices = getAllServices();
                 <div class="flex items-center gap-4">
                     <div class="flex -space-x-4">
                         <div class="w-12 h-12 rounded-full bg-surface-container-high border-2 border-surface-container-lowest flex items-center justify-center text-primary font-bold">15+</div>
-                        <div class="w-12 h-12 rounded-full bg-primary-container border-2 border-surface-container-lowest flex items-center justify-center text-on-primary-container material-symbols-outlined">verified</div>
+                        <div class="w-12 h-12 rounded-full bg-primary-container border-2 border-surface-container-lowest flex items-center justify-center text-on-primary-container icon-line">verified</div>
                     </div>
                     <span class="font-label-md text-label-md text-on-surface">Years of Excellence</span>
                 </div>
@@ -335,25 +576,24 @@ $canonicalServices = getAllServices();
             </div>
         </div>
 
-        <!-- Feature Cards Below About -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 pt-12 border-t border-outline-variant/20">
             <div class="bg-surface rounded-2xl p-6 border border-outline-variant/30 hover:shadow-lg transition-all duration-300 group">
-                <span class="material-symbols-outlined text-primary text-[32px] mb-4 group-hover:scale-110 transition-transform">precision_manufacturing</span>
+                <span class="icon-line text-primary text-[32px] mb-4 group-hover:scale-110 transition-transform">precision_manufacturing</span>
                 <h4 class="font-headline-md text-base font-semibold mb-2">Modern Equipment</h4>
                 <p class="text-sm text-on-surface-variant">State-of-the-art diagnostic tools.</p>
             </div>
             <div class="bg-surface rounded-2xl p-6 border border-outline-variant/30 hover:shadow-lg transition-all duration-300 group">
-                <span class="material-symbols-outlined text-primary text-[32px] mb-4 group-hover:scale-110 transition-transform">school</span>
+                <span class="icon-line text-primary text-[32px] mb-4 group-hover:scale-110 transition-transform">school</span>
                 <h4 class="font-headline-md text-base font-semibold mb-2">Certified Expert</h4>
                 <p class="text-sm text-on-surface-variant">Highly qualified lead practitioner.</p>
             </div>
             <div class="bg-surface rounded-2xl p-6 border border-outline-variant/30 hover:shadow-lg transition-all duration-300 group">
-                <span class="material-symbols-outlined text-primary text-[32px] mb-4 group-hover:scale-110 transition-transform">folder_managed</span>
+                <span class="icon-line text-primary text-[32px] mb-4 group-hover:scale-110 transition-transform">folder_managed</span>
                 <h4 class="font-headline-md text-base font-semibold mb-2">Digital Records</h4>
                 <p class="text-sm text-on-surface-variant">Secure, easy-access dental history.</p>
             </div>
             <div class="bg-surface rounded-2xl p-6 border border-outline-variant/30 hover:shadow-lg transition-all duration-300 group">
-                <span class="material-symbols-outlined text-primary text-[32px] mb-4 group-hover:scale-110 transition-transform">handshake</span>
+                <span class="icon-line text-primary text-[32px] mb-4 group-hover:scale-110 transition-transform">handshake</span>
                 <h4 class="font-headline-md text-base font-semibold mb-2">Personalized Care</h4>
                 <p class="text-sm text-on-surface-variant">Treatments tailored just for you.</p>
             </div>
@@ -363,100 +603,177 @@ $canonicalServices = getAllServices();
 
 <div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop"><hr class="border-t border-outline-variant/20 my-8 md:my-12" /></div>
 
-<!-- Services Section -->
-<section class="py-xl bg-background fade-in-up scroll-mt-24" id="services">
-    <div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop">
-        <div class="text-center max-w-2xl mx-auto mb-16">
+<?php
+// Pre-process categories and setup data for premium showcase
+$categories = [];
+$processedServices = [];
+
+// Fallback category mapping to ensure all services have a category
+$categoryMap = [
+    'checkup' => 'General', 'cleaning' => 'General',
+    'whitening' => 'Cosmetic', 'veneers' => 'Cosmetic',
+    'implants' => 'Restorative', 'crowns' => 'Restorative',
+    'braces' => 'Orthodontics', 'invisalign' => 'Orthodontics',
+    'extraction' => 'Emergency', 'root-canal' => 'Emergency'
+];
+
+foreach($canonicalServices as $key => $serviceData) {
+    $meta = getServiceDisplayMeta($key) ?? ['icon' => 'medical_services', 'desc' => '', 'featured' => false];
+
+    // Inject category if missing
+    if (!isset($meta['category'])) {
+        $meta['category'] = $categoryMap[$key] ?? 'General';
+    }
+    if (!in_array($meta['category'], $categories)) {
+        $categories[] = $meta['category'];
+    }
+
+    $processedServices[$key] = [
+        'data' => $serviceData,
+        'meta' => $meta
+    ];
+}
+sort($categories);
+?>
+
+<!-- Premium Services Section (Apple-Inspired Cinematic Layout) -->
+<section class="py-xl fade-in-up scroll-mt-24 premium-services-section" id="services">
+    <!-- Dynamic Background Blobs -->
+    <div class="premium-blob-1"></div>
+    <div class="premium-blob-2"></div>
+    
+    <!-- Large Background Number -->
+    <div id="services-large-num" class="premium-large-num">01</div>
+    
+    <!-- Subtle Decorative Outline Element -->
+    <span class="icon-line premium-deco-icon fill-icon">health_and_safety</span>
+
+    <div class="relative z-10 max-w-[1400px] mx-auto px-margin-mobile md:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-2xl mx-auto mb-12 md:mb-16 relative z-20">
+            <span class="section-kicker">Our Treatments</span>
             <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-4 tracking-tight">Comprehensive Dental Solutions</h2>
             <p class="font-body-md text-body-md text-on-surface-variant">Tailored treatments utilizing the latest in dental technology to ensure optimal outcomes and minimal discomfort.</p>
         </div>
-        
-        <!-- Services Grid Loop utilizing canonical keys for links -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-            <?php foreach($canonicalServices as $key => $serviceData): ?>
-                <?php 
-                    // Retrieve dynamic metadata directly from canonical data source
-                    $meta = getServiceDisplayMeta($key) ?? ['icon' => 'medical_services', 'desc' => '', 'featured' => false];
-                    $isFeatured = $meta['featured']; 
-                ?>
-                <div class="bg-surface-container-lowest rounded-3xl p-8 border border-outline-variant/30 shadow-sm hover:shadow-[0_15px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col group relative overflow-hidden <?= $isFeatured ? 'md:col-span-2 justify-between' : '' ?>">
-                    
-                    <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-                    
-                    <?php if($isFeatured): ?>
-                        <div class="absolute right-0 top-0 w-64 h-64 bg-primary/5 rounded-bl-[100px] -z-10 group-hover:scale-110 transition-transform duration-700"></div>
-                    <?php endif; ?>
 
-                    <div class="relative z-10 flex flex-col h-full">
-                        <div class="flex justify-between items-start mb-6">
-                            <div class="<?= $isFeatured ? 'w-16 h-16 bg-surface-container-high' : 'w-14 h-14 bg-surface-container-low' ?> rounded-2xl flex items-center justify-center group-hover:bg-primary-container transition-colors duration-300 shadow-sm">
-                                <span class="material-symbols-outlined text-primary group-hover:text-on-primary-container text-[28px] <?= $isFeatured ? 'fill-icon' : '' ?> transition-colors duration-300"><?= htmlspecialchars($meta['icon']) ?></span>
+        <!-- Carousel Track Wrapper -->
+        <div class="relative w-full overflow-hidden" id="premium-services-wrapper">
+            <div class="premium-carousel-track" id="services-grid">
+                <?php 
+                $serviceIndex = 1;
+                foreach($processedServices as $key => $item): 
+                    $serviceData = $item['data'];
+                    $meta = $item['meta'];
+                    $category = $meta['category'];
+                ?>
+                <div class="premium-card service-card group" data-category="<?= htmlspecialchars($category) ?>">
+                    <?php $isReversed = ($serviceIndex % 2 === 0); ?>
+                    <div class="flex flex-col lg:flex-row <?= $isReversed ? 'lg:flex-row-reverse' : '' ?> gap-8 md:gap-10 h-full">
+                        
+                        <!-- Featured Cinematic Image -->
+                        <div class="w-full lg:w-2/5 relative rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] h-64 lg:h-auto premium-img-wrap cursor-pointer group-hover:-translate-y-1 transition-transform duration-500">
+                            <img src="<?= htmlspecialchars($base_url) ?>/<?= htmlspecialchars($meta['image']) ?>" alt="<?= htmlspecialchars($serviceData['label']) ?>" class="absolute inset-0 w-full h-full object-cover premium-img" />
+                            <div class="absolute bottom-4 <?= $isReversed ? 'right-4' : 'left-4' ?> glass-panel rounded-xl p-3 flex items-center gap-2">
+                                <span class="icon-line text-primary">schedule</span>
+                                <span class="text-sm font-semibold text-on-background"><?= htmlspecialchars($serviceData['duration']) ?></span>
                             </div>
-                            <span class="px-3 py-1 bg-surface rounded-full text-xs font-medium text-on-surface-variant flex items-center gap-1 border border-outline-variant/20">
-                                <span class="material-symbols-outlined text-[14px]">schedule</span>
-                                <?= htmlspecialchars($serviceData['duration']) ?>
-                            </span>
                         </div>
                         
-                        <h3 class="font-headline-md text-headline-md text-on-background mb-3 font-semibold group-hover:text-primary transition-colors"><?= htmlspecialchars($serviceData['label']) ?></h3>
-                        <p class="font-body-md text-body-md text-on-surface-variant flex-grow <?= $isFeatured ? 'max-w-md' : '' ?> leading-relaxed"><?= htmlspecialchars($meta['desc']) ?></p>
-                        
-                        <!-- Fixed Dynamic Link to Dedicated Service Page -->
-                        <div class="mt-8 flex items-center">
-                            <a href="<?= htmlspecialchars($base_url) ?>/services/<?= urlencode($key) ?>.php" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-surface-container-high text-primary font-label-md text-sm hover:bg-primary hover:text-white transition-all duration-300 w-full md:w-auto">
-                                Learn more 
-                                <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
+                        <!-- Sequential Animated Content -->
+                        <div class="w-full lg:w-3/5 flex flex-col justify-center premium-text-wrap p-lg md:p-12">
+                            <span class="anim-1 px-4 py-1.5 bg-primary/10 text-primary rounded-full font-mono text-xs font-bold uppercase tracking-widest mb-4 border border-primary/20 shadow-sm backdrop-blur-md w-fit">
+                                <?= htmlspecialchars($category) ?>
+                            </span>
+                            
+                            <h3 class="anim-2 font-headline-xl text-3xl md:text-5xl text-on-background mb-4 font-bold tracking-tight">
+                                <?= htmlspecialchars($serviceData['label']) ?>
+                            </h3>
+                            
+                            <p class="anim-3 font-body-md text-on-surface-variant text-base md:text-lg max-w-2xl leading-relaxed mb-8">
+                                <?= htmlspecialchars($meta['desc']) ?>
+                            </p>
+                            
+                            <a href="<?= htmlspecialchars($base_url) ?>/services/<?= urlencode($key) ?>.php" class="anim-4 premium-cta-btn inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-primary text-white font-label-md text-base font-semibold shadow-[0_8px_20px_rgba(0,71,141,0.2)] w-fit">
+                                Explore Treatment 
+                                <span class="icon-line text-[20px] cta-icon transition-transform duration-300">arrow_forward</span>
                             </a>
                         </div>
+                        
                     </div>
                 </div>
-            <?php endforeach; ?>
+                <?php 
+                $serviceIndex++;
+                endforeach; ?>
+            </div>
         </div>
+
+        <!-- Progress Navigation & Controls -->
+        <div class="flex items-center justify-between max-w-2xl mx-auto mt-12 md:mt-20 px-4 relative z-20">
+            <button type="button" id="services-prev" class="w-12 h-12 rounded-full border border-outline-variant/40 flex items-center justify-center text-on-background hover:bg-surface-container-lowest hover:shadow-md hover:border-primary transition-all duration-300 active:scale-95 group bg-surface/50 backdrop-blur-sm" aria-label="Previous service">
+                <span class="icon-line group-hover:-translate-x-1 transition-transform">arrow_back</span>
+            </button>
+            
+            <div class="flex items-center gap-4 text-sm font-bold text-primary tracking-widest font-label-md">
+                <span id="services-prog-current" class="w-5 text-right">01</span>
+                <div class="h-[3px] bg-outline-variant/30 rounded-full w-32 md:w-64 overflow-hidden relative">
+                    <div id="services-prog-fill" class="absolute top-0 left-0 h-full bg-primary transition-all duration-700 ease-[cubic-bezier(.22,.61,.36,1)]" style="width: 25%;"></div>
+                </div>
+                <span id="services-prog-total" class="w-5 text-left">0<?= count($processedServices) ?></span>
+            </div>
+
+            <button type="button" id="services-next" class="w-12 h-12 rounded-full border border-outline-variant/40 flex items-center justify-center text-on-background hover:bg-surface-container-lowest hover:shadow-md hover:border-primary transition-all duration-300 active:scale-95 group bg-surface/50 backdrop-blur-sm" aria-label="Next service">
+                <span class="icon-line group-hover:translate-x-1 transition-transform">arrow_forward</span>
+            </button>
+        </div>
+        
     </div>
 </section>
 
 <!-- Why Choose Us Section -->
 <section class="py-xl bg-surface-container-low fade-in-up" id="why-choose-us">
     <div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop">
-        <div class="text-center max-w-2xl mx-auto mb-12">
-            <span class="inline-block py-1 px-3 rounded-xl bg-primary-container/20 text-primary font-label-sm text-label-sm mb-4 border border-primary/10">Clinic Advantages</span>
-            <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-4 tracking-tight">The DentalCare Pro Difference</h2>
-            <p class="font-body-md text-body-md text-on-surface-variant">We combine cutting-edge technology with a patient-first approach to redefine your dental experience.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-xl items-start">
+            <div class="why-choose-sticky-heading text-center lg:text-left mb-4 lg:mb-0">
+                <span class="section-kicker">Clinic Advantages</span>
+                <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-4 tracking-tight">The DentalCare Pro Difference</h2>
+                <p class="font-body-md text-body-md text-on-surface-variant max-w-md mx-auto lg:mx-0">We combine cutting-edge technology with a patient-first approach to redefine your dental experience.</p>
+            </div>
+
+        <div class="flex flex-col divide-y divide-outline-variant/20" id="why-choose-grid">
+            <div class="flex items-start gap-5 py-6 md:py-7 group">
+                <span class="font-mono text-xs text-primary/50 pt-1.5 w-6 flex-shrink-0">01</span>
+                <span class="icon-line text-primary text-[26px] pt-0.5 flex-shrink-0 group-hover:translate-x-1 transition-transform duration-300">psychology</span>
+                <div>
+                    <h4 class="font-headline-md text-lg font-semibold text-on-background mb-1">AI-Assisted Diagnosis</h4>
+                    <p class="text-sm text-on-surface-variant">Precision insights for accurate and early treatment planning.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-5 py-6 md:py-7 md:pl-8 group">
+                <span class="font-mono text-xs text-primary/50 pt-1.5 w-6 flex-shrink-0">02</span>
+                <span class="icon-line text-primary text-[26px] pt-0.5 flex-shrink-0 group-hover:translate-x-1 transition-transform duration-300">spa</span>
+                <div>
+                    <h4 class="font-headline-md text-lg font-semibold text-on-background mb-1">Comfortable Experience</h4>
+                    <p class="text-sm text-on-surface-variant">A spa-like environment designed to eliminate dental anxiety.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-5 py-6 md:py-7 md:pl-16 group">
+                <span class="font-mono text-xs text-primary/50 pt-1.5 w-6 flex-shrink-0">03</span>
+                <span class="icon-line text-primary text-[26px] pt-0.5 flex-shrink-0 group-hover:translate-x-1 transition-transform duration-300">event_available</span>
+                <div>
+                    <h4 class="font-headline-md text-lg font-semibold text-on-background mb-1">Online Appointment</h4>
+                    <p class="text-sm text-on-surface-variant">Seamlessly book and manage your visits 24/7 online.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-5 py-6 md:py-7 md:pl-24 group">
+                <span class="font-mono text-xs text-primary/50 pt-1.5 w-6 flex-shrink-0">04</span>
+                <span class="icon-line text-primary text-[26px] pt-0.5 flex-shrink-0 group-hover:translate-x-1 transition-transform duration-300">sanitizer</span>
+                <div>
+                    <h4 class="font-headline-md text-lg font-semibold text-on-background mb-1">Sterilized Environment</h4>
+                    <p class="text-sm text-on-surface-variant">Strict adherence to the highest international hygiene standards.</p>
+                </div>
+            </div>
         </div>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Feature 1 -->
-            <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/20 hover:border-primary/40 hover:shadow-md transition-all group">
-                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                    <span class="material-symbols-outlined">psychology</span>
-                </div>
-                <h4 class="font-bold text-on-background mb-2">AI-Assisted Diagnosis</h4>
-                <p class="text-sm text-on-surface-variant">Precision insights for accurate and early treatment planning.</p>
-            </div>
-            <!-- Feature 2 -->
-            <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/20 hover:border-primary/40 hover:shadow-md transition-all group">
-                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                    <span class="material-symbols-outlined">spa</span>
-                </div>
-                <h4 class="font-bold text-on-background mb-2">Comfortable Experience</h4>
-                <p class="text-sm text-on-surface-variant">A spa-like environment designed to eliminate dental anxiety.</p>
-            </div>
-            <!-- Feature 3 -->
-            <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/20 hover:border-primary/40 hover:shadow-md transition-all group">
-                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                    <span class="material-symbols-outlined">event_available</span>
-                </div>
-                <h4 class="font-bold text-on-background mb-2">Online Appointment</h4>
-                <p class="text-sm text-on-surface-variant">Seamlessly book and manage your visits 24/7 online.</p>
-            </div>
-            <!-- Feature 4 -->
-            <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/20 hover:border-primary/40 hover:shadow-md transition-all group">
-                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                    <span class="material-symbols-outlined">sanitizer</span>
-                </div>
-                <h4 class="font-bold text-on-background mb-2">Sterilized Environment</h4>
-                <p class="text-sm text-on-surface-variant">Strict adherence to the highest international hygiene standards.</p>
-            </div>
         </div>
     </div>
 </section>
@@ -466,49 +783,55 @@ $canonicalServices = getAllServices();
 <!-- Dentist Section -->
 <section class="py-xl bg-surface-container-lowest fade-in-up" id="dentists">
     <div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop">
-        <!-- Enhanced Featured Dentist -->
+        <div class="text-center max-w-2xl mx-auto mb-12">
+            <span class="section-kicker">Our Team</span>
+            <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-4 tracking-tight">Meet Your Dental Specialist</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant">Dedicated to providing you with the highest standard of personalized and compassionate dental care.</p>
+        </div>
         <div class="flex flex-col lg:flex-row bg-surface-container-lowest rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-outline-variant/20 group relative">
             <div class="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none"></div>
 
             <div class="lg:w-2/5 relative h-96 lg:h-auto overflow-hidden">
                 <img class="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-1000" alt="Dr. Maria Santos, Lead Practitioner at DentalCare Pro" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBo_w78N2XULoEbVHqmSIePlmFD1bSVx8i_Rote2fYoyu5p0-5lFMoJmKOR-wq1Jel3bUzyUZFF_GGderejoknzrdxrqX6UNt5RCV225IaGT5t4CcLB6efdfW8jbpk_9-_bMONSju3RQ9YVk3rAq6VsupaIIDIR4--B9rlv9Cw-wdFfIH_DEhFndOTjWwnxIaIFxbuKCV-IROtQmUqfd8yMj6lR3-Vw3R6cHtXCmp9mrDr4zD8EBIaQX8BkXakX-H0u4en4ewDp1X4"/>
                 <div class="absolute bottom-4 left-4 right-4 glass-panel rounded-xl p-3 flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-primary">verified</span>
+                    <span class="icon-line text-primary">verified</span>
                     <span class="text-sm font-semibold text-on-background">Board Certified</span>
                 </div>
             </div>
             <div class="lg:w-3/5 p-lg md:p-12 flex flex-col justify-center relative z-10">
                 <div class="flex flex-wrap items-center gap-3 mb-4">
                     <span class="px-4 py-1.5 bg-primary-container/30 text-primary font-label-sm text-sm rounded-full font-semibold border border-primary/10">Lead Practitioner</span>
-                    <span class="flex items-center gap-1 text-xs font-semibold text-on-surface-variant bg-surface px-3 py-1.5 rounded-full border border-outline-variant/20"><span class="material-symbols-outlined text-[14px]">school</span> DDS, MS</span>
-                    <span class="flex items-center gap-1 text-xs font-semibold text-on-surface-variant bg-surface px-3 py-1.5 rounded-full border border-outline-variant/20"><span class="material-symbols-outlined text-[14px]">military_tech</span> 15+ Years Exp.</span>
+                    <span class="flex items-center gap-1 text-xs font-semibold text-on-surface-variant bg-surface px-3 py-1.5 rounded-full border border-outline-variant/20"><span class="icon-line text-[14px]">school</span> DDS, MS</span>
+                    <span class="flex items-center gap-1 text-xs font-semibold text-on-surface-variant bg-surface px-3 py-1.5 rounded-full border border-outline-variant/20"><span class="icon-line text-[14px]">military_tech</span> 15+ Years Exp.</span>
                 </div>
                 
                 <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-2 tracking-tight">Dr. Maria Santos</h2>
                 <p class="font-label-md text-label-md text-primary mb-6">Restorative & Cosmetic Dentistry</p>
                 
-                <p class="text-lg font-medium text-on-background mb-4">"My goal is to give you a smile you're proud to share, in an environment where you feel completely at ease."</p>
+                <div class="relative mb-6 pl-8">
+                    <span class="absolute -top-4 left-0 font-display text-7xl leading-none text-primary/20 select-none" aria-hidden="true">&ldquo;</span>
+                    <p class="font-display italic text-xl md:text-2xl text-on-background relative z-10 leading-snug">My goal is to give you a smile you're proud to share, in an environment where you feel completely at ease.</p>
+                </div>
 
                 <p class="font-body-md text-body-md text-on-surface-variant mb-8 leading-relaxed">
                     Dr. Santos brings over 15 years of dedicated experience in advanced restorative procedures. Her philosophy centers on minimally invasive techniques and patient education, ensuring every individual understands their treatment plan completely. Her gentle approach has made her a favorite among patients with dental anxiety.
                 </p>
 
-                <!-- Clinic Values Grid -->
-                <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="grid grid-cols-2 gap-4 mb-8" id="dentist-values-grid">
                     <div class="flex items-start gap-2">
-                        <span class="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
+                        <span class="icon-line text-green-500 text-[20px]">check_circle</span>
                         <span class="text-sm text-on-surface-variant font-medium">Minimally Invasive</span>
                     </div>
                     <div class="flex items-start gap-2">
-                        <span class="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
+                        <span class="icon-line text-green-500 text-[20px]">check_circle</span>
                         <span class="text-sm text-on-surface-variant font-medium">Anxiety-Free Care</span>
                     </div>
                     <div class="flex items-start gap-2">
-                        <span class="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
+                        <span class="icon-line text-green-500 text-[20px]">check_circle</span>
                         <span class="text-sm text-on-surface-variant font-medium">Patient Education</span>
                     </div>
                     <div class="flex items-start gap-2">
-                        <span class="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
+                        <span class="icon-line text-green-500 text-[20px]">check_circle</span>
                         <span class="text-sm text-on-surface-variant font-medium">Advanced Aesthetics</span>
                     </div>
                 </div>
@@ -528,19 +851,18 @@ $canonicalServices = getAllServices();
 <section class="py-xl bg-surface-container-lowest fade-in-up" id="reviews">
     <div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop">
         <div class="text-center max-w-2xl mx-auto mb-12">
-            <span class="inline-block py-1 px-3 rounded-xl bg-primary-container/20 text-primary font-label-sm text-label-sm mb-4 border border-primary/10">Patient Stories</span>
+            <span class="section-kicker">Patient Stories</span>
             
-            <!-- Google Reviews Summary Header -->
             <div class="flex flex-col items-center justify-center gap-2 mb-6">
                 <div class="flex items-center gap-1">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" class="w-6 h-6 mr-2"/>
-                    <span class="text-xl font-bold dynamic-rating">4.9</span>
-                    <div class="flex gap-0.5 mx-1">
-                        <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
-                        <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
-                        <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
-                        <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
-                        <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
+                    <span class="text-xl font-bold dynamic-rating font-mono">4.9</span>
+                    <div class="flex gap-0.5 mx-1 font-mono">
+                        <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
+                        <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
+                        <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
+                        <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
+                        <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
                     </div>
                 </div>
                 <p class="text-sm text-on-surface-variant">Based on hundreds of satisfied patients</p>
@@ -550,31 +872,28 @@ $canonicalServices = getAllServices();
             <p class="font-body-md text-body-md text-on-surface-variant">Real experiences from real patients who trusted us with their smiles.</p>
         </div>
         
-        <!-- Fallback Label -->
         <div id="fallback-label-container" class="hidden text-center mb-8">
             <span class="inline-block py-2 px-4 rounded-xl bg-surface-container-high text-primary font-label-sm text-sm font-medium border border-primary/20 shadow-sm">Sample reviews — be the first to share your experience!</span>
         </div>
         
-        <!-- Live Reviews Container -->
         <div id="testimonials-grid" class="grid grid-cols-1 md:grid-cols-3 gap-gutter"></div>
 
-        <!-- Fallback Static Reviews (Visible initially, hidden by JS if live reviews exist) -->
         <div id="fallback-testimonials" class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
             <div class="testimonial-card bg-surface rounded-3xl p-8 border border-outline-variant/30 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-4 relative overflow-hidden group">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -z-0 group-hover:scale-125 transition-transform duration-500"></div>
-                <div class="flex gap-1 relative z-10">
-                    <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
+                <div class="flex gap-1 relative z-10 font-mono">
+                    <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
                 </div>
                 <p class="font-body-md text-body-md text-on-surface-variant italic flex-grow relative z-10 leading-relaxed">"I've always dreaded the dentist, but Dr. Santos completely changed that. The clinic feels calming, the team is incredibly kind, and my teeth have never looked better. I actually look forward to my cleanings now!"</p>
                 <div class="flex items-center gap-3 pt-4 border-t border-outline-variant/20 relative z-10">
                     <div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">AC</div>
                     <div>
                         <p class="font-label-md text-label-md text-on-surface font-semibold">Andrea Cruz</p>
-                        <p class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-green-600">verified</span> Verified Patient · Teeth Whitening</p>
+                        <p class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1"><span class="icon-line text-[14px] text-green-600">verified</span> Verified Patient · Teeth Whitening</p>
                     </div>
                 </div>
             </div>
@@ -582,65 +901,63 @@ $canonicalServices = getAllServices();
             <div class="testimonial-card bg-primary rounded-3xl p-8 shadow-[0_15px_30px_rgba(0,71,141,0.25)] hover:shadow-[0_20px_40px_rgba(0,71,141,0.3)] hover:-translate-y-1 transition-all duration-300 flex flex-col gap-4 relative overflow-hidden">
                 <div class="absolute bottom-0 left-0 w-40 h-40 bg-white/5 rounded-tr-full"></div>
                 <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-full"></div>
-                <div class="flex gap-1 relative z-10">
-                    <span class="material-symbols-outlined text-yellow-300 text-[20px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-300 text-[20px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-300 text-[20px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-300 text-[20px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-300 text-[20px] fill-icon">star</span>
+                <div class="flex gap-1 relative z-10 font-mono">
+                    <span class="icon-line text-yellow-300 text-[20px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-300 text-[20px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-300 text-[20px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-300 text-[20px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-300 text-[20px] fill-icon">star</span>
                 </div>
                 <p class="font-body-md text-body-md text-on-primary italic flex-grow relative z-10 leading-relaxed">"The orthodontic treatment here is world-class. The team monitored my progress every step of the way and answered all my questions patiently. My alignment is perfect and the whole experience was smooth from start to finish."</p>
                 <div class="flex items-center gap-3 pt-4 border-t border-white/20 relative z-10">
                     <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-on-primary font-bold text-sm flex-shrink-0">MR</div>
                     <div>
                         <p class="font-label-md text-label-md text-on-primary font-semibold">Marco Reyes</p>
-                        <p class="font-label-sm text-label-sm text-on-primary/80 flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-white">verified</span> Verified Patient · Orthodontics</p>
+                        <p class="font-label-sm text-label-sm text-on-primary/80 flex items-center gap-1"><span class="icon-line text-[14px] text-white">verified</span> Verified Patient · Orthodontics</p>
                     </div>
                 </div>
             </div>
             
             <div class="testimonial-card bg-surface rounded-3xl p-8 border border-outline-variant/30 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-4 relative overflow-hidden group">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -z-0 group-hover:scale-125 transition-transform duration-500"></div>
-                <div class="flex gap-1 relative z-10">
-                    <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-500 text-[20px] fill-icon">star</span>
+                <div class="flex gap-1 relative z-10 font-mono">
+                    <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-500 text-[20px] fill-icon">star</span>
                 </div>
                 <p class="font-body-md text-body-md text-on-surface-variant italic flex-grow relative z-10 leading-relaxed">"I needed an emergency extraction and they fit me in the same morning. The procedure was painless and the post-care instructions were clear and thorough. Truly exceptional service when I needed it most."</p>
                 <div class="flex items-center gap-3 pt-4 border-t border-outline-variant/20 relative z-10">
                     <div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">SL</div>
                     <div>
                         <p class="font-label-md text-label-md text-on-surface font-semibold">Sofia Lim</p>
-                        <p class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-green-600">verified</span> Verified Patient · Emergency</p>
+                        <p class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1"><span class="icon-line text-[14px] text-green-600">verified</span> Verified Patient · Emergency</p>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- CTA Links -->
         <div class="mt-12 flex flex-col items-center justify-center gap-4">
             <a href="<?= htmlspecialchars($base_url) ?>/reviews.php" class="h-12 px-8 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(0,71,141,0.25)] transition-all duration-300 flex items-center justify-center shadow-sm">
                 See All Reviews
             </a>
-            <a href="<?= htmlspecialchars($base_url) ?>/api/feedback/submit-feedback.php" class="text-primary hover:text-on-primary-fixed-variant hover:underline font-label-sm text-sm font-medium transition-colors">
+            <a href="<?= htmlspecialchars($base_url) ?>/reviews.php" class="text-primary hover:text-on-primary-fixed-variant hover:underline font-label-sm text-sm font-medium transition-colors">
                 Share Your Experience
             </a>
         </div>
 
-        <!-- Scroll-triggered Stats block (gently requiring scroll interaction) -->
         <div class="mt-12 bg-surface-container rounded-3xl p-8 grid grid-cols-1 md:grid-cols-3 gap-8 border border-outline-variant/20 shadow-sm relative overflow-hidden">
             <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/40 via-transparent to-transparent pointer-events-none"></div>
             
             <div class="flex flex-col items-center text-center gap-2 relative z-10">
-                <span class="font-headline-xl text-headline-xl text-primary font-bold dynamic-rating">4.9</span>
-                <div class="flex gap-1">
-                    <span class="material-symbols-outlined text-yellow-500 text-[16px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-500 text-[16px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-500 text-[16px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-500 text-[16px] fill-icon">star</span>
-                    <span class="material-symbols-outlined text-yellow-500 text-[16px] fill-icon">star</span>
+                <span class="font-headline-xl text-headline-xl text-primary font-bold dynamic-rating font-mono">4.9</span>
+                <div class="flex gap-1 font-mono">
+                    <span class="icon-line text-yellow-500 text-[16px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-500 text-[16px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-500 text-[16px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-500 text-[16px] fill-icon">star</span>
+                    <span class="icon-line text-yellow-500 text-[16px] fill-icon">star</span>
                 </div>
                 <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Average Rating</p>
             </div>
@@ -654,14 +971,13 @@ $canonicalServices = getAllServices();
             </div>
         </div>
         
-        <!-- Clinic Achievements Banner -->
         <div class="mt-8 flex flex-wrap justify-center gap-4">
             <div class="bg-surface px-4 py-2 rounded-full border border-outline-variant/20 text-sm font-medium flex items-center gap-2 text-on-surface-variant shadow-sm hover:shadow-md transition-shadow">
-                <span class="material-symbols-outlined text-primary text-[18px]">trophy</span>
+                <span class="icon-line text-primary text-[18px]">trophy</span>
                 Award Winning Care
             </div>
             <div class="bg-surface px-4 py-2 rounded-full border border-outline-variant/20 text-sm font-medium flex items-center gap-2 text-on-surface-variant shadow-sm hover:shadow-md transition-shadow">
-                <span class="material-symbols-outlined text-primary text-[18px]">favorite</span>
+                <span class="icon-line text-primary text-[18px]">favorite</span>
                 10,000+ Successful Treatments
             </div>
         </div>
@@ -673,35 +989,36 @@ $canonicalServices = getAllServices();
 <!-- FAQ & Contact Section -->
 <section class="py-xl bg-background fade-in-up scroll-mt-24" id="faq">
     <div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+            <span class="section-kicker">FAQ &amp; Contact</span>
+        </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl">
-            <!-- FAQ Side -->
             <div>
                 <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-4 tracking-tight">Frequently Asked Questions</h2>
                 
-                <!-- Existing FAQs -->
                 <div class="space-y-4">
                     <div class="border border-outline-variant/30 rounded-2xl bg-surface-container-lowest overflow-hidden hover:border-primary/40 shadow-sm transition-all duration-300">
-                        <button class="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface-container-low transition-colors duration-300 group" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.icon').textContent = this.nextElementSibling.classList.contains('hidden') ? 'add' : 'remove'; this.querySelector('.icon').classList.toggle('rotate-180');">
+                        <button class="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface-container-low transition-colors duration-300 group" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.faq-toggle-icon').classList.toggle('is-open');">
                             <span class="font-headline-md text-base font-semibold text-on-background group-hover:text-primary transition-colors">Do you accept my insurance?</span>
-                            <span class="material-symbols-outlined icon text-on-surface-variant transition-transform duration-300 bg-surface w-8 h-8 flex items-center justify-center rounded-full group-hover:bg-primary-container group-hover:text-primary">add</span>
+                            <span class="faq-toggle-icon-wrap text-on-surface-variant bg-surface w-8 h-8 flex items-center justify-center rounded-full flex-shrink-0 group-hover:bg-primary-container group-hover:text-primary transition-colors duration-300"><span class="faq-toggle-icon"></span></span>
                         </button>
                         <div class="hidden px-6 pb-6 pt-1 text-on-surface-variant font-body-md text-body-md leading-relaxed">
                             We accept most major PPO insurance plans. Our front desk team will happily verify your benefits before your appointment to ensure transparent pricing.
                         </div>
                     </div>
                     <div class="border border-outline-variant/30 rounded-2xl bg-surface-container-lowest overflow-hidden hover:border-primary/40 shadow-sm transition-all duration-300">
-                        <button class="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface-container-low transition-colors duration-300 group" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.icon').textContent = this.nextElementSibling.classList.contains('hidden') ? 'add' : 'remove'; this.querySelector('.icon').classList.toggle('rotate-180');">
+                        <button class="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface-container-low transition-colors duration-300 group" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.faq-toggle-icon').classList.toggle('is-open');">
                             <span class="font-headline-md text-base font-semibold text-on-background group-hover:text-primary transition-colors">What should I expect during my first visit?</span>
-                            <span class="material-symbols-outlined icon text-on-surface-variant transition-transform duration-300 bg-surface w-8 h-8 flex items-center justify-center rounded-full group-hover:bg-primary-container group-hover:text-primary">add</span>
+                            <span class="faq-toggle-icon-wrap text-on-surface-variant bg-surface w-8 h-8 flex items-center justify-center rounded-full flex-shrink-0 group-hover:bg-primary-container group-hover:text-primary transition-colors duration-300"><span class="faq-toggle-icon"></span></span>
                         </button>
                         <div class="hidden px-6 pb-6 pt-1 text-on-surface-variant font-body-md text-body-md leading-relaxed">
                             Your initial visit includes a comprehensive exam, 3D digital x-rays, and a consultation with the dentist to discuss your oral health goals and establish a personalized care plan.
                         </div>
                     </div>
                     <div class="border border-outline-variant/30 rounded-2xl bg-surface-container-lowest overflow-hidden hover:border-primary/40 shadow-sm transition-all duration-300">
-                        <button class="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface-container-low transition-colors duration-300 group" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.icon').textContent = this.nextElementSibling.classList.contains('hidden') ? 'add' : 'remove'; this.querySelector('.icon').classList.toggle('rotate-180');">
+                        <button class="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface-container-low transition-colors duration-300 group" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.faq-toggle-icon').classList.toggle('is-open');">
                             <span class="font-headline-md text-base font-semibold text-on-background group-hover:text-primary transition-colors">Do you offer emergency dental services?</span>
-                            <span class="material-symbols-outlined icon text-on-surface-variant transition-transform duration-300 bg-surface w-8 h-8 flex items-center justify-center rounded-full group-hover:bg-primary-container group-hover:text-primary">add</span>
+                            <span class="faq-toggle-icon-wrap text-on-surface-variant bg-surface w-8 h-8 flex items-center justify-center rounded-full flex-shrink-0 group-hover:bg-primary-container group-hover:text-primary transition-colors duration-300"><span class="faq-toggle-icon"></span></span>
                         </button>
                         <div class="hidden px-6 pb-6 pt-1 text-on-surface-variant font-body-md text-body-md leading-relaxed">
                             Yes, we reserve slots daily for dental emergencies. If you are experiencing severe pain or trauma, please call our clinic immediately for priority scheduling.
@@ -709,16 +1026,15 @@ $canonicalServices = getAllServices();
                     </div>
                 </div>
 
-                <!-- "Still have questions?" section -->
                 <div class="mt-8 p-6 bg-surface-container rounded-2xl border border-primary/10 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div>
                         <h4 class="font-semibold text-on-background mb-1">Still have questions?</h4>
                         <p class="text-sm text-on-surface-variant">Our AI assistant or team can help.</p>
                     </div>
                     <div class="flex gap-2 w-full sm:w-auto">
-                        <button class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg text-sm font-medium hover:bg-primary hover:text-white transition-colors">
-                            <span class="material-symbols-outlined text-[18px]">smart_toy</span> Chat AI
-                        </button>
+                        <a href="<?= htmlspecialchars($base_url) ?>/auth/login.php?mode=register" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg text-sm font-medium hover:bg-primary hover:text-white transition-colors">
+                            <span class="icon-line text-[18px]">smart_toy</span> Chat AI
+                        </a>
                         <a href="#contact" class="flex-1 sm:flex-none flex items-center justify-center px-4 py-2 bg-white border border-outline-variant/30 text-on-surface rounded-lg text-sm font-medium hover:bg-surface transition-colors">
                             Contact Us
                         </a>
@@ -726,7 +1042,6 @@ $canonicalServices = getAllServices();
                 </div>
             </div>
 
-            <!-- Contact Side -->
             <div id="contact" style="transition-delay: 0.2s;">
                 <div class="bg-surface-container-lowest rounded-3xl p-8 lg:p-10 border border-outline-variant/20 h-full flex flex-col shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.08)] transition-shadow duration-300 relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-64 h-64 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary/5 to-transparent pointer-events-none"></div>
@@ -736,17 +1051,17 @@ $canonicalServices = getAllServices();
                     <div class="space-y-8 relative z-10 flex-grow">
                         <div class="flex items-start gap-5 group">
                             <div class="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:shadow-lg group-hover:-translate-y-1 transition-all duration-300">
-                                <span class="material-symbols-outlined text-primary group-hover:text-white text-[28px] transition-colors">location_on</span>
+                                <span class="icon-line text-primary group-hover:text-white text-[28px] transition-colors">location_on</span>
                             </div>
                             <div>
                                 <h4 class="font-label-md text-base text-on-surface font-semibold mb-1">Location</h4>
                                 <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">742 Willowbrook Lane, Suite 200</p>
-                                <p class="text-xs text-on-surface-variant/80 mt-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">local_parking</span> Free parking available at the rear.</p>
+                                <p class="text-xs text-on-surface-variant/80 mt-1 flex items-center gap-1"><span class="icon-line text-[14px]">local_parking</span> Free parking available at the rear.</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-5 group">
                             <div class="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:shadow-lg group-hover:-translate-y-1 transition-all duration-300">
-                                <span class="material-symbols-outlined text-primary group-hover:text-white text-[28px] transition-colors">schedule</span>
+                                <span class="icon-line text-primary group-hover:text-white text-[28px] transition-colors">schedule</span>
                             </div>
                             <div class="w-full">
                                 <h4 class="font-label-md text-base text-on-surface font-semibold mb-3">Operating Hours</h4>
@@ -762,25 +1077,25 @@ $canonicalServices = getAllServices();
                         </div>
                         <div class="flex items-start gap-5 group">
                             <div class="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:shadow-lg group-hover:-translate-y-1 transition-all duration-300">
-                                <span class="material-symbols-outlined text-primary group-hover:text-white text-[28px] transition-colors">call</span>
+                                <span class="icon-line text-primary group-hover:text-white text-[28px] transition-colors">call</span>
                             </div>
                             <div class="w-full">
                                 <h4 class="font-label-md text-base text-on-surface font-semibold mb-1">Contact</h4>
                                 <p class="font-body-md text-body-md text-on-surface-variant">555-0148</p>
                                 <p class="font-body-md text-body-md text-on-surface-variant mb-2">clinic@dentalcarepro.example</p>
                                 <div class="flex items-center gap-3 mt-3 pt-3 border-t border-outline-variant/10">
-                                    <span class="text-xs font-semibold px-2 py-1 bg-error/10 text-error rounded flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">emergency</span> 24/7 Emergency</span>
+                                    <span class="text-xs font-semibold px-2 py-1 bg-error/10 text-error rounded flex items-center gap-1"><span class="icon-line text-[14px]">emergency</span> 24/7 Emergency</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Embedded Map Placeholder -->
                     <div class="mt-8 h-40 w-full bg-surface-container rounded-2xl overflow-hidden relative group cursor-pointer border border-outline-variant/20">
-                        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Map View" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 filter sepia-[.2] hue-rotate-[190deg] saturate-50"/>
+                        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Map View" class="w-full h-full object-cover grayscale contrast-125 opacity-90 group-hover:scale-105 transition-all duration-500"/>
+                        <div class="absolute inset-0 bg-primary mix-blend-color opacity-70 group-hover:opacity-55 transition-opacity duration-500 pointer-events-none"></div>
                         <div class="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/0 transition-colors">
                             <div class="bg-white/90 backdrop-blur px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 transform group-hover:-translate-y-1 transition-transform">
-                                <span class="material-symbols-outlined text-primary">directions</span>
+                                <span class="icon-line text-primary">directions</span>
                                 <span class="text-sm font-semibold text-on-background">Get Directions</span>
                             </div>
                         </div>
@@ -797,17 +1112,16 @@ $canonicalServices = getAllServices();
 <section class="py-xl bg-surface-container-low fade-in-up scroll-mt-24" id="dashboard">
     <div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop">
         <div class="text-center max-w-2xl mx-auto mb-12">
-            <span class="inline-block py-1 px-3 rounded-xl bg-primary-container/20 text-primary font-label-sm text-label-sm mb-4 border border-primary/10">Digital Health</span>
+            <span class="section-kicker">Digital Health</span>
             <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-4 tracking-tight">Patient Dashboard</h2>
             <p class="font-body-md text-body-md text-on-surface-variant">Manage your appointments, view dental records, and track your treatment history — all in one secure place.</p>
         </div>
         
-        <!-- Existing Dashboard Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-10">
             <div class="bg-surface-container-lowest rounded-3xl p-6 border border-outline-variant/30 shadow-sm flex flex-col gap-4 hover:shadow-md transition-shadow">
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-xl bg-surface flex items-center justify-center border border-outline-variant/20">
-                        <span class="material-symbols-outlined text-primary fill-icon text-[24px]">calendar_month</span>
+                        <span class="icon-line text-primary fill-icon text-[24px]">calendar_month</span>
                     </div>
                     <h3 class="font-headline-md text-lg text-on-background font-semibold">Upcoming</h3>
                 </div>
@@ -817,27 +1131,28 @@ $canonicalServices = getAllServices();
             <div class="bg-surface-container-lowest rounded-3xl p-6 border border-outline-variant/30 shadow-sm flex flex-col gap-4 hover:shadow-md transition-shadow">
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-xl bg-surface flex items-center justify-center border border-outline-variant/20">
-                        <span class="material-symbols-outlined text-primary fill-icon text-[24px]">history</span>
+                        <span class="icon-line text-primary fill-icon text-[24px]">history</span>
                     </div>
                     <h3 class="font-headline-md text-lg text-on-background font-semibold">Past Visits</h3>
                 </div>
-                <p class="font-body-md text-body-md text-on-surface-variant">Your visit history will appear here once you've had your first appointment.</p>
+                <p class="font-body-md text-body-md text-on-surface-variant flex-grow">Your visit history will appear here once you've had your first appointment.</p>
+                <a href="<?= htmlspecialchars($base_url) ?>/auth/login.php?mode=login" class="mt-auto h-12 px-4 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant hover:shadow-[0_4px_15px_rgba(0,71,141,0.2)] transition-all flex items-center justify-center font-medium">Sign In to View</a>
             </div>
             <div class="bg-surface-container-lowest rounded-3xl p-6 border border-outline-variant/30 shadow-sm flex flex-col gap-4 hover:shadow-md transition-shadow">
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-xl bg-surface flex items-center justify-center border border-outline-variant/20">
-                        <span class="material-symbols-outlined text-primary fill-icon text-[24px]">folder_open</span>
+                        <span class="icon-line text-primary fill-icon text-[24px]">folder_open</span>
                     </div>
                     <h3 class="font-headline-md text-lg text-on-background font-semibold">Dental Records</h3>
                 </div>
-                <p class="font-body-md text-body-md text-on-surface-variant">X-rays, treatment notes, and prescriptions will be stored securely here.</p>
+                <p class="font-body-md text-body-md text-on-surface-variant flex-grow">X-rays, treatment notes, and prescriptions will be stored securely here.</p>
+                <a href="<?= htmlspecialchars($base_url) ?>/auth/login.php?mode=login" class="mt-auto h-12 px-4 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:bg-on-primary-fixed-variant hover:shadow-[0_4px_15px_rgba(0,71,141,0.2)] transition-all flex items-center justify-center font-medium">Sign In to View</a>
             </div>
         </div>
 
-        <!-- Existing Dashboard Login Banner -->
         <div class="bg-surface-container rounded-3xl p-8 border border-primary/10 flex flex-col md:flex-row items-center gap-6 text-center md:text-left mb-16 shadow-[0_10px_30px_rgba(0,0,0,0.02)]">
             <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
-                <span class="material-symbols-outlined text-primary fill-icon text-[32px]">account_circle</span>
+                <span class="icon-line text-primary fill-icon text-[32px]">account_circle</span>
             </div>
             <div class="flex-grow">
                 <h3 class="font-headline-md text-xl text-on-background mb-1 font-semibold">Sign In to Access Your Dashboard</h3>
@@ -849,9 +1164,7 @@ $canonicalServices = getAllServices();
             </div>
         </div>
 
-        <!-- Realistic Dashboard Visual Preview -->
         <div class="mt-8 relative mx-auto max-w-5xl rounded-[2rem] border border-outline-variant/30 bg-surface-container-lowest p-2 shadow-[0_20px_60px_rgba(0,0,0,0.08)] overflow-hidden">
-            <!-- Mac window dots -->
             <div class="absolute top-4 left-6 flex gap-2 z-20">
                 <div class="w-3 h-3 rounded-full bg-red-400"></div>
                 <div class="w-3 h-3 rounded-full bg-amber-400"></div>
@@ -859,33 +1172,30 @@ $canonicalServices = getAllServices();
             </div>
             
             <div class="rounded-[1.5rem] bg-background w-full h-[500px] flex overflow-hidden border border-outline-variant/10 relative">
-                <!-- Sidebar -->
                 <div class="w-64 bg-surface-container-lowest border-r border-outline-variant/10 p-6 flex-col gap-6 hidden md:flex pt-14">
                     <div class="flex items-center gap-3 mb-8">
                         <div class="w-10 h-10 rounded-full bg-primary-container text-primary flex items-center justify-center font-bold">JD</div>
                         <div>
                             <p class="font-semibold text-sm">John Doe</p>
-                            <p class="text-xs text-on-surface-variant">Patient Portal</p>
+                            <p class="text-xs text-on-surface-variant">Patient Dashboard</p>
                         </div>
                     </div>
                     <nav class="space-y-2">
-                        <div class="flex items-center gap-3 px-3 py-2 bg-primary/10 text-primary rounded-lg font-medium text-sm"><span class="material-symbols-outlined text-[20px]">home</span> Overview</div>
-                        <div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface rounded-lg font-medium text-sm"><span class="material-symbols-outlined text-[20px]">event</span> Appointments</div>
-                        <div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface rounded-lg font-medium text-sm"><span class="material-symbols-outlined text-[20px]">medical_information</span> Records & X-Rays</div>
-                        <div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface rounded-lg font-medium text-sm"><span class="material-symbols-outlined text-[20px]">prescriptions</span> Prescriptions</div>
+                        <div class="flex items-center gap-3 px-3 py-2 bg-primary/10 text-primary rounded-lg font-medium text-sm"><span class="icon-line text-[20px]">home</span> Overview</div>
+                        <div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface rounded-lg font-medium text-sm"><span class="icon-line text-[20px]">event</span> Appointments</div>
+                        <div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface rounded-lg font-medium text-sm"><span class="icon-line text-[20px]">medical_information</span> Records & X-Rays</div>
+                        <div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface rounded-lg font-medium text-sm"><span class="icon-line text-[20px]">prescriptions</span> Prescriptions</div>
                     </nav>
                 </div>
                 
-                <!-- Main Content Area -->
                 <div class="flex-1 p-6 md:p-10 pt-14 md:pt-10 overflow-y-auto hide-scrollbar bg-background">
                     <h4 class="text-2xl font-bold text-on-background mb-6">Good morning, John</h4>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                        <!-- Upcoming Appt Widget -->
                         <div class="lg:col-span-2 bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant/20 shadow-sm relative overflow-hidden">
                             <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full pointer-events-none"></div>
                             <div class="flex justify-between items-start mb-4">
-                                <h5 class="font-semibold flex items-center gap-2"><span class="material-symbols-outlined text-primary text-[20px]">notification_important</span> Next Appointment</h5>
+                                <h5 class="font-semibold flex items-center gap-2"><span class="icon-line text-primary text-[20px]">notification_important</span> Next Appointment</h5>
                                 <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-medium">Confirmed</span>
                             </div>
                             <div class="flex gap-4 items-center mb-6">
@@ -895,8 +1205,8 @@ $canonicalServices = getAllServices();
                                 </div>
                                 <div>
                                     <p class="font-bold text-on-background text-lg">Routine Checkup & Cleaning</p>
-                                    <p class="text-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">schedule</span> 10:00 AM - 10:45 AM</p>
-                                    <p class="text-sm text-on-surface-variant flex items-center gap-1 mt-1"><span class="material-symbols-outlined text-[16px]">person</span> Dr. Maria Santos</p>
+                                    <p class="text-sm text-on-surface-variant flex items-center gap-1"><span class="icon-line text-[16px]">schedule</span> 10:00 AM - 10:45 AM</p>
+                                    <p class="text-sm text-on-surface-variant flex items-center gap-1 mt-1"><span class="icon-line text-[16px]">person</span> Dr. Maria Santos</p>
                                 </div>
                             </div>
                             <div class="flex gap-3">
@@ -905,13 +1215,12 @@ $canonicalServices = getAllServices();
                             </div>
                         </div>
 
-                        <!-- Timeline/Progress Widget -->
                         <div class="bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant/20 shadow-sm">
                             <h5 class="font-semibold mb-4">Treatment Plan</h5>
                             <div class="space-y-4">
                                 <div class="flex gap-3">
                                     <div class="flex flex-col items-center">
-                                        <div class="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center"><span class="material-symbols-outlined text-[14px]">check</span></div>
+                                        <div class="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center"><span class="icon-line text-[14px]">check</span></div>
                                         <div class="w-0.5 h-6 bg-green-500 my-1"></div>
                                     </div>
                                     <div class="pb-2">
@@ -942,28 +1251,25 @@ $canonicalServices = getAllServices();
                         </div>
                     </div>
                     
-                    <!-- Recent Documents -->
                     <h5 class="font-semibold mb-4">Recent Records</h5>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/20 flex flex-col items-center justify-center text-center gap-2 hover:border-primary/50 cursor-pointer">
-                            <span class="material-symbols-outlined text-primary text-[32px]">radiology</span>
+                            <span class="icon-line text-primary text-[32px]">radiology</span>
                             <span class="text-xs font-medium">Panoramic X-Ray</span>
                         </div>
                         <div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/20 flex flex-col items-center justify-center text-center gap-2 hover:border-primary/50 cursor-pointer">
-                            <span class="material-symbols-outlined text-primary text-[32px]">description</span>
+                            <span class="icon-line text-primary text-[32px]">description</span>
                             <span class="text-xs font-medium">Treatment Plan.pdf</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- AI Chat Widget Overlay (Visual Only) -->
                 <div class="absolute bottom-6 right-6 w-14 h-14 bg-on-background rounded-full shadow-xl flex items-center justify-center cursor-pointer animate-pulse-slow z-30">
-                    <span class="material-symbols-outlined text-white text-[28px]">smart_toy</span>
+                    <span class="icon-line text-white text-[28px]">smart_toy</span>
                     <span class="absolute -top-1 -right-1 w-4 h-4 bg-error rounded-full border-2 border-background"></span>
                 </div>
             </div>
 
-            <!-- Overlay to imply it's a preview -->
             <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent flex items-end justify-center pb-8 z-40 pointer-events-none">
                 <span class="bg-background/80 backdrop-blur px-6 py-2 rounded-full border border-outline-variant/20 text-sm font-medium shadow-sm text-on-surface">Interactive Preview</span>
             </div>
@@ -976,11 +1282,10 @@ $canonicalServices = getAllServices();
     <div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl items-center">
             <div class="order-2 lg:order-1 relative">
-                <!-- Abstract visual representation of AI chat -->
                 <div class="relative w-full max-w-md mx-auto aspect-[4/5] bg-surface rounded-[2.5rem] border-[8px] border-surface-container-highest shadow-2xl overflow-hidden p-6 flex flex-col gap-4">
                     <div class="flex items-center gap-3 mb-4 pb-4 border-b border-outline-variant/10">
                         <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                            <span class="material-symbols-outlined text-white text-[20px]">smart_toy</span>
+                            <span class="icon-line text-white text-[20px]">smart_toy</span>
                         </div>
                         <div>
                             <p class="font-bold text-sm">ProCare AI</p>
@@ -1003,48 +1308,46 @@ $canonicalServices = getAllServices();
                         While mild sensitivity is common, it could indicate worn enamel or a minor cavity. I recommend scheduling a brief checkup. Would you like to see Dr. Santos's availability this week?
                     </div>
                     
-                    <!-- decorative gradient overlay -->
                     <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-surface to-transparent"></div>
                 </div>
                 
-                <!-- Floating badges -->
                 <div class="absolute top-1/4 -right-4 lg:-right-12 glass-panel px-4 py-3 rounded-2xl shadow-lg flex items-center gap-3 animate-float-delayed">
-                    <span class="material-symbols-outlined text-green-500">lock</span>
+                    <span class="icon-line text-green-500">lock</span>
                     <span class="text-xs font-bold">HIPAA Secure</span>
                 </div>
             </div>
             
             <div class="order-1 lg:order-2">
-                <span class="inline-block py-1 px-3 rounded-xl bg-primary-container/20 text-primary font-label-sm text-label-sm mb-4 border border-primary/10">Next-Gen Support</span>
-                <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-6 tracking-tight">Meet Your AI Dental Assistant</h2>
+                <span class="section-kicker">Next-Gen Support</span>
+                <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-6 tracking-tight">Meet ProCare AI</h2>
                 <p class="font-body-md text-body-md text-on-surface-variant mb-8 leading-relaxed">
                     Experience healthcare innovation. Our secure AI assistant is available 24/7 to answer questions, assess minor symptoms, remind you of medications, and help manage your appointments effortlessly.
                 </p>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                     <div class="flex items-start gap-3 p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/20">
-                        <span class="material-symbols-outlined text-primary text-[24px]">troubleshoot</span>
+                        <span class="icon-line text-primary text-[24px]">troubleshoot</span>
                         <div>
                             <h5 class="font-bold text-sm mb-1">Symptom Checker</h5>
                             <p class="text-xs text-on-surface-variant">Instant preliminary guidance for oral discomfort.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3 p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/20">
-                        <span class="material-symbols-outlined text-primary text-[24px]">edit_calendar</span>
+                        <span class="icon-line text-primary text-[24px]">edit_calendar</span>
                         <div>
                             <h5 class="font-bold text-sm mb-1">Smart Scheduling</h5>
                             <p class="text-xs text-on-surface-variant">Find the perfect slot and book in seconds.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3 p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/20">
-                        <span class="material-symbols-outlined text-primary text-[24px]">tips_and_updates</span>
+                        <span class="icon-line text-primary text-[24px]">tips_and_updates</span>
                         <div>
                             <h5 class="font-bold text-sm mb-1">Dental Care Tips</h5>
                             <p class="text-xs text-on-surface-variant">Personalized hygiene advice post-treatment.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3 p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/20">
-                        <span class="material-symbols-outlined text-primary text-[24px]">history</span>
+                        <span class="icon-line text-primary text-[24px]">history</span>
                         <div>
                             <h5 class="font-bold text-sm mb-1">Context Aware</h5>
                             <p class="text-xs text-on-surface-variant">Remembers your history for better assistance.</p>
@@ -1054,7 +1357,7 @@ $canonicalServices = getAllServices();
                 
                 <a href="<?= htmlspecialchars($base_url) ?>/auth/login.php?mode=register" class="inline-flex items-center gap-2 h-12 px-8 rounded-xl bg-on-background text-background font-label-md hover:opacity-90 hover:-translate-y-0.5 transition-all shadow-lg">
                     Try AI Assistant
-                    <span class="material-symbols-outlined text-[20px]">chat</span>
+                    <span class="icon-line text-[20px]">chat</span>
                 </a>
             </div>
         </div>
@@ -1064,7 +1367,15 @@ $canonicalServices = getAllServices();
 <!-- Final Call to Action -->
 <section class="relative py-24 overflow-hidden fade-in-up mt-12 mx-margin-mobile md:mx-margin-desktop max-w-[1200px] xl:mx-auto rounded-3xl">
     <div class="absolute inset-0 bg-gradient-to-br from-primary via-primary to-surface-tint z-0"></div>
-    <!-- Abstract shapes -->
+    <div class="absolute inset-0 z-0 opacity-40 mix-blend-soft-light pointer-events-none" style="background-image: radial-gradient(circle at 15% 20%, rgba(255,255,255,0.5), transparent 40%), radial-gradient(circle at 85% 80%, rgba(255,255,255,0.35), transparent 45%), radial-gradient(circle at 60% 10%, rgba(255,255,255,0.25), transparent 35%);"></div>
+    <svg class="absolute inset-0 w-full h-full z-0 opacity-[0.07] pointer-events-none" aria-hidden="true" focusable="false">
+        <defs>
+            <pattern id="cta-tooth-pattern" width="86" height="86" patternUnits="userSpaceOnUse" patternTransform="rotate(8)">
+                <path d="M18 6c-4.5 0-7.5 3.6-7.5 8.1 0 2.7.9 4.5.9 7.2 0 3.6-1.8 5.4-1.8 9 0 2.7 1.8 4.5 3.6 4.5s2.7-2.7 3.6-5.4c.9-2.7 1.8-3.6 2.7-3.6s1.8.9 2.7 3.6c.9 2.7 1.8 5.4 3.6 5.4s3.6-1.8 3.6-4.5c0-3.6-1.8-5.4-1.8-9 0-2.7.9-4.5.9-7.2 0-4.5-3-8.1-7.2-8.1-1.8 0-2.7.9-3.6 1.8-.9-.9-1.8-1.8-3.6-1.8z" fill="none" stroke="white" stroke-width="1.25"/>
+            </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#cta-tooth-pattern)"></rect>
+    </svg>
     <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
     <div class="absolute bottom-0 left-0 w-96 h-96 bg-black/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
     
@@ -1088,10 +1399,9 @@ $canonicalServices = getAllServices();
 <footer class="w-full py-xl bg-surface-container-highest mt-xl fade-in-up border-t border-outline-variant/10">
     <div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-            <!-- Brand Column -->
             <div class="flex flex-col gap-4">
                 <span class="font-headline-md text-2xl font-bold text-primary flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[32px]">dentistry</span> DentalCare Pro
+                    <span class="icon-line text-[32px]">dentistry</span> DentalCare Pro
                 </span>
                 <p class="font-body-md text-body-md text-on-surface-variant max-w-xs mt-2">
                     Exceptional, precision-driven dental care in a state-of-the-art, relaxing environment.
@@ -1109,7 +1419,6 @@ $canonicalServices = getAllServices();
                 </div>
             </div>
 
-            <!-- Quick Links -->
             <div class="flex flex-col gap-4">
                 <h4 class="font-bold text-on-background">Quick Navigation</h4>
                 <nav class="flex flex-col gap-2">
@@ -1117,11 +1426,10 @@ $canonicalServices = getAllServices();
                     <a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-all font-label-sm text-sm inline-block w-fit" href="#about">About Us</a>
                     <a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-all font-label-sm text-sm inline-block w-fit" href="#services">Our Services</a>
                     <a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-all font-label-sm text-sm inline-block w-fit" href="#dentists">Meet the Doctor</a>
-                    <a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-all font-label-sm text-sm inline-block w-fit" href="#testimonials">Patient Stories</a>
+                    <a class="text-on-surface-variant hover:text-primary hover:translate-x-1 transition-all font-label-sm text-sm inline-block w-fit" href="#reviews">Patient Stories</a>
                 </nav>
             </div>
 
-            <!-- Patient Resources -->
             <div class="flex flex-col gap-4">
                 <h4 class="font-bold text-on-background">Patient Resources</h4>
                 <nav class="flex flex-col gap-2">
@@ -1133,24 +1441,23 @@ $canonicalServices = getAllServices();
                 </nav>
             </div>
 
-            <!-- Contact Info -->
             <div class="flex flex-col gap-4">
                 <h4 class="font-bold text-on-background">Get in Touch</h4>
                 <div class="flex flex-col gap-3">
                     <p class="text-sm text-on-surface-variant flex items-start gap-2">
-                        <span class="material-symbols-outlined text-[18px] text-primary">location_on</span>
+                        <span class="icon-line text-[18px] text-primary">location_on</span>
                         742 Willowbrook Lane, Suite 200
                     </p>
                     <p class="text-sm text-on-surface-variant flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[18px] text-primary">call</span>
+                        <span class="icon-line text-[18px] text-primary">call</span>
                         555-0148
                     </p>
                     <p class="text-sm text-on-surface-variant flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[18px] text-primary">mail</span>
+                        <span class="icon-line text-[18px] text-primary">mail</span>
                         clinic@dentalcarepro.example
                     </p>
                     <div class="mt-2 p-3 bg-error-container/50 rounded-lg border border-error/20 inline-flex items-center gap-2 w-fit">
-                        <span class="material-symbols-outlined text-error text-[18px]">emergency</span>
+                        <span class="icon-line text-error text-[18px]">emergency</span>
                         <span class="text-xs font-bold text-error">24/7 Emergency Dental Care</span>
                     </div>
                 </div>
@@ -1159,7 +1466,7 @@ $canonicalServices = getAllServices();
 
         <div class="pt-8 border-t border-outline-variant/20 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <p class="font-body-md text-sm text-on-surface-variant">© 2026 DentalCare Pro Clinic. All rights reserved.</p>
-            <p class="font-body-md text-sm text-on-surface-variant flex items-center gap-1">Designed with <span class="material-symbols-outlined text-[14px] text-error fill-icon">favorite</span> for exceptional care</p>
+            <p class="font-body-md text-sm text-on-surface-variant flex items-center gap-1">Designed with <span class="icon-line text-[14px] text-error fill-icon">favorite</span> for exceptional care</p>
         </div>
     </div>
 </footer>
@@ -1170,12 +1477,377 @@ $canonicalServices = getAllServices();
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        // --- Hero Photo Carousel ---
+        const heroTrack = document.getElementById('hero-carousel-track');
+        const heroSlideEls = heroTrack ? Array.from(heroTrack.querySelectorAll('.hero-slide')) : [];
+        const heroDots = Array.from(document.querySelectorAll('#hero-carousel-dots .hero-dot'));
+        const heroPrevBtn = document.getElementById('hero-prev');
+        const heroNextBtn = document.getElementById('hero-next');
+        const heroTextBlock = document.getElementById('hero-text-block');
+        const heroEyebrow = document.getElementById('hero-eyebrow');
+        const heroHeadline = document.getElementById('hero-headline');
+        const heroSubtext = document.getElementById('hero-subtext');
+        const heroTrustTagsWrap = document.getElementById('hero-trust-tags');
+        const heroTrustTag1 = heroTrustTagsWrap ? heroTrustTagsWrap.querySelector('[data-trust-tag="1"]') : null;
+        const heroTrustTag2 = heroTrustTagsWrap ? heroTrustTagsWrap.querySelector('[data-trust-tag="2"]') : null;
+        const heroBadge1 = document.getElementById('hero-badge-1');
+        const heroBadge2 = document.getElementById('hero-badge-2');
+
+        const HERO_SLIDE_DURATION = 5500;
+        const HERO_TEXT_DELAY = 180;
+        const HERO_FADE_OUT_MS = 260;
+
+        const heroContent = [
+            {
+                eyebrow: 'Premium Care',
+                headlineHTML: 'Exceptional Dental Care for a <span class="text-accent">Brighter Smile.</span>',
+                subtext: 'Welcome to DentalCare Pro, where precision meets comfort. Experience world-class dental treatments in a state-of-the-art, relaxing environment.',
+                trustTags: ['Verified Professionals', 'Warm, Comfortable Care'],
+                badge1: { icon: 'event_available', title: 'Easy Online Booking' },
+                badge2: { icon: 'groups', title: '2,400+ Happy Patients' }
+            },
+            {
+                eyebrow: 'Modern Facility',
+                headlineHTML: 'Advanced Technology, <span class="text-accent">Gentle Hands.</span>',
+                subtext: 'Relax in a treatment room equipped with the latest dental technology, thoughtfully designed around your comfort.',
+                trustTags: ['Modern Equipment', 'HIPAA Secure Care'],
+                badge1: { icon: 'health_and_safety', title: 'HIPAA Secure Care' },
+                badge2: { icon: 'precision_manufacturing', title: 'Modern Equipment' }
+            },
+            {
+                eyebrow: 'Precision Care',
+                headlineHTML: 'Every Detail, <span class="text-accent">Done with Precision.</span>',
+                subtext: 'Every instrument is meticulously sterilized, and every procedure is guided by years of clinical expertise.',
+                trustTags: ['Sterile Instruments', '15+ Years Experience'],
+                badge1: { icon: 'verified', title: 'Verified Professionals' },
+                badge2: { icon: 'cleaning_services', title: 'Sterile, Precision Care' }
+            }
+        ];
+
+        const heroSlideCount = heroSlideEls.length || heroContent.length;
+        let heroActiveIndex = 0;
+        let heroTimerId = null;
+        let heroTextTimeoutId = null;
+        let isHeroTransitioning = false;
+
+        const setHeroTrackPosition = (index, animate = true) => {
+            if (heroTrack) {
+                heroTrack.style.transition = animate ? 'transform 0.55s cubic-bezier(0.4, 0, 0.2, 1)' : 'none';
+                heroTrack.style.transform = `translateX(-${(index + 1) * 100}%)`;
+            }
+        };
+
+        const applyHeroBadge = (badgeEl, data) => {
+            if (!badgeEl || !data) return;
+            const iconEl = badgeEl.querySelector('[data-badge-icon]');
+            const titleEl = badgeEl.querySelector('[data-badge-title]');
+            const subtitleEl = badgeEl.querySelector('[data-badge-subtitle]');
+            if (iconEl) iconEl.textContent = data.icon;
+            if (titleEl) titleEl.textContent = data.title;
+            if (subtitleEl) subtitleEl.style.display = 'none';
+        };
+
+        const swapHeroContent = (index) => {
+            const data = heroContent[index % heroContent.length];
+            if (heroEyebrow) heroEyebrow.textContent = data.eyebrow;
+            if (heroHeadline) heroHeadline.innerHTML = data.headlineHTML;
+            if (heroSubtext) heroSubtext.textContent = data.subtext;
+            if (heroTrustTag1) heroTrustTag1.textContent = data.trustTags[0];
+            if (heroTrustTag2) heroTrustTag2.textContent = data.trustTags[1];
+            applyHeroBadge(heroBadge1, data.badge1);
+            applyHeroBadge(heroBadge2, data.badge2);
+        };
+
+        const crossfadeHeroContent = (index) => {
+            const fadeEls = [heroTextBlock, heroTrustTagsWrap, heroBadge1, heroBadge2].filter(Boolean);
+            clearTimeout(heroTextTimeoutId);
+            heroTextTimeoutId = setTimeout(() => {
+                fadeEls.forEach(el => el.classList.add('is-swapping'));
+                setTimeout(() => {
+                    swapHeroContent(index);
+                    fadeEls.forEach(el => el.classList.remove('is-swapping'));
+                }, HERO_FADE_OUT_MS);
+            }, HERO_TEXT_DELAY);
+        };
+
+        const goToHeroSlide = (index, { crossfade = true } = {}) => {
+            heroActiveIndex = index;
+            setHeroTrackPosition(heroActiveIndex, true);
+            isHeroTransitioning = true;
+            
+            let realIndex = heroActiveIndex;
+            if (realIndex >= heroSlideCount) realIndex = 0;
+            if (realIndex < 0) realIndex = heroSlideCount - 1;
+
+            heroDots.forEach((dot, i) => dot.classList.toggle('is-active', i === realIndex));
+            if (crossfade) {
+                crossfadeHeroContent(realIndex);
+            }
+        };
+
+        const advanceHeroSlide = () => { if (!isHeroTransitioning) goToHeroSlide(heroActiveIndex + 1); };
+        const reverseHeroSlide = () => { if (!isHeroTransitioning) goToHeroSlide(heroActiveIndex - 1); };
+
+        const startHeroCarousel = () => {
+            if (heroTimerId || heroSlideCount < 2) return;
+            heroTimerId = setInterval(advanceHeroSlide, HERO_SLIDE_DURATION);
+        };
+
+        const stopHeroCarousel = () => {
+            if (heroTimerId) { clearInterval(heroTimerId); heroTimerId = null; }
+        };
+
+        const resetHeroTimer = () => {
+            stopHeroCarousel();
+            startHeroCarousel();
+        };
+
+        if (heroTrack && heroSlideEls.length) {
+            const firstClone = heroSlideEls[0].cloneNode(true);
+            const lastClone = heroSlideEls[heroSlideEls.length - 1].cloneNode(true);
+            firstClone.setAttribute('aria-hidden', 'true');
+            lastClone.setAttribute('aria-hidden', 'true');
+            heroTrack.appendChild(firstClone);
+            heroTrack.insertBefore(lastClone, heroSlideEls[0]);
+
+            heroTrack.addEventListener('transitionend', (e) => {
+                if (e.target !== heroTrack || e.propertyName !== 'transform') return;
+                isHeroTransitioning = false;
+                if (heroActiveIndex >= heroSlideCount) {
+                    heroActiveIndex = 0;
+                    setHeroTrackPosition(heroActiveIndex, false);
+                } else if (heroActiveIndex < 0) {
+                    heroActiveIndex = heroSlideCount - 1;
+                    setHeroTrackPosition(heroActiveIndex, false);
+                }
+            });
+
+            setHeroTrackPosition(0, false);
+            heroDots.forEach((dot, i) => dot.classList.toggle('is-active', i === 0));
+            swapHeroContent(0);
+            startHeroCarousel();
+
+            if (heroPrevBtn) heroPrevBtn.addEventListener('click', () => { reverseHeroSlide(); resetHeroTimer(); });
+            if (heroNextBtn) heroNextBtn.addEventListener('click', () => { advanceHeroSlide(); resetHeroTimer(); });
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) stopHeroCarousel();
+                else startHeroCarousel();
+            });
+        }
+
+        // --- Premium Cinematic Services Carousel (Apple-Inspired) ---
+        const servicesSection = document.getElementById('services');
+        const carouselTrack = document.getElementById('services-grid');
+        const carouselSlideEls = carouselTrack ? Array.from(carouselTrack.querySelectorAll('.premium-card')) : [];
+        const carouselPrevBtn = document.getElementById('services-prev');
+        const carouselNextBtn = document.getElementById('services-next');
+        const progCurrent = document.getElementById('services-prog-current');
+        const progFill = document.getElementById('services-prog-fill');
+        const progTotal = document.getElementById('services-prog-total');
+        const largeNum = document.getElementById('services-large-num');
+
+        // Cinematic Category Background Colors Mapping
+        const categoryColors = {
+            'General': { bg: '#f8f9ff', blob1: 'rgba(0, 94, 184, 0.12)', blob2: 'rgba(169, 199, 255, 0.15)' },
+            'Cosmetic': { bg: '#f2f8fc', blob1: 'rgba(0, 188, 212, 0.1)', blob2: 'rgba(255, 255, 255, 0.4)' },
+            'Restorative': { bg: '#e8ecef', blob1: 'rgba(0, 43, 94, 0.1)', blob2: 'rgba(114, 119, 131, 0.15)' },
+            'Orthodontics': { bg: '#eefbfb', blob1: 'rgba(0, 150, 136, 0.1)', blob2: 'rgba(101, 242, 181, 0.15)' },
+            'Emergency': { bg: '#fff5f2', blob1: 'rgba(233, 30, 99, 0.08)', blob2: 'rgba(255, 152, 0, 0.12)' }
+        };
+
+        if (carouselTrack && carouselSlideEls.length > 0) {
+            const originalCount = carouselSlideEls.length;
+            
+            if(progTotal) progTotal.textContent = String(originalCount).padStart(2, '0');
+
+            // Setup clones for seamless infinite cinematic loop while maintaining momentum
+            const firstClone = carouselSlideEls[0].cloneNode(true);
+            const lastClone = carouselSlideEls[originalCount - 1].cloneNode(true);
+            firstClone.setAttribute('aria-hidden', 'true');
+            lastClone.setAttribute('aria-hidden', 'true');
+            firstClone.classList.add('is-clone');
+            lastClone.classList.add('is-clone');
+            
+            carouselTrack.appendChild(firstClone);
+            carouselTrack.insertBefore(lastClone, carouselSlideEls[0]);
+
+            const allSlides = Array.from(carouselTrack.querySelectorAll('.premium-card'));
+            let servicesActiveIndex = 1; // Start at first real slide
+            let isServicesTransitioning = false;
+            let cardWidth = 0;
+            let gap = 0;
+
+            const updateDimensions = () => {
+                if(allSlides.length === 0) return;
+                cardWidth = allSlides[0].offsetWidth;
+                gap = parseFloat(window.getComputedStyle(carouselTrack).gap) || 0;
+                carouselTrack.style.transition = 'none';
+                carouselTrack.style.transform = `translate3d(${-(servicesActiveIndex * (cardWidth + gap))}px, 0, 0)`;
+                carouselTrack.offsetHeight; // Force reflow
+            };
+
+            const setTrackPosition = (index, animate = true) => {
+                carouselTrack.style.transition = animate ? 'transform 0.8s cubic-bezier(.22,.61,.36,1)' : 'none';
+                carouselTrack.style.transform = `translate3d(${-(index * (cardWidth + gap))}px, 0, 0)`;
+            };
+
+            const updatePremiumUI = (realIndex) => {
+                const activeSlide = allSlides[servicesActiveIndex];
+                const category = activeSlide.getAttribute('data-category') || 'General';
+                
+                // Toggle active classes to trigger internal sequential transitions
+                allSlides.forEach((slide, i) => {
+                    if(i === servicesActiveIndex) {
+                        slide.classList.add('is-active');
+                    } else {
+                        slide.classList.remove('is-active');
+                    }
+                });
+
+                // Smooth background and blob updates
+                if (servicesSection && categoryColors[category]) {
+                    const colors = categoryColors[category];
+                    servicesSection.style.setProperty('--services-bg', colors.bg);
+                    servicesSection.style.setProperty('--blob-1', colors.blob1);
+                    servicesSection.style.setProperty('--blob-2', colors.blob2);
+                }
+
+                // Smooth Progress Navigation Update
+                const displayNum = String(realIndex + 1).padStart(2, '0');
+                if(progCurrent) progCurrent.textContent = displayNum;
+                if(progFill) {
+                    const pct = ((realIndex + 1) / originalCount) * 100;
+                    progFill.style.width = `${pct}%`;
+                }
+
+                // Premium Floating Number Crossfade
+                if(largeNum) {
+                    largeNum.classList.add('animating');
+                    setTimeout(() => {
+                        largeNum.textContent = displayNum;
+                        largeNum.classList.remove('animating');
+                    }, 400); // Trigger mid-transition
+                }
+            };
+
+            const goToSlide = (index) => {
+                if (isServicesTransitioning) return;
+                servicesActiveIndex = index;
+                setTrackPosition(servicesActiveIndex, true);
+                isServicesTransitioning = true;
+
+                let realIndex = servicesActiveIndex - 1;
+                if (realIndex >= originalCount) realIndex = 0;
+                if (realIndex < 0) realIndex = originalCount - 1;
+                
+                updatePremiumUI(realIndex);
+            };
+
+            carouselTrack.addEventListener('transitionend', (e) => {
+                if (e.target !== carouselTrack) return;
+                isServicesTransitioning = false;
+                
+                // Seamless momentum reset for infinite loop
+                let didReset = false;
+                if (servicesActiveIndex === originalCount + 1) {
+                    servicesActiveIndex = 1;
+                    setTrackPosition(servicesActiveIndex, false);
+                    didReset = true;
+                } else if (servicesActiveIndex === 0) {
+                    servicesActiveIndex = originalCount;
+                    setTrackPosition(servicesActiveIndex, false);
+                    didReset = true;
+                }
+
+                // Re-sync the is-active class to the real slide now in view —
+                // otherwise the clone keeps the class and the real card's
+                // text (title/description/CTA) stays hidden after the snap.
+                if (didReset) {
+                    allSlides.forEach((slide, i) => {
+                        slide.classList.toggle('is-active', i === servicesActiveIndex);
+                    });
+                }
+            });
+
+            window.addEventListener('resize', updateDimensions);
+            setTimeout(() => {
+                updateDimensions();
+                updatePremiumUI(0);
+            }, 50);
+
+            if(carouselPrevBtn) carouselPrevBtn.addEventListener('click', () => { if(!isServicesTransitioning) goToSlide(servicesActiveIndex - 1); });
+            if(carouselNextBtn) carouselNextBtn.addEventListener('click', () => { if(!isServicesTransitioning) goToSlide(servicesActiveIndex + 1); });
+
+            // Momentum Swiping support
+            let isDragging = false;
+            let startPos = 0;
+            let dragStartTime = 0;
+            let isClickPrevented = false;
+
+            carouselTrack.addEventListener('pointerdown', (e) => {
+                if (e.pointerType === 'mouse' && e.button !== 0) return;
+                if (isServicesTransitioning) return;
+                isDragging = true;
+                isClickPrevented = false;
+                startPos = e.clientX;
+                dragStartTime = Date.now();
+                carouselTrack.setPointerCapture(e.pointerId);
+                carouselTrack.style.transition = 'none';
+            });
+
+            carouselTrack.addEventListener('pointermove', (e) => {
+                if (!isDragging) return;
+                const diff = e.clientX - startPos;
+                if (Math.abs(diff) > 5) isClickPrevented = true;
+                const baseTranslate = -(servicesActiveIndex * (cardWidth + gap));
+                carouselTrack.style.transform = `translate3d(${baseTranslate + diff}px, 0, 0)`;
+            });
+
+            const endDrag = (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                const movedBy = e.clientX - startPos;
+                const timeTaken = Date.now() - dragStartTime;
+                const speed = Math.abs(movedBy) / timeTaken;
+                
+                if (Math.abs(movedBy) > cardWidth / 4 || speed > 0.4) {
+                    if (movedBy < 0) goToSlide(servicesActiveIndex + 1);
+                    else goToSlide(servicesActiveIndex - 1);
+                } else {
+                    goToSlide(servicesActiveIndex);
+                }
+            };
+
+            carouselTrack.addEventListener('pointerup', endDrag);
+            carouselTrack.addEventListener('pointercancel', endDrag);
+            carouselTrack.addEventListener('click', (e) => {
+                if (isClickPrevented) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, true);
+            
+            // Cursor spotlight logic specifically mapped for premium-cta-btn
+            const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+            if (supportsHover) {
+                document.querySelectorAll('.premium-cta-btn').forEach(btn => {
+                    btn.addEventListener('mousemove', (e) => {
+                        const rect = btn.getBoundingClientRect();
+                        const x = ((e.clientX - rect.left) / rect.width) * 100;
+                        const y = ((e.clientY - rect.top) / rect.height) * 100;
+                        btn.style.setProperty('--mouse-x', `${x}%`);
+                        btn.style.setProperty('--mouse-y', `${y}%`);
+                    });
+                });
+            }
+        }
+
         // --- Cross-Page Hash Scrolling ---
         if (window.location.hash) {
             const targetId = window.location.hash.substring(1);
             const targetEl = document.getElementById(targetId);
             if (targetEl) {
-                // Let the page settle (images, layout) before animating
                 setTimeout(() => {
                     targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 150);
@@ -1183,34 +1855,69 @@ $canonicalServices = getAllServices();
         }
 
         // --- Fetch Live Testimonials & Stats ---
+        const RING_CIRCUMFERENCE = 276.46;
+        const setRingProgress = (ring, fraction) => {
+            if (!ring) return;
+            const clamped = Math.max(0, Math.min(1, fraction));
+            ring.style.strokeDashoffset = String(RING_CIRCUMFERENCE * (1 - clamped));
+        };
+
         const initHomeCounters = () => {
             document.querySelectorAll('#home .counter').forEach(counter => {
                 const target = parseFloat(counter.getAttribute('data-target'));
                 const isDecimal = counter.getAttribute('data-decimal') === 'true';
                 const duration = 1500;
                 const startTime = performance.now();
+                const ringWrap = counter.closest('.stat-ring-wrap');
+                const ring = ringWrap ? ringWrap.querySelector('[data-ring]') : null;
+                const ringMode = ring ? ring.getAttribute('data-ring-mode') : null;
 
                 function update(currentTime) {
                     const elapsed = currentTime - startTime;
                     const progress = Math.min(elapsed / duration, 1);
                     const value = target * progress;
                     counter.textContent = isDecimal ? value.toFixed(1) : Math.round(value);
+                    if (ring) {
+                        setRingProgress(ring, ringMode === 'percent' ? (value / 100) : progress);
+                    }
                     if (progress < 1) {
                         requestAnimationFrame(update);
                     } else {
                         counter.textContent = isDecimal ? target.toFixed(1) : target;
+                        if (ring) setRingProgress(ring, ringMode === 'percent' ? (target / 100) : 1);
                     }
                 }
                 requestAnimationFrame(update);
             });
         };
 
+        const statsRowEl = document.getElementById('stats-row');
+        const statsSectionEl = statsRowEl ? statsRowEl.closest('section') : null;
+        let statsCountersStarted = false;
+        const startStatsCountersOnce = () => {
+            if (statsCountersStarted) return;
+            statsCountersStarted = true;
+            initHomeCounters();
+        };
+        if (statsSectionEl) {
+            const statsObserver = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        startStatsCountersOnce();
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+            statsObserver.observe(statsSectionEl);
+        } else {
+            startStatsCountersOnce();
+        }
+
         fetch('api/feedback/feedback-list.php?sort=recent&limit=3')
             .then(res => res.json())
             .then(data => {
                 const avgRating = data.average_rating ? parseFloat(data.average_rating).toFixed(1) : '4.9';
                 
-                // Update dynamic ratings around the homepage
                 document.querySelectorAll('.dynamic-rating').forEach(el => {
                     if (el.classList.contains('counter')) {
                         el.setAttribute('data-target', avgRating);
@@ -1239,7 +1946,7 @@ $canonicalServices = getAllServices();
                         const ratingNum = parseInt(review.rating, 10) || 5;
                         for(let i = 1; i <= 5; i++) {
                             const activeClass = i <= ratingNum ? starClass : (isMiddle ? 'text-white/30' : 'text-outline-variant/50');
-                            starsHtml += `<span class="material-symbols-outlined ${activeClass} text-[20px] fill-icon">star</span>`;
+                            starsHtml += `<span class="icon-line ${activeClass} text-[20px] fill-icon">star</span>`;
                         }
                         
                         const badgeHtml = review.is_new ? `<span class="bg-tertiary text-on-tertiary text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ml-2">New</span>` : '';
@@ -1254,7 +1961,7 @@ $canonicalServices = getAllServices();
                                      <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-full"></div>` : 
                                     `<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -z-0 group-hover:scale-125 transition-transform duration-500"></div>`
                                 }
-                                <div class="flex gap-1 relative z-10 items-center">
+                                <div class="flex gap-1 relative z-10 items-center font-mono">
                                     ${starsHtml}
                                 </div>
                                 <p class="font-body-md text-body-md ${textClass} italic flex-grow relative z-10 leading-relaxed">"${review.comment}"</p>
@@ -1262,7 +1969,7 @@ $canonicalServices = getAllServices();
                                     <div class="w-12 h-12 rounded-full ${isMiddle ? 'bg-white/20 text-on-primary' : 'bg-primary-container text-primary'} flex items-center justify-center font-bold text-sm flex-shrink-0">${initial}</div>
                                     <div>
                                         <p class="font-label-md text-label-md ${nameClass} font-semibold flex items-center">${patientName} ${badgeHtml}</p>
-                                        <p class="font-label-sm text-label-sm ${isMiddle ? 'text-on-primary/80' : 'text-on-surface-variant'} flex items-center gap-1"><span class="material-symbols-outlined text-[14px] ${verifiedClass}">verified</span> Verified Patient${serviceHtml}</p>
+                                        <p class="font-label-sm text-label-sm ${isMiddle ? 'text-on-primary/80' : 'text-on-surface-variant'} flex items-center gap-1"><span class="icon-line text-[14px] ${verifiedClass}">verified</span> Verified Patient${serviceHtml}</p>
                                     </div>
                                 </div>
                             </div>
@@ -1279,7 +1986,9 @@ $canonicalServices = getAllServices();
                 if (fallbackLabel) fallbackLabel.classList.remove('hidden');
             })
             .finally(() => {
-                initHomeCounters();
+                if (statsCountersStarted) {
+                    initHomeCounters();
+                }
             });
 
         // --- Fade-in on scroll & Scroll counters ---
@@ -1294,7 +2003,6 @@ $canonicalServices = getAllServices();
                 if (entry.isIntersecting) {
                     entry.target.classList.add('is-visible');
                     
-                    // Trigger scroll-dependent number counters ONLY if present and outside #home
                     const counters = entry.target.querySelectorAll('.counter:not(#home .counter)');
                     counters.forEach(counter => {
                         const updateCount = () => {
@@ -1318,7 +2026,6 @@ $canonicalServices = getAllServices();
                             }
                         };
                         
-                        // Prevent re-running if already done
                         if (counter.innerText === "0") {
                             updateCount();
                         }
@@ -1330,6 +2037,54 @@ $canonicalServices = getAllServices();
         }, observerOptions);
 
         document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+
+        // --- Staggered card animations for grids/carousels ---
+        const STAGGER_STEP_MS = 90;
+        const applyStagger = (container) => {
+            if (!container) return;
+            Array.from(container.children).forEach((child, index) => {
+                if (child.dataset.staggered === 'true') return;
+                child.dataset.staggered = 'true';
+                child.classList.add('fade-in-up');
+                const staggerClass = `stagger-${Math.min(index + 1, 8)}`;
+                child.classList.add(staggerClass);
+                if (index >= 8) {
+                    child.style.transitionDelay = `${(index + 1) * STAGGER_STEP_MS}ms`;
+                }
+                observer.observe(child);
+            });
+        };
+
+        applyStagger(document.getElementById('why-choose-grid'));
+        applyStagger(document.getElementById('dentist-values-grid'));
+        applyStagger(document.getElementById('fallback-testimonials'));
+        
+        const testimonialsGrid = document.getElementById('testimonials-grid');
+        if (testimonialsGrid) {
+            const testimonialsObserver = new MutationObserver(() => applyStagger(testimonialsGrid));
+            testimonialsObserver.observe(testimonialsGrid, { childList: true });
+        }
+
+        // --- Subtle hero background parallax drift on scroll ---
+        const heroSlideImgs = document.querySelectorAll('.hero-slide img');
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (heroSlideImgs.length && !prefersReducedMotion) {
+            let parallaxTicking = false;
+            const applyHeroParallax = () => {
+                const offset = Math.max(-40, Math.min(60, window.scrollY * 0.08));
+                heroSlideImgs.forEach(img => {
+                    img.style.transform = `scale(1.15) translateY(${offset}px)`;
+                });
+                parallaxTicking = false;
+            };
+            window.addEventListener('scroll', () => {
+                if (!parallaxTicking) {
+                    parallaxTicking = true;
+                    requestAnimationFrame(applyHeroParallax);
+                }
+            }, { passive: true });
+            applyHeroParallax();
+        }
     });
 </script>
 </body>

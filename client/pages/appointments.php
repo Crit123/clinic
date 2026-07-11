@@ -6,6 +6,18 @@
  */
 
 require_once __DIR__ . '/../components/design-config.php';
+require_once __DIR__ . '/../../api/helper/_api-helpers.php';
+
+// Session must be active before getCsrfToken() touches $_SESSION.
+// main-layout.php (required at the bottom of this file, via auth-guard.php)
+// also calls session_start(), but that's too late for this line — PHP
+// sessions are safe to start more than once as long as we check first.
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// CSRF token for the cancel-booking POST action (same pattern as login.php)
+$csrfToken = getCsrfToken();
 
 // Set layout shell variables
 $activePage = 'appointments';
@@ -254,6 +266,8 @@ ob_start();
 
 <!-- INTERACTION AND DATA MANAGEMENT JAVASCRIPT -->
 <script>
+const CSRF_TOKEN = <?php echo json_encode($csrfToken); ?>;
+
 let bookingsStore = [];
 let activeFilter = 'upcoming'; // 'upcoming', 'completed', 'cancelled'
 let activeCancelBooking = null;
@@ -269,27 +283,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 /**
- * Orchestrates session validation and fetching corresponding appointments.
+ * Orchestrates fetching this user's appointments from the backend.
+ * Session/identity is resolved server-side via $_SESSION['user_id'] in
+ * appointments-backend.php — if the session is missing, the backend
+ * responds with success:false and we redirect to login.
  */
 async function initFetchWorkflow() {
     toggleDisplayStates(true, false); // Keep loading skeleton active
 
-    // 1. Get Logged-In User Information
-    const user = await fetchJSON('api/get-session-user.php');
-    if (!user || !user.email) {
-        showLocalToast('error', 'Authentication failed. Please re-login.');
+    const response = await fetchJSON('../backend/appointments-backend.php?action=get_bookings');
+
+    if (!response || !response.success) {
+        showLocalToast('error', response?.message || 'Authentication failed. Please re-login.');
         window.location.href = 'login.php';
         return;
     }
 
-    // 2. Fetch Bookings associated with User Email
-    const response = await fetchJSON(`api/user-bookings.php?email=${encodeURIComponent(user.email)}`);
-    bookingsStore = Array.isArray(response) ? response : [];
+    bookingsStore = Array.isArray(response.bookings) ? response.bookings : [];
 
-    // 3. Update Visual Metric Overviews
+    // Update Visual Metric Overviews
     recalculateDashboardCounters();
 
-    // 4. Draw filtered lists
+    // Draw filtered lists
     renderFilteredGrid();
 }
 
@@ -520,9 +535,12 @@ async function executeCancel() {
             reference_code: activeCancelBooking.reference_code
         };
 
-        const result = await fetchJSON('api/cancel-booking.php', {
+        const result = await fetchJSON('../backend/appointments-backend.php?action=cancel_booking', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': CSRF_TOKEN
+            },
             body: JSON.stringify(payload)
         });
 

@@ -31,16 +31,16 @@ class PortalTourCore {
         style.id = 'portal-tour-animations';
         style.textContent = `
             .tour-spotlight-base {
-                transition: box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1),
-                            width 400ms cubic-bezier(0.4, 0, 0.2, 1),
-                            height 400ms cubic-bezier(0.4, 0, 0.2, 1),
-                            left 300ms cubic-bezier(0.4, 0, 0.2, 1),
-                            top 300ms cubic-bezier(0.4, 0, 0.2, 1),
-                            border-radius 300ms cubic-bezier(0.4, 0, 0.2, 1);
+                transition: box-shadow 350ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                            width 450ms cubic-bezier(0.34, 1.2, 0.64, 1),
+                            height 450ms cubic-bezier(0.34, 1.2, 0.64, 1),
+                            left 450ms cubic-bezier(0.34, 1.2, 0.64, 1),
+                            top 450ms cubic-bezier(0.34, 1.2, 0.64, 1),
+                            border-radius 350ms cubic-bezier(0.4, 0, 0.2, 1);
             }
             .tour-tooltip-base {
-                transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
-                            transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+                transition: opacity 320ms cubic-bezier(0.4, 0, 0.2, 1),
+                            transform 320ms cubic-bezier(0.4, 0, 0.2, 1);
             }
             .tour-tooltip-exit {
                 transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1),
@@ -53,17 +53,91 @@ class PortalTourCore {
             }
             .tour-dim-active {
                 box-shadow: 0 0 0 9999px rgba(0, 30, 49, 0.75);
+                /* Entrance easing lives on .tour-spotlight-base above — NOT here.
+                   Declaring a separate transition shorthand on this class would
+                   silently replace the whole transition list on .tour-spotlight-base
+                   (both classes sit on the element at once for the entire tour),
+                   killing every width/height/left/top transition for the whole
+                   session. Keep this class value-only. */
             }
             .tour-dim-inactive {
                 box-shadow: 0 0 0 9999px rgba(0, 30, 49, 0);
             }
+            /* Entrance direction mirrors which side positionTooltip() actually
+               placed the tooltip on (desktop sets data-placement to match the
+               bottom -> top -> right -> left auto-placement branch that fired),
+               so the tooltip slides in FROM the target rather than always
+               sliding up from below regardless of where it landed. Compact
+               tour never sets data-placement, so it falls through to the
+               translateY(12px) default below untouched. */
             .tour-tooltip-hidden {
                 opacity: 0;
                 transform: translateY(12px);
             }
+            .tour-tooltip-hidden[data-placement="bottom"] {
+                transform: translateY(-12px);
+            }
+            .tour-tooltip-hidden[data-placement="top"] {
+                transform: translateY(12px);
+            }
+            .tour-tooltip-hidden[data-placement="left"] {
+                transform: translateX(12px);
+            }
+            .tour-tooltip-hidden[data-placement="right"] {
+                transform: translateX(-12px);
+            }
+            .tour-tooltip-hidden[data-placement="center"] {
+                transform: translateY(12px);
+            }
             .tour-tooltip-visible {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate(0, 0);
+            }
+            /* Direct-follow mode used only during the post-settle drift-correction
+               loop (desktop), once the initial eased move has already finished —
+               never during the move itself, which needs the eased transition above. */
+            .tour-tracking {
+                transition: none !important;
+            }
+            /* Decouples text-swap fade from the tooltip container's slide/opacity,
+               so content doesn't "pop" the instant the container starts fading in. */
+            .tour-content {
+                transition: opacity 180ms ease-out;
+            }
+            .tour-content-hidden {
+                opacity: 0;
+            }
+            .tour-content-visible {
+                opacity: 1;
+            }
+            /* Progress dot gets a small scale pulse on activation so step changes
+               feel acknowledged rather than just recolored. */
+            .tour-dot {
+                transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                            width 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                            transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+            .tour-dot-active {
+                transform: scale(1.15);
+            }
+            /* iOS-style bottom sheet curve: decelerates hard at rest, reads as
+               "settled" rather than mechanically eased. Compact tour only.
+               NOTE: this class sits on the tooltip alongside .tour-tooltip-base
+               and .tour-tooltip-exit for the entire compact tour, and all three
+               declare the transition shorthand. Shorthand replaces the whole
+               property rather than merging, so whichever rule is declared LAST
+               in this stylesheet wins outright. Keep this rule after both of
+               those so the spring curve is what actually applies. */
+            .tour-sheet-spring {
+                transition: transform 320ms cubic-bezier(0.32, 0.72, 0, 1),
+                            opacity 250ms ease;
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .tour-spotlight-base, .tour-tooltip-base, .tour-fade-out,
+                .tour-dim-active, .tour-content, .tour-dot, .tour-sheet-spring,
+                .tour-tracking {
+                    transition-duration: 0.01ms !important;
+                }
             }
         `;
         document.head.appendChild(style);
@@ -154,17 +228,30 @@ class PortalTourCore {
         this.tooltip.querySelector('.tour-next-btn')?.addEventListener('click', () => this.nextStep());
         this.tooltip.querySelector('.tour-back-btn')?.addEventListener('click', () => this.prevStep());
 
-        // Position & Fade in Tooltip
-        requestAnimationFrame(() => {
-            this.positionTooltip(targetEl);
-            this.tooltip.classList.remove('tour-tooltip-exit', 'tour-tooltip-hidden');
-            this.tooltip.classList.add('tour-tooltip-base', 'tour-tooltip-visible');
-            
-            setTimeout(() => {
-                const nextBtn = this.tooltip.querySelector('.tour-next-btn');
-                if (nextBtn) nextBtn.focus();
-            }, 50);
-        });
+        // Spotlight starts moving now (styles already set above by trackTarget()).
+        // Delay the tooltip's own fade-in slightly so the two movements read as
+        // a sequence — spotlight leads, tooltip follows — rather than everything
+        // appearing to happen in the same instant.
+        setTimeout(() => {
+            requestAnimationFrame(() => {
+                this.positionTooltip(targetEl);
+                this.tooltip.classList.remove('tour-tooltip-exit', 'tour-tooltip-hidden');
+                this.tooltip.classList.add('tour-tooltip-base', 'tour-tooltip-visible');
+
+                // Fade the text content in slightly after the container starts moving,
+                // so the swap doesn't read as an instant pop.
+                const contentEl = this.tooltip.querySelector('.tour-content');
+                setTimeout(() => {
+                    contentEl?.classList.remove('tour-content-hidden');
+                    contentEl?.classList.add('tour-content-visible');
+                }, 90);
+
+                setTimeout(() => {
+                    const nextBtn = this.tooltip.querySelector('.tour-next-btn');
+                    if (nextBtn) nextBtn.focus();
+                }, 150);
+            });
+        }, 90);
     }
 
     nextStep() {
@@ -179,8 +266,8 @@ class PortalTourCore {
     buildTooltipHTML(step, index, total, text) {
         let dots = '';
         for (let i = 0; i < total; i++) {
-            const active = i === index ? 'bg-primary w-4' : 'bg-outline-variant w-2';
-            dots += `<div class="h-2 rounded-full transition-all duration-300 ${active}"></div>`;
+            const active = i === index ? 'bg-primary w-4 tour-dot-active' : 'bg-outline-variant w-2';
+            dots += `<div class="tour-dot h-2 rounded-full ${active}"></div>`;
         }
 
         const isLast = index === total - 1;
@@ -192,7 +279,7 @@ class PortalTourCore {
             : `<div></div>`;
 
         return `
-            <div>
+            <div class="tour-content tour-content-hidden">
                 <h3 class="font-headline-md text-lg text-primary mb-2">${step.title}</h3>
                 <p class="font-body-md text-sm text-on-surface-variant leading-relaxed">${text}</p>
             </div>

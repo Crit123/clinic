@@ -1,0 +1,83 @@
+/**
+ * portal-theme-base.css
+ * Client Portal (dashboard-side) typography base for DentalCare Pro.
+ *
+ * Now brought fully in line with the public landing site's
+ * assets/css/theme-base.css — sans (Plus Jakarta Sans), display
+ * (Fraunces), mono (Roboto Mono), and the site's ".icon-line" Material
+ * Symbols icon system are all shared across both surfaces for brand
+ * consistency.
+ *
+ * Previously this file deliberately excluded the landing page's mono
+ * font (IBM Plex Mono) because its dotted/slashed zero glyph read as
+ * "code-like" for a professional client dashboard. The landing page has
+ * since switched its mono font to Roboto Mono, which uses a plain oval
+ * zero and reads as calmer/more clinical, so that concern no longer
+ * applies — mono is now shared as-is.
+ *
+ * Large numeric callouts (dashboard stat counters, e.g. "2400+") still
+ * use `.stat-number`, which pairs the sans font with tabular figures.
+ * That choice is unrelated to the old mono exclusion and is kept as-is;
+ * switch it to `.font-mono` instead if you'd like stat counters to pick
+ * up the monospace treatment too.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
+
+:root {
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+    --font-display: 'Fraunces', serif;
+    --font-mono: 'Roboto Mono', ui-monospace, 'SFMono-Regular', monospace;
+}
+
+.font-sans {
+    font-family: var(--font-sans);
+}
+
+.font-display {
+    font-family: var(--font-display);
+}
+
+.font-mono {
+    font-family: var(--font-mono);
+}
+
+/* Large numeric callouts (dashboard stat counters, e.g. "2400+").
+   Sans font + heavy weight + tabular numerals for clean digit alignment. */
+.stat-number {
+    font-family: var(--font-sans);
+    font-weight: 800; /* extrabold */
+    font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Icon base styling — renders the word inside .icon-line
+ * (e.g. "star", "calendar_month") as a real icon glyph.
+ * Matches the landing page's icon-line system exactly. Note the
+ * dashboard's existing markup uses Google's own
+ * ".material-symbols-outlined" class directly (see design-config.php's
+ * $icons array) rather than ".icon-line" — both can coexist, but new
+ * dashboard markup should prefer ".icon-line" going forward to match
+ * the landing page's rounded/filled icon treatment.
+ */
+.icon-line {
+    font-family: 'Material Symbols Rounded';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    vertical-align: middle;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.icon-line.fill-icon {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}

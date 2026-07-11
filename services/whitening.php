@@ -1,5 +1,6 @@
 <?php
-$base_url = '/booking-system';
+// Global app config — defines $base_url
+require_once __DIR__ . '/../config/app.php';
 require_once __DIR__ . '/../api/data/services-data.php';
 
 $serviceKey = 'whitening';
@@ -46,7 +47,7 @@ $faqList = [
 ];
 ?>
 <!DOCTYPE html>
-<html class="light scroll-smooth" lang="en">
+<html class="light scroll-smooth scroll-pt-[80px]" lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -57,45 +58,11 @@ $faqList = [
     <meta property="og:type" content="website">
     <title><?= htmlspecialchars($serviceLabel) ?> - DentalCare Pro</title>
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link rel="stylesheet" href="<?= htmlspecialchars($base_url ?? '') ?>/assets/css/responsive.css">
     
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "on-background": "#0b1c30",
-                        "surface-container-high": "#dce9ff",
-                        "on-surface": "#0b1c30",
-                        "surface-container-lowest": "#ffffff",
-                        "background": "#f8f9ff",
-                        "surface-tint": "#005db6",
-                        "primary-container": "#005eb8",
-                        "surface-container": "#e5eeff",
-                        "surface-container-highest": "#d3e4fe",
-                        "outline": "#727783",
-                        "on-primary": "#ffffff",
-                        "outline-variant": "#c2c6d4",
-                        "primary": "#00478d",
-                        "on-surface-variant": "#424752",
-                        "surface": "#f8f9ff",
-                        "surface-container-low": "#eff4ff",
-                    },
-                    fontFamily: { sans: ["Inter"] }
-                }
-            }
-        }
-    </script>
-    <style>
-        .fade-in-up { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-        .fade-in-up.is-visible { opacity: 1; transform: translateY(0); }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-    </style>
+    <script src="<?= htmlspecialchars($base_url ?? '') ?>/assets/js/theme-config.js"></script>
+    <link rel="stylesheet" href="<?= htmlspecialchars($base_url ?? '') ?>/assets/css/theme-base.css">
 </head>
 <body class="bg-background text-on-background font-sans antialiased overflow-x-hidden">
 

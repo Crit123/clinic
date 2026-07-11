@@ -2,49 +2,37 @@
 /**
  * dashboard-backend.php
  * Handles all backend actions for the Patient Dashboard.
+ *
+ * Shared boilerplate (session check, jsonResponse, CSRF, DB/helper includes)
+ * lives in shared/backend-common.php — see that file for the pattern any
+ * new page backend should follow.
  */
 
-session_start();
+require_once __DIR__ . '/shared/backend-common.php';
 
-if (!function_exists('jsonResponse')) {
-    function jsonResponse(bool $success, string $message, array $extra = []): void {
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode(array_merge(['success' => $success, 'message' => $message], $extra));
-        exit;
-    }
-}
-
-if (!isset($_SESSION['user_id'])) {
-    jsonResponse(false, 'Unauthorized.');
-}
-
-require_once __DIR__ . '/../../config/conn.php';
-// 1. Include API Helpers for CSRF validation
-require_once __DIR__ . '/../../api/helper/_api-helpers.php';
-
-$userId = (int) $_SESSION['user_id'];
+$userId = requireLogin();
 $action = $_GET['action'] ?? '';
 
 try {
     switch ($action) {
-        
+
         case 'get_profile':
-            if ($_SERVER['REQUEST_METHOD'] !== 'GET') jsonResponse(false, 'Invalid request method.');
-            
+            requireMethod('GET');
+
             $stmt = $pdo->prepare("SELECT id, first_name, last_name, email, auth_provider, created_at FROM users WHERE id = ?");
             $stmt->execute([$userId]);
             $profile = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+
             if (!$profile) {
                 jsonResponse(false, 'Profile not found.');
             }
-            
+
             jsonResponse(true, 'Profile fetched successfully.', ['profile' => $profile]);
             break;
 
         case 'get_booking_stats':
-            if ($_SERVER['REQUEST_METHOD'] !== 'GET') jsonResponse(false, 'Invalid request method.');
-            
+            requireMethod('GET');
+
             $stats = [
                 'total' => 0,
                 'upcoming' => 0,
@@ -52,22 +40,18 @@ try {
                 'cancelled' => 0
             ];
 
-            // Total
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE user_id = ?");
             $stmt->execute([$userId]);
             $stats['total'] = (int) $stmt->fetchColumn();
 
-            // Upcoming
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE user_id = ? AND status IN ('pending','confirmed') AND appointment_date >= CURDATE()");
             $stmt->execute([$userId]);
             $stats['upcoming'] = (int) $stmt->fetchColumn();
 
-            // Completed
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE user_id = ? AND status = 'confirmed' AND appointment_date < CURDATE()");
             $stmt->execute([$userId]);
             $stats['completed'] = (int) $stmt->fetchColumn();
 
-            // Cancelled
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE user_id = ? AND status = 'cancelled'");
             $stmt->execute([$userId]);
             $stats['cancelled'] = (int) $stmt->fetchColumn();
@@ -76,8 +60,8 @@ try {
             break;
 
         case 'get_bookings':
-            if ($_SERVER['REQUEST_METHOD'] !== 'GET') jsonResponse(false, 'Invalid request method.');
-            
+            requireMethod('GET');
+
             $filter = $_GET['filter'] ?? 'all';
             $query = "SELECT id, reference_code, service_key, dentist_name, appointment_date, appointment_time, status, created_at FROM bookings WHERE user_id = :user_id";
             $params = [':user_id' => $userId];
@@ -100,9 +84,9 @@ try {
             break;
 
         case 'get_booking_detail':
-            if ($_SERVER['REQUEST_METHOD'] !== 'GET') jsonResponse(false, 'Invalid request method.');
+            requireMethod('GET');
             if (empty($_GET['ref'])) jsonResponse(false, 'Reference code is required.');
-            
+
             $ref = trim($_GET['ref']);
 
             $stmtEmail = $pdo->prepare("SELECT email FROM users WHERE id = ?");
@@ -121,21 +105,15 @@ try {
             break;
 
         case 'cancel_booking':
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonResponse(false, 'Invalid request method.');
-            
-            // 2. Validate CSRF Token
-            $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
-            if (!validateCsrfToken($csrfToken)) {
-                jsonResponse(false, 'Invalid or missing CSRF token.');
-            }
-            
-            if (empty($_POST['ref']) && empty(json_decode(file_get_contents('php://input'), true)['reference_code'])) {
+            requireMethod('POST');
+            requireCsrf();
+
+            $input = getRequestInput();
+            $ref = trim($input['ref'] ?? $input['reference_code'] ?? '');
+
+            if (empty($ref)) {
                 jsonResponse(false, 'Reference code is required.');
             }
-
-            // Support both multipart/form-data and application/json payloads
-            $input = json_decode(file_get_contents('php://input'), true);
-            $ref = trim($_POST['ref'] ?? $input['reference_code'] ?? '');
 
             $stmt = $pdo->prepare("SELECT * FROM bookings WHERE reference_code = ? AND user_id = ?");
             $stmt->execute([$ref, $userId]);
@@ -192,13 +170,13 @@ try {
             break;
 
         case 'get_rebook_suggestion':
-            if ($_SERVER['REQUEST_METHOD'] !== 'GET') jsonResponse(false, 'Invalid request method.');
+            requireMethod('GET');
 
             $stmt = $pdo->prepare("
-                SELECT service_key, dentist_name 
-                FROM bookings 
-                WHERE user_id = ? AND (status = 'cancelled' OR appointment_date < CURDATE()) 
-                ORDER BY created_at DESC 
+                SELECT service_key, dentist_name
+                FROM bookings
+                WHERE user_id = ? AND (status = 'cancelled' OR appointment_date < CURDATE())
+                ORDER BY created_at DESC
                 LIMIT 1
             ");
             $stmt->execute([$userId]);
@@ -212,7 +190,7 @@ try {
             break;
 
         case 'get_visit_frequency':
-            if ($_SERVER['REQUEST_METHOD'] !== 'GET') jsonResponse(false, 'Invalid request method.');
+            requireMethod('GET');
 
             $stmt = $pdo->prepare("
                 SELECT appointment_date, appointment_time, service_key, dentist_name
@@ -265,12 +243,12 @@ try {
             break;
 
         case 'get_activity_timeline':
-            if ($_SERVER['REQUEST_METHOD'] !== 'GET') jsonResponse(false, 'Invalid request method.');
+            requireMethod('GET');
 
             $stmt = $pdo->prepare("
-                SELECT reference_code, service_key, dentist_name, appointment_date, status, created_at 
-                FROM bookings 
-                WHERE user_id = ? 
+                SELECT reference_code, service_key, dentist_name, appointment_date, status, created_at
+                FROM bookings
+                WHERE user_id = ?
                 ORDER BY created_at DESC
             ");
             $stmt->execute([$userId]);
@@ -280,18 +258,12 @@ try {
             break;
 
         case 'update_profile':
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonResponse(false, 'Invalid request method.');
+            requireMethod('POST');
+            requireCsrf();
 
-            // 2. Validate CSRF Token
-            $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
-            if (!validateCsrfToken($csrfToken)) {
-                jsonResponse(false, 'Invalid or missing CSRF token.');
-            }
-
-            // Support both multipart/form-data and application/json payloads
-            $input = json_decode(file_get_contents('php://input'), true);
-            $firstName = trim($_POST['first_name'] ?? $input['first_name'] ?? '');
-            $lastName = trim($_POST['last_name'] ?? $input['last_name'] ?? '');
+            $input = getRequestInput();
+            $firstName = trim($input['first_name'] ?? '');
+            $lastName = trim($input['last_name'] ?? '');
 
             if (empty($firstName) || empty($lastName)) {
                 jsonResponse(false, 'First name and last name are required.');
@@ -306,19 +278,13 @@ try {
             break;
 
         case 'change_password':
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonResponse(false, 'Invalid request method.');
+            requireMethod('POST');
+            requireCsrf();
 
-            // 2. Validate CSRF Token
-            $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
-            if (!validateCsrfToken($csrfToken)) {
-                jsonResponse(false, 'Invalid or missing CSRF token.');
-            }
-
-            // Support both multipart/form-data and application/json payloads
-            $input = json_decode(file_get_contents('php://input'), true);
-            $currentPassword = $_POST['current_password'] ?? $input['current_password'] ?? '';
-            $newPassword = $_POST['new_password'] ?? $input['new_password'] ?? '';
-            $confirmPassword = $_POST['confirm_password'] ?? $input['confirm_password'] ?? '';
+            $input = getRequestInput();
+            $currentPassword = $input['current_password'] ?? '';
+            $newPassword = $input['new_password'] ?? '';
+            $confirmPassword = $input['confirm_password'] ?? '';
 
             $stmt = $pdo->prepare("SELECT auth_provider, password_hash FROM users WHERE id = ?");
             $stmt->execute([$userId]);
@@ -352,16 +318,15 @@ try {
             break;
 
         case 'get_notifications':
-            if ($_SERVER['REQUEST_METHOD'] !== 'GET') jsonResponse(false, 'Invalid request method.');
+            requireMethod('GET');
 
             $notifications = [
                 'upcoming_soon' => ['has_alert' => false, 'booking' => null],
                 'pending_unconfirmed' => ['has_alert' => false, 'count' => 0]
             ];
 
-            // Check upcoming within 48 hours
             $stmtUpcoming = $pdo->prepare("
-                SELECT * FROM bookings 
+                SELECT * FROM bookings
                 WHERE user_id = ? AND status IN ('pending', 'confirmed') AND appointment_date >= CURDATE()
                 ORDER BY appointment_date ASC, appointment_time ASC
             ");
@@ -372,7 +337,7 @@ try {
             foreach ($upcomingBookings as $booking) {
                 $dt = new DateTime($booking['appointment_date'] . ' ' . $booking['appointment_time']);
                 $diffHours = ($dt->getTimestamp() - $now->getTimestamp()) / 3600;
-                
+
                 if ($diffHours >= 0 && $diffHours <= 48) {
                     $notifications['upcoming_soon']['has_alert'] = true;
                     $notifications['upcoming_soon']['booking'] = $booking;
@@ -380,7 +345,6 @@ try {
                 }
             }
 
-            // Check pending count
             $stmtPending = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE user_id = ? AND status = 'pending' AND appointment_date >= CURDATE()");
             $stmtPending->execute([$userId]);
             $pendingCount = (int) $stmtPending->fetchColumn();
@@ -394,18 +358,12 @@ try {
             break;
 
         case 'claim_guest_booking':
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonResponse(false, 'Invalid request method.');
-            
-            // 2. Validate CSRF Token
-            $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
-            if (!validateCsrfToken($csrfToken)) {
-                jsonResponse(false, 'Invalid or missing CSRF token.');
-            }
-            
-            // Support both multipart/form-data and application/json payloads
-            $input = json_decode(file_get_contents('php://input'), true);
-            $ref = trim($_POST['reference_code'] ?? $input['reference_code'] ?? '');
-            $inputEmail = trim($_POST['email'] ?? $input['email'] ?? '');
+            requireMethod('POST');
+            requireCsrf();
+
+            $input = getRequestInput();
+            $ref = trim($input['reference_code'] ?? '');
+            $inputEmail = trim($input['email'] ?? '');
 
             if (empty($ref) || empty($inputEmail)) {
                 jsonResponse(false, 'Reference code and email are required.');
@@ -433,8 +391,8 @@ try {
 
             $updateStmt = $pdo->prepare("UPDATE bookings SET user_id = ? WHERE id = ?");
             $updateStmt->execute([$userId, $booking['id']]);
-            
-            $booking['user_id'] = $userId; // Update object to return
+
+            $booking['user_id'] = $userId;
 
             jsonResponse(true, 'Booking successfully linked to your account.', ['booking' => $booking]);
             break;

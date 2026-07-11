@@ -19,7 +19,7 @@
 
 /**
  * Internal registry — do not access directly outside this file.
- * Shape: [ service_key => [ 'label' => string, 'duration' => string, 'icon' => string, 'desc' => string, 'featured' => bool ] ]
+ * Shape: [ service_key => [ 'label' => string, 'duration' => string, 'icon' => string, 'desc' => string, 'featured' => bool, 'image' => string ] ]
  *
  * Keys must exactly match the `service_key` values stored in the `bookings` table.
  */
@@ -29,28 +29,32 @@ const DENTAL_SERVICES = [
         'duration' => '30–45 Minutes',
         'icon' => 'health_and_safety',
         'desc' => 'Detailed diagnostic evaluations utilizing 3D imaging to monitor your oral health and prevent future complications before they arise.',
-        'featured' => true
+        'featured' => true,
+        'image' => 'assets/img/services/checkup.png'
     ],
     'whitening' => [
         'label' => 'Teeth Whitening',
         'duration' => '45–60 Minutes',
         'icon' => 'flare',
         'desc' => 'Professional grade laser whitening treatments that safely lift stains for a noticeably brighter smile.',
-        'featured' => false
+        'featured' => false,
+        'image' => 'assets/img/services/whitening.png'
     ],
     'implants'  => [
         'label' => 'Dental Implants Consultation',
         'duration' => '60 Minutes',
         'icon' => 'dentistry',
         'desc' => 'Advanced 3D CBCT imaging and consultation to determine the best treatment plan for permanent tooth replacement.',
-        'featured' => false
+        'featured' => false,
+        'image' => 'assets/img/services/implants.png'
     ],
     'emergency' => [
         'label' => 'Emergency Care',
         'duration' => '30 Minutes',
         'icon' => 'medical_services',
         'desc' => 'Immediate priority care for severe pain, trauma, and urgent dental complications when you need it most.',
-        'featured' => false
+        'featured' => false,
+        'image' => 'assets/img/services/emergency.png'
     ],
 ];
 
@@ -75,7 +79,7 @@ const CLINIC_SLOTS = [
  * Suitable for rendering a <select> dropdown server-side or building
  * any other UI that needs all services at once.
  *
- * @return array<string, array{label: string, duration: string, icon: string, desc: string, featured: bool}>
+ * @return array<string, array{label: string, duration: string, icon: string, desc: string, featured: bool, image: string}>
  * e.g. [ 'checkup' => ['label' => '...', 'duration' => '...', ...], ... ]
  */
 function getAllServices(): array
@@ -110,7 +114,7 @@ function getServiceDuration(string $key): ?string
  * Used by index.php to render service cards without duplicating this data.
  *
  * @param  string $key  e.g. 'checkup'
- * @return array{icon: string, desc: string, featured: bool}|null
+ * @return array{icon: string, desc: string, featured: bool, image: string}|null
  */
 function getServiceDisplayMeta(string $key): ?array
 {
@@ -121,6 +125,7 @@ function getServiceDisplayMeta(string $key): ?array
         'icon'     => DENTAL_SERVICES[$key]['icon'],
         'desc'     => DENTAL_SERVICES[$key]['desc'],
         'featured' => DENTAL_SERVICES[$key]['featured'],
+        'image'    => DENTAL_SERVICES[$key]['image'],
     ];
 }
 

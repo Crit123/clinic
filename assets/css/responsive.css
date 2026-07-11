@@ -8,8 +8,23 @@
  * scattered as inline breakpoint classes per page.
  */
 
+/* ---------- Shared Spacing Tokens ---------- */
+:root {
+    /* Centralized spacing scale to avoid hardcoding across components */
+    --gutter-desktop: 2.5rem;
+    --gutter-tablet: 1.5rem;
+    --gutter-mobile: 1rem;
+
+    /* Adaptive gutter token that scales with breakpoints */
+    --gutter-site: var(--gutter-desktop);
+}
+
 /* ---------- Tablet and below (max-width: 1023px) ---------- */
 @media (max-width: 1023px) {
+    :root {
+        --gutter-site: var(--gutter-tablet);
+    }
+
     /* Floating hero trust/capability cards (index.php) collapse into
        a compact horizontal row instead of absolute-positioned floating
        cards on smaller screens — see index.php's mobile card markup. */
@@ -23,6 +38,10 @@
 
 /* ---------- Mobile (max-width: 767px) ---------- */
 @media (max-width: 767px) {
+    :root {
+        --gutter-site: var(--gutter-mobile);
+    }
+
     /* Persistent mobile booking button spacing in the header bar */
     .mobile-booking-btn {
         margin-right: 0.5rem;

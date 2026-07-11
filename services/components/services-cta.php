@@ -4,7 +4,7 @@ $bookingLink = ($base_url ?? '') . '/booking.php?service=' . urlencode($serviceK
 $callLink = 'tel:+15555550148';
 ?>
 <section class="py-20 bg-primary relative overflow-hidden fade-in-up mt-10 rounded-t-[3rem]">
-    <div class="absolute inset-0 bg-gradient-to-br from-primary via-[#00366b] to-surface-tint z-0"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-primary via-on-primary-fixed-variant to-surface-tint z-0"></div>
     <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
     
     <div class="max-w-[800px] mx-auto px-6 md:px-8 relative z-10 text-center text-white">
@@ -15,8 +15,8 @@ $callLink = 'tel:+15555550148';
             <p class="text-white/80 text-lg mb-10 max-w-xl mx-auto">Don't wait in pain. Call us during business hours for priority emergency care, or book your follow-up visit online.</p>
             
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="<?= $callLink ?>" class="h-14 px-10 rounded-xl bg-red-600 text-white font-bold text-lg hover:bg-red-700 hover:shadow-[0_0_30px_rgba(220,38,38,0.5)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center shadow-lg gap-2 w-full sm:w-auto">
-                    <span class="material-symbols-outlined text-[24px]" aria-hidden="true">call</span>
+                <a href="<?= $callLink ?>" class="h-14 px-10 rounded-xl bg-error text-white font-bold text-lg hover:bg-error/90 hover:shadow-[0_0_30px_rgba(186,26,26,0.5)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center shadow-lg gap-2 w-full sm:w-auto">
+                    <span class="icon-line text-[24px]" aria-hidden="true">call</span>
                     Call Now
                 </a>
                 <a href="<?= $bookingLink ?>" class="h-14 px-10 rounded-xl border-2 border-white/30 text-white font-bold text-lg hover:bg-white/10 transition-all duration-300 flex items-center justify-center backdrop-blur-sm w-full sm:w-auto">

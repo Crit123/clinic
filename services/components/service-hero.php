@@ -30,31 +30,40 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
                 <!-- Breadcrumbs -->
-                <nav class="flex items-center gap-2 text-[13px] font-medium text-slate-500 mb-6" aria-label="Breadcrumb">
+                <nav class="flex items-center gap-2 text-[13px] font-medium text-on-surface-variant mb-6" aria-label="Breadcrumb">
                     <a href="<?= htmlspecialchars($base_url ?? '') ?>/index.php" class="hover:text-primary transition-colors">Home</a>
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">chevron_right</span>
+                    <span class="icon-line text-[14px]" aria-hidden="true">chevron_right</span>
                     <a href="<?= htmlspecialchars($base_url ?? '') ?>/index.php#services" class="hover:text-primary transition-colors">Services</a>
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">chevron_right</span>
+                    <span class="icon-line text-[14px]" aria-hidden="true">chevron_right</span>
                     <span class="text-primary font-semibold" aria-current="page"><?= htmlspecialchars($serviceLabel) ?></span>
                 </nav>
                 
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high text-primary text-xs font-bold uppercase tracking-wider mb-5 border border-primary/10 shadow-sm">
-                    <span class="material-symbols-outlined text-[16px]" aria-hidden="true">schedule</span>
-                    Estimated Duration: <?= htmlspecialchars($serviceDuration) ?>
+                    <span class="icon-line text-[16px]" aria-hidden="true">schedule</span>
+                    <span>Estimated Duration: <span class="font-mono"><?= htmlspecialchars($serviceDuration) ?></span></span>
                 </div>
                 
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 mb-6 tracking-tight leading-tight">
+                <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold text-on-background mb-6 tracking-tight leading-tight">
                     <?= htmlspecialchars($serviceLabel) ?>
                 </h1>
                 
-                <p class="text-lg text-slate-600 mb-10 leading-relaxed max-w-xl">
+                <p class="text-lg text-on-surface-variant mb-10 leading-relaxed max-w-xl">
                     <?= htmlspecialchars($heroDesc) ?>
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="<?= htmlspecialchars($base_url ?? '') ?>/booking.php?service=<?= urlencode($serviceKey) ?>" class="h-14 px-8 rounded-xl bg-primary text-white font-bold text-base hover:bg-primary/95 shadow-[0_8px_20px_rgba(0,71,141,0.25)] hover:shadow-[0_12px_25px_rgba(0,71,141,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-2">
-                        Book Appointment <span class="material-symbols-outlined text-[20px]" aria-hidden="true">calendar_month</span>
-                    </a>
+                    <?php if (!empty($isEmergency)): ?>
+                        <a href="tel:+15555550148" class="h-14 px-8 rounded-xl bg-error text-white font-bold text-base hover:bg-error/90 shadow-[0_8px_20px_rgba(186,26,26,0.25)] hover:shadow-[0_12px_25px_rgba(186,26,26,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-2">
+                            Call Now <span class="icon-line text-[20px]" aria-hidden="true">call</span>
+                        </a>
+                        <a href="<?= htmlspecialchars($base_url ?? '') ?>/booking.php?service=<?= urlencode($serviceKey) ?>" class="h-14 px-8 rounded-xl border-2 border-primary/20 text-primary font-bold text-base hover:bg-primary/5 transition-all duration-300 flex items-center justify-center gap-2">
+                            Book a Follow-up
+                        </a>
+                    <?php else: ?>
+                        <a href="<?= htmlspecialchars($base_url ?? '') ?>/booking.php?service=<?= urlencode($serviceKey) ?>" class="h-14 px-8 rounded-xl bg-primary text-white font-bold text-base hover:bg-primary/95 shadow-[0_8px_20px_rgba(0,71,141,0.25)] hover:shadow-[0_12px_25px_rgba(0,71,141,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-2">
+                            Book Appointment <span class="icon-line text-[20px]" aria-hidden="true">calendar_month</span>
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
             
@@ -66,4 +75,4 @@
             </div>
         </div>
     </div>
-</section>
+</section>  

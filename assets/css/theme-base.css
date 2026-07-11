@@ -1,0 +1,89 @@
+/*
+ * theme-base.css
+ * Global base styles shared across all pages.
+ *
+ * Icon library: Material Symbols (Rounded), loaded as a ligature font
+ * and scoped to the site's own ".icon-line" class name (instead of
+ * Google's ".material-symbols-outlined" class) so markup like:
+ *     <span class="icon-line">star</span>
+ * renders as a real icon glyph. Rounded style + custom weight/fill
+ * variation settings give it a distinct look from the old outlined set.
+ *
+ * Fonts:
+ *   - sans:    Plus Jakarta Sans (body / UI text)
+ *   - display: Fraunces (headings / hero text)
+ *   - mono:    Roboto Mono (code / numeric / technical text)
+ *              Switched from IBM Plex Mono — Plex's dotted/slashed zero
+ *              read as "code-like" in shared numeric contexts (e.g. the
+ *              client portal's stat counters). Roboto Mono keeps a plain
+ *              oval zero and a calmer, more clinical feel that's a better
+ *              match for a dental clinic brand while still being a true
+ *              monospace with tabular figures for clean digit alignment.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Roboto+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
+
+:root {
+    --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Fraunces", ui-serif, Georgia, serif;
+    --font-mono: "Roboto Mono", ui-monospace, "SFMono-Regular", monospace;
+}
+
+body {
+    font-family: var(--font-sans);
+}
+
+.font-sans {
+    font-family: var(--font-sans);
+}
+
+.font-display {
+    font-family: var(--font-display);
+}
+
+.font-mono {
+    font-family: var(--font-mono);
+}
+
+/* Fade-in-on-scroll utility (site-wide, unchanged) */
+.fade-in-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fade-in-up.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Hide scrollbar utility (site-wide, unchanged) */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/*
+ * Icon base styling — renders the word inside .icon-line
+ * (e.g. "star", "calendar_month") as a real icon glyph.
+ */
+.icon-line {
+    font-family: 'Material Symbols Rounded';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    vertical-align: middle;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.icon-line.fill-icon {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}

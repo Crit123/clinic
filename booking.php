@@ -14,99 +14,15 @@ $csrfToken = getCsrfToken();
 $isLoggedIn = isset($_SESSION['user_id']);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html class="light scroll-smooth scroll-pt-[80px]" lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Book Appointment - DentalCare Pro</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="<?= htmlspecialchars($base_url) ?>/assets/js/theme-config.js"></script>
+<link rel="stylesheet" href="<?= htmlspecialchars($base_url) ?>/assets/css/theme-base.css">
 <link rel="stylesheet" href="<?= htmlspecialchars($base_url) ?>/assets/css/responsive.css">
-<script id="tailwind-config">
-        tailwind.config = {
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-background": "#0b1c30",
-                        "on-primary-fixed": "#001b3d",
-                        "surface-container-high": "#dce9ff",
-                        "on-secondary-fixed": "#191c1e",
-                        "on-surface": "#0b1c30",
-                        "secondary-fixed-dim": "#c4c7c9",
-                        "on-primary-fixed-variant": "#00468c",
-                        "secondary": "#5c5f61",
-                        "surface-container-lowest": "#ffffff",
-                        "background": "#f8f9ff",
-                        "surface-tint": "#005db6",
-                        "on-tertiary-fixed": "#002113",
-                        "error": "#ba1a1a",
-                        "primary-container": "#005eb8",
-                        "inverse-primary": "#a9c7ff",
-                        "surface-container": "#e5eeff",
-                        "on-tertiary-container": "#65f2b5",
-                        "surface-container-highest": "#d3e4fe",
-                        "outline": "#727783",
-                        "on-primary": "#ffffff",
-                        "outline-variant": "#c2c6d4",
-                        "inverse-on-surface": "#eaf1ff",
-                        "primary-fixed-dim": "#a9c7ff",
-                        "surface-bright": "#f8f9ff",
-                        "on-primary-container": "#c8daff",
-                        "on-tertiary-fixed-variant": "#005236",
-                        "primary": "#00478d",
-                        "error-container": "#ffdad6",
-                        "on-secondary": "#ffffff",
-                        "surface-container-low": "#eff4ff",
-                        "tertiary-fixed": "#6ffbbe",
-                        "on-surface-variant": "#424752",
-                        "on-tertiary": "#ffffff",
-                        "tertiary-fixed-dim": "#4edea3",
-                        "tertiary": "#005237",
-                        "surface": "#f8f9ff",
-                        "on-error-container": "#93000a",
-                        "surface-variant": "#d3e4fe",
-                        "surface-dim": "#cbdbf5",
-                        "on-secondary-fixed-variant": "#444749",
-                        "primary-fixed": "#d6e3ff",
-                        "inverse-surface": "#213145",
-                        "on-error": "#ffffff",
-                        "secondary-fixed": "#e0e3e5",
-                        "secondary-container": "#e0e3e5",
-                        "tertiary-container": "#006d4a",
-                        "on-secondary-container": "#626567"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "gutter": "24px",
-                        "md": "24px",
-                        "margin-mobile": "16px",
-                        "xs": "4px",
-                        "lg": "48px",
-                        "xl": "80px",
-                        "margin-desktop": "64px",
-                        "sm": "12px",
-                        "base": "8px"
-                    },
-                    "fontFamily": {
-                        "label-sm": ["Inter"],
-                        "body-md": ["Inter"],
-                        "headline-md": ["Inter"],
-                        "headline-xl": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "headline-lg-mobile": ["Inter"],
-                        "headline-lg": ["Inter"],
-                        "label-md": ["Inter"]
-                    }
-                }
-            }
-        }
-    </script>
 <style>
         :root {
             --primary-color: #00478d;
@@ -479,7 +395,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
         <div id="modal-card" class="relative bg-white rounded-2xl shadow-2xl border border-slate-200
              w-full max-w-md mx-4 p-6 animate-fade-scale">
             <div id="modal-icon-wrap" class="flex justify-center mb-4">
-                <span id="modal-icon" class="material-symbols-outlined text-[48px]">check_circle</span>
+                <span id="modal-icon" class="icon-line text-[48px]">check_circle</span>
             </div>
             <h3 id="modal-title" class="text-lg font-bold text-slate-900 text-center mb-1"></h3>
             <p id="modal-message" class="text-sm text-slate-600 text-center mb-4"></p>
@@ -536,7 +452,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <div class="flex flex-col items-center gap-2 stepper-node-container w-24 sm:w-28 relative" id="stepper-node-1">
                     <div class="step-node active flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 bg-white relative z-10 transition-colors duration-300 shadow-sm border-primary text-primary">
                         <span class="node-number text-sm font-bold absolute">1</span>
-                        <span class="node-check material-symbols-outlined text-[16px] sm:text-[20px] absolute">check</span>
+                        <span class="node-check icon-line text-[16px] sm:text-[20px] absolute">check</span>
                         <div class="pulse-ring absolute -inset-2 rounded-full border-2 opacity-0 scale-90" style="animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;"></div>
                     </div>
                     <div class="node-tooltip absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[11px] rounded-lg px-3 py-1.5 opacity-0 pointer-events-none transition-all duration-150 translate-y-1 whitespace-nowrap z-50 font-medium tracking-wide shadow-md">Not started yet</div>
@@ -553,7 +469,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <div class="flex flex-col items-center gap-2 stepper-node-container w-24 sm:w-28 relative" id="stepper-node-2">
                     <div class="step-node flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 bg-white relative z-10 transition-colors duration-300 shadow-sm border-slate-300 text-slate-400">
                         <span class="node-number text-sm font-bold absolute">2</span>
-                        <span class="node-check material-symbols-outlined text-[16px] sm:text-[20px] absolute">check</span>
+                        <span class="node-check icon-line text-[16px] sm:text-[20px] absolute">check</span>
                         <div class="pulse-ring absolute -inset-2 rounded-full border-2 opacity-0 scale-90 hidden" style="animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;"></div>
                     </div>
                     <div class="node-tooltip absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[11px] rounded-lg px-3 py-1.5 opacity-0 pointer-events-none transition-all duration-150 translate-y-1 whitespace-nowrap z-50 font-medium tracking-wide shadow-md">Not started yet</div>
@@ -570,7 +486,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <div class="flex flex-col items-center gap-2 stepper-node-container w-24 sm:w-28 relative" id="stepper-node-3">
                     <div class="step-node flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 bg-white relative z-10 transition-colors duration-300 shadow-sm border-slate-300 text-slate-400">
                         <span class="node-number text-sm font-bold absolute">3</span>
-                        <span class="node-check material-symbols-outlined text-[16px] sm:text-[20px] absolute">check</span>
+                        <span class="node-check icon-line text-[16px] sm:text-[20px] absolute">check</span>
                         <div class="pulse-ring absolute -inset-2 rounded-full border-2 opacity-0 scale-90 hidden" style="animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;"></div>
                     </div>
                     <div class="node-tooltip absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[11px] rounded-lg px-3 py-1.5 opacity-0 pointer-events-none transition-all duration-150 translate-y-1 whitespace-nowrap z-50 font-medium tracking-wide shadow-md">Not started yet</div>
@@ -593,7 +509,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 pb-4 border-b border-slate-100 gap-2">
                     <div>
                         <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary text-[22px]">patient_list</span> Personal Information
+                            <span class="icon-line text-primary text-[22px]">patient_list</span> Personal Information
                         </h2>
                         <p class="text-xs text-slate-500 mt-0.5">Please fill in your details to complete your appointment registration.</p>
                     </div>
@@ -605,17 +521,17 @@ $isLoggedIn = isset($_SESSION['user_id']);
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5" for="firstName">First Name <span class="text-red-500">*</span></label>
                         <div class="relative flex items-center">
                             <input class="form-input text-sm pr-10" id="firstName" name="firstName" placeholder="e.g., John" required type="text" autocomplete="given-name"/>
-                            <span class="micro-check material-symbols-outlined text-emerald-500 absolute right-3 text-[18px] opacity-0 scale-75 transition-all duration-200 pointer-events-none">check_circle</span>
+                            <span class="micro-check icon-line text-emerald-500 absolute right-3 text-[18px] opacity-0 scale-75 transition-all duration-200 pointer-events-none">check_circle</span>
                         </div>
-                        <span class="error-msg text-red-600 text-xs mt-1.5 hidden flex items-center gap-1"><span class="material-symbols-outlined text-sm">warning</span> First name is required.</span>
+                        <span class="error-msg text-red-600 text-xs mt-1.5 hidden flex items-center gap-1"><span class="icon-line text-sm">warning</span> First name is required.</span>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5" for="lastName">Last Name <span class="text-red-500">*</span></label>
                         <div class="relative flex items-center">
                             <input class="form-input text-sm pr-10" id="lastName" name="lastName" placeholder="e.g., Doe" required type="text" autocomplete="family-name"/>
-                            <span class="micro-check material-symbols-outlined text-emerald-500 absolute right-3 text-[18px] opacity-0 scale-75 transition-all duration-200 pointer-events-none">check_circle</span>
+                            <span class="micro-check icon-line text-emerald-500 absolute right-3 text-[18px] opacity-0 scale-75 transition-all duration-200 pointer-events-none">check_circle</span>
                         </div>
-                        <span class="error-msg text-red-600 text-xs mt-1.5 hidden flex items-center gap-1"><span class="material-symbols-outlined text-sm">warning</span> Last name is required.</span>
+                        <span class="error-msg text-red-600 text-xs mt-1.5 hidden flex items-center gap-1"><span class="icon-line text-sm">warning</span> Last name is required.</span>
                     </div>
                 </div>
 
@@ -626,8 +542,8 @@ $isLoggedIn = isset($_SESSION['user_id']);
                             <input class="form-input text-sm pr-10" id="email" name="email" placeholder="e.g., john.doe@example.com" required type="email" autocomplete="email"/>
                             <div id="email-indicator" class="absolute right-3 flex items-center justify-center transition-all duration-200 pointer-events-none"></div>
                         </div>
-                        <span class="error-msg text-red-600 text-xs mt-1.5 hidden flex items-center gap-1"><span class="material-symbols-outlined text-sm">warning</span> Valid email is required.</span>
-                        <div id="email-error-msg" class="text-red-500 text-xs mt-1.5 opacity-0 transition-opacity duration-200 hidden flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">error</span> Please enter a valid email address</div>
+                        <span class="error-msg text-red-600 text-xs mt-1.5 hidden flex items-center gap-1"><span class="icon-line text-sm">warning</span> Valid email is required.</span>
+                        <div id="email-error-msg" class="text-red-500 text-xs mt-1.5 opacity-0 transition-opacity duration-200 hidden flex items-center gap-1"><span class="icon-line text-[14px]">error</span> Please enter a valid email address</div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5" for="phone">Phone Number <span class="text-red-500">*</span></label>
@@ -636,9 +552,9 @@ $isLoggedIn = isset($_SESSION['user_id']);
                                 <span aria-hidden="true">🇺🇸</span> +1
                             </span>
                             <input class="text-sm flex-1 bg-transparent border-0 outline-none p-0 min-w-0" id="phone" name="phone" placeholder="(555) 123-4567" required type="tel" autocomplete="tel-national"/>
-                            <span class="micro-check material-symbols-outlined text-emerald-500 absolute right-3 text-[18px] opacity-0 scale-75 transition-all duration-200 pointer-events-none">check_circle</span>
+                            <span class="micro-check icon-line text-emerald-500 absolute right-3 text-[18px] opacity-0 scale-75 transition-all duration-200 pointer-events-none">check_circle</span>
                         </div>
-                        <span class="error-msg text-red-600 text-xs mt-1.5 hidden flex items-center gap-1"><span class="material-symbols-outlined text-sm">warning</span> Phone number is required.</span>
+                        <span class="error-msg text-red-600 text-xs mt-1.5 hidden flex items-center gap-1"><span class="icon-line text-sm">warning</span> Phone number is required.</span>
                     </div>
                 </div>
 
@@ -657,7 +573,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
 
                 <!-- HIPAA trust banner -->
                 <div class="flex items-start gap-3 bg-primary/5 border border-primary/15 rounded-xl px-4 py-3 mb-5">
-                    <span class="material-symbols-outlined text-primary text-[20px] flex-shrink-0 mt-0.5">lock</span>
+                    <span class="icon-line text-primary text-[20px] flex-shrink-0 mt-0.5">lock</span>
                     <p class="text-xs text-slate-500 leading-relaxed">
                         Your information is encrypted and used only to manage your appointment.
                         We are fully <strong class="text-slate-700 font-semibold">HIPAA-compliant</strong> and will never sell your data.
@@ -667,10 +583,10 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <!-- Action Buttons -->
                 <div class="flex flex-col-reverse sm:flex-row justify-between pt-4 border-t border-slate-100 gap-4">
                     <button class="text-slate-600 border border-slate-300 text-sm font-semibold px-6 py-3 rounded-lg hover:bg-slate-50 active:scale-[0.99] transition-all flex items-center justify-center gap-2 w-full sm:w-auto" type="button" onclick="window.history.back()">
-                        <span class="material-symbols-outlined text-base">arrow_back</span> Back
+                        <span class="icon-line text-base">arrow_back</span> Back
                     </button>
                     <button class="bg-primary text-white text-sm font-semibold px-6 py-3 rounded-lg hover:bg-primary/95 shadow-sm active:scale-[0.99] transition-all flex items-center justify-center gap-2 w-full sm:w-auto relative" type="button" id="btn-goto-step-2">
-                        <span id="btn-goto-step-2-text">Continue to Details &amp; Date</span> <span class="material-symbols-outlined text-base" id="btn-goto-step-2-icon">arrow_forward</span>
+                        <span id="btn-goto-step-2-text">Continue to Details &amp; Date</span> <span class="icon-line text-base" id="btn-goto-step-2-icon">arrow_forward</span>
                     </button>
                 </div>
             </div>
@@ -688,7 +604,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 pb-4 border-b border-slate-100 gap-2">
                             <div>
                                 <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-primary text-[22px]">calendar_today</span> Appointment Scheduling
+                                    <span class="icon-line text-primary text-[22px]">calendar_today</span> Appointment Scheduling
                                 </h2>
                                 <p class="text-xs text-slate-500 mt-0.5">Please choose your target clinical treatment plan and preferred schedule.</p>
                             </div>
@@ -709,16 +625,16 @@ $isLoggedIn = isset($_SESSION['user_id']);
                                 ?>
                                 <button type="button" class="service-card relative flex items-start p-4 border border-slate-200 rounded-xl bg-white text-left hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30" onclick="selectServiceCard('<?= htmlspecialchars($key, ENT_QUOTES) ?>')">
                                     <div class="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-primary shrink-0 mr-3">
-                                        <span class="material-symbols-outlined text-[24px]"><?= $icon ?></span>
+                                        <span class="icon-line text-[24px]"><?= $icon ?></span>
                                     </div>
                                     <div class="flex-grow">
                                         <h4 class="text-sm font-bold text-slate-800 leading-tight mb-1"><?= htmlspecialchars($svc['label'], ENT_QUOTES) ?></h4>
                                         <div class="inline-flex items-center text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
-                                            <span class="material-symbols-outlined text-[12px] mr-1">schedule</span> <?= htmlspecialchars($svc['duration'], ENT_QUOTES) ?>
+                                            <span class="icon-line text-[12px] mr-1">schedule</span> <?= htmlspecialchars($svc['duration'], ENT_QUOTES) ?>
                                         </div>
                                     </div>
                                     <div class="check-badge absolute top-3 right-3 text-primary bg-white rounded-full leading-none shadow-sm">
-                                        <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                                        <span class="icon-line text-[20px]">check_circle</span>
                                     </div>
                                 </button>
                                 <?php endforeach; ?>
@@ -731,7 +647,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                                 <option value="<?= htmlspecialchars($key, ENT_QUOTES) ?>" data-duration="<?= htmlspecialchars($svc['duration'], ENT_QUOTES) ?>"><?= htmlspecialchars($svc['label'], ENT_QUOTES) ?></option>
                                 <?php endforeach; ?>
                             </select>
-                            <span class="error-msg text-red-600 text-xs mt-1.5 hidden flex items-center gap-1" id="service-error"><span class="material-symbols-outlined text-sm">warning</span> Please select a service.</span>
+                            <span class="error-msg text-red-600 text-xs mt-1.5 hidden flex items-center gap-1" id="service-error"><span class="icon-line text-sm">warning</span> Please select a service.</span>
                         </div>
 
                         <div class="mb-2">
@@ -770,19 +686,19 @@ $isLoggedIn = isset($_SESSION['user_id']);
                                 <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col transition-all duration-300 w-full" id="calendar-container-wrapper">
                                     <div class="flex justify-between items-center p-3 sm:p-4 border-b border-slate-100 bg-slate-50/50">
                                         <button type="button" class="p-1.5 hover:bg-slate-200 rounded-lg transition-colors text-slate-500" id="prev-month">
-                                            <span class="material-symbols-outlined text-lg block">chevron_left</span>
+                                            <span class="icon-line text-lg block">chevron_left</span>
                                         </button>
                                         <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider" id="calendar-month-year">...</h3>
                                         <button type="button" class="p-1.5 hover:bg-slate-200 rounded-lg transition-colors text-slate-500" id="next-month">
-                                            <span class="material-symbols-outlined text-lg block">chevron_right</span>
+                                            <span class="icon-line text-lg block">chevron_right</span>
                                         </button>
                                     </div>
                                     <div id="next-available-hint" class="hidden px-4 py-2 bg-emerald-50 hover:bg-emerald-100 transition-colors cursor-pointer border-b border-emerald-100 text-[11px] text-emerald-700 font-semibold flex items-center justify-between group">
                                         <div class="flex items-center gap-1.5">
-                                            <span class="material-symbols-outlined text-sm">event_available</span>
+                                            <span class="icon-line text-sm">event_available</span>
                                             <span>Next available: <span id="next-available-date" class="font-bold underline decoration-emerald-300 underline-offset-2">--</span></span>
                                         </div>
-                                        <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                        <span class="icon-line text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
                                     </div>
                                     <div class="p-3 sm:p-4 flex-grow w-full">
                                         <div class="grid grid-cols-7 gap-1 min-[1440px]:gap-1.5 text-center text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
@@ -808,7 +724,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                     <div class="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6 block lg:hidden">
                         <div class="flex flex-col gap-1.5 sm:gap-2.5 mb-3 sm:mb-4">
                             <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-slate-400 text-[18px] sm:text-[20px]">description</span>
+                                <span class="icon-line text-slate-400 text-[18px] sm:text-[20px]">description</span>
                                 <h3 class="text-sm font-bold text-slate-900 leading-tight">Additional Notes <span class="text-xs text-slate-400 font-medium ml-1">(Optional)</span></h3>
                             </div>
                             <p class="text-xs text-slate-500">Provide medical details, sensitivities, or insurance notes.</p>
@@ -822,10 +738,10 @@ $isLoggedIn = isset($_SESSION['user_id']);
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 md:p-8">
                         <div class="flex flex-col-reverse md:flex-row justify-between items-center gap-4">
                             <button class="btn-prev text-slate-600 border border-slate-300 text-sm font-bold px-6 py-3 rounded-xl hover:bg-slate-50 active:scale-[0.99] transition-all flex items-center justify-center gap-2 w-full md:w-auto" type="button" id="btn-backto-step-1">
-                                <span class="material-symbols-outlined text-base">arrow_back</span> Back
+                                <span class="icon-line text-base">arrow_back</span> Back
                             </button>
                             <button class="bg-primary text-white text-sm font-bold px-8 py-3 rounded-xl shadow-sm hover:bg-primary/95 active:scale-[0.99] transition-all flex items-center justify-center gap-2 w-full md:w-auto" type="button" id="btn-goto-step-3">
-                                Review Appointment <span class="material-symbols-outlined text-base">visibility</span>
+                                Review Appointment <span class="icon-line text-base">visibility</span>
                             </button>
                         </div>
                     </div>
@@ -839,7 +755,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                             <div class="p-5 bg-slate-50 border-b border-slate-200/60 flex items-center justify-between gap-3">
                                 <div class="flex items-center gap-2.5 min-w-0">
                                     <div class="bg-primary/10 text-primary p-2 rounded-lg shrink-0">
-                                        <span class="material-symbols-outlined block text-[18px]">receipt_long</span>
+                                        <span class="icon-line block text-[18px]">receipt_long</span>
                                     </div>
                                     <div class="min-w-0">
                                         <h3 class="text-sm font-bold text-slate-900 leading-tight">Appointment Summary</h3>
@@ -868,7 +784,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                                             <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Patient Name</p>
                                             <p class="text-sm font-bold text-slate-800 mt-0.5 summary-value-update" id="live-name">--</p>
                                         </div>
-                                        <span class="material-symbols-outlined text-slate-300 text-lg shrink-0 mt-1">person</span>
+                                        <span class="icon-line text-slate-300 text-lg shrink-0 mt-1">person</span>
                                     </div>
 
                                     <div class="flex items-start justify-between gap-4 py-1 px-2 -mx-2 rounded-lg" id="summary-row-service">
@@ -876,7 +792,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                                             <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Service</p>
                                             <p class="text-sm font-bold text-slate-800 mt-0.5 summary-value-update" id="live-service">--</p>
                                         </div>
-                                        <span class="material-symbols-outlined text-slate-300 text-lg shrink-0 mt-1">medical_services</span>
+                                        <span class="icon-line text-slate-300 text-lg shrink-0 mt-1">medical_services</span>
                                     </div>
 
                                     <div class="flex items-start justify-between gap-4 py-1 px-2 -mx-2 rounded-lg" id="summary-row-date">
@@ -884,7 +800,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                                             <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Appointment Date</p>
                                             <p class="text-sm font-bold text-slate-800 mt-0.5 summary-value-update" id="live-date">--</p>
                                         </div>
-                                        <span class="material-symbols-outlined text-slate-300 text-lg shrink-0 mt-1">calendar_today</span>
+                                        <span class="icon-line text-slate-300 text-lg shrink-0 mt-1">calendar_today</span>
                                     </div>
 
                                     <div class="flex items-start justify-between gap-4 py-1 px-2 -mx-2 rounded-lg" id="summary-row-time">
@@ -892,7 +808,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                                             <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Appointment Time</p>
                                             <p class="text-sm font-bold text-slate-800 mt-0.5 summary-value-update" id="live-time">--</p>
                                         </div>
-                                        <span class="material-symbols-outlined text-slate-300 text-lg shrink-0 mt-1">schedule</span>
+                                        <span class="icon-line text-slate-300 text-lg shrink-0 mt-1">schedule</span>
                                     </div>
 
                                     <div class="flex items-start justify-between gap-4 py-1 px-2 -mx-2 rounded-lg" id="summary-row-duration">
@@ -900,7 +816,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                                             <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Estimated Duration</p>
                                             <p class="text-sm font-bold text-slate-800 mt-0.5 summary-value-update" id="live-duration">--</p>
                                         </div>
-                                        <span class="material-symbols-outlined text-slate-300 text-lg shrink-0 mt-1">hourglass_empty</span>
+                                        <span class="icon-line text-slate-300 text-lg shrink-0 mt-1">hourglass_empty</span>
                                     </div>
                                 </div>
                                 
@@ -934,7 +850,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 pb-4 border-b border-slate-100 gap-2">
                     <div>
                         <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary text-[22px]">verified</span> Review Your Appointment
+                            <span class="icon-line text-primary text-[22px]">verified</span> Review Your Appointment
                         </h2>
                         <p class="text-xs text-slate-500 mt-0.5">Please execute final validation of your clinic schedule data below.</p>
                     </div>
@@ -948,7 +864,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                     <div class="review-animate-header bg-primary/5 border border-primary/20 rounded-xl p-4 md:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
                         <div class="flex items-center gap-3.5">
                             <div class="w-10 h-10 sm:w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                                <span class="material-symbols-outlined text-[20px] sm:text-[24px]">calendar_month</span>
+                                <span class="icon-line text-[20px] sm:text-[24px]">calendar_month</span>
                             </div>
                             <div>
                                 <p class="text-sm sm:text-base font-bold text-slate-900" id="review-header-title">--</p>
@@ -956,7 +872,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                             </div>
                         </div>
                         <div class="flex items-center gap-2 sm:self-center self-start bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 shadow-sm shrink-0">
-                            <span class="material-symbols-outlined text-[16px] text-slate-400">schedule</span>
+                            <span class="icon-line text-[16px] text-slate-400">schedule</span>
                             <span id="review-header-duration">--</span>
                         </div>
                     </div>
@@ -969,7 +885,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                     <!-- Patient Information Display block -->
                     <div class="review-animate-block border border-slate-200 rounded-xl overflow-hidden shadow-sm">
                         <div class="bg-slate-50/70 px-4 py-3 border-b border-slate-200 flex items-center gap-2 text-slate-800 font-bold text-[11px] sm:text-xs uppercase tracking-wider">
-                            <span class="material-symbols-outlined text-sm text-primary">person</span> Patient Information
+                            <span class="icon-line text-sm text-primary">person</span> Patient Information
                         </div>
                         <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
                             <div>
@@ -990,7 +906,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                     <!-- Appointment Details Display block -->
                     <div class="review-animate-block border border-slate-200 rounded-xl overflow-hidden shadow-sm">
                         <div class="bg-slate-50/70 px-4 py-3 border-b border-slate-200 flex items-center gap-2 text-slate-800 font-bold text-[11px] sm:text-xs uppercase tracking-wider">
-                            <span class="material-symbols-outlined text-sm text-primary">medical_services</span> Appointment Details
+                            <span class="icon-line text-sm text-primary">medical_services</span> Appointment Details
                         </div>
                         <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                             <div>
@@ -1019,7 +935,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                     <!-- Notification Preferences Display block -->
                     <div class="review-animate-block border border-slate-200 rounded-xl overflow-hidden shadow-sm">
                         <div class="bg-slate-50/70 px-4 py-3 border-b border-slate-200 flex items-center gap-2 text-slate-800 font-bold text-[11px] sm:text-xs uppercase tracking-wider">
-                            <span class="material-symbols-outlined text-sm text-primary">notifications_active</span> Notification Preferences
+                            <span class="icon-line text-sm text-primary">notifications_active</span> Notification Preferences
                         </div>
                         <div class="p-4 flex flex-col gap-4">
                             <label class="flex items-start gap-3 cursor-pointer group">
@@ -1048,7 +964,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
 
                     <!-- Secure Submission Trust Notice -->
                     <div class="review-animate-block flex items-start gap-3 p-4 bg-primary/5 rounded-xl border border-primary/10 text-xs text-slate-600 mb-20 sm:mb-0">
-                        <span class="material-symbols-outlined text-primary text-[20px] mt-0.5 shrink-0">shield_with_heart</span>
+                        <span class="icon-line text-primary text-[20px] mt-0.5 shrink-0">shield_with_heart</span>
                         <div>
                             <p class="font-bold text-slate-900">Premium Clinical Data Standards</p>
                             <p class="text-slate-500 mt-0.5 leading-relaxed">By clicking confirm below, your slot will be locked instantly into our medical calendar database and encrypted via HIPAA compliant secure portal safeguards.</p>
@@ -1060,14 +976,14 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 mt-0 sm:mt-8 pt-0 sm:pt-6 border-t-0 sm:border-t border-slate-100 sm:relative sm:p-0 sm:bg-transparent fixed bottom-0 left-0 right-0 bg-white border-t p-4 z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] sm:shadow-none">
                     <div class="flex flex-row w-full sm:w-auto gap-3">
                         <button class="flex-1 sm:flex-none text-slate-600 border border-slate-300 text-sm font-bold px-4 py-3 rounded-xl hover:bg-slate-50 active:scale-[0.99] transition-all flex items-center justify-center gap-2" type="button" id="review-back-btn">
-                            <span class="material-symbols-outlined text-base">arrow_back</span> <span class="hidden sm:inline">Back</span>
+                            <span class="icon-line text-base">arrow_back</span> <span class="hidden sm:inline">Back</span>
                         </button>
                         <button class="flex-1 sm:flex-none text-primary border border-primary/30 text-sm font-bold px-4 py-3 rounded-xl hover:bg-primary/5 active:scale-[0.99] transition-all flex items-center justify-center gap-2" type="button" id="review-edit-btn">
-                            <span class="material-symbols-outlined text-base">edit</span> <span class="hidden sm:inline">Edit Info</span><span class="inline sm:hidden">Edit</span>
+                            <span class="icon-line text-base">edit</span> <span class="hidden sm:inline">Edit Info</span><span class="inline sm:hidden">Edit</span>
                         </button>
                     </div>
                     <button class="w-full sm:w-auto bg-primary text-white text-sm font-bold px-8 py-3 rounded-xl shadow-md hover:bg-primary/95 active:scale-[0.99] transition-all flex items-center justify-center gap-2" type="button" id="review-confirm-btn">
-                        Confirm <span class="hidden sm:inline">Appointment</span> <span class="material-symbols-outlined text-base">check_circle</span>
+                        Confirm <span class="hidden sm:inline">Appointment</span> <span class="icon-line text-base">check_circle</span>
                     </button>
                 </div>
             </div>
@@ -1089,7 +1005,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
         
         <!-- Header -->
         <div class="px-5 sm:px-6 pt-1 sm:pt-6 pb-4 border-b border-slate-100 relative shrink-0">
-            <button id="time-modal-close-x" class="absolute top-3 sm:top-5 right-4 sm:right-5 text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-full hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/50 hidden sm:block"><span class="material-symbols-outlined block">close</span></button>
+            <button id="time-modal-close-x" class="absolute top-3 sm:top-5 right-4 sm:right-5 text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-full hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/50 hidden sm:block"><span class="icon-line block">close</span></button>
             <h2 id="time-modal-date-title" class="text-lg sm:text-xl font-bold text-slate-900 mb-1 pr-8">Date</h2>
             <p id="time-modal-hours-subtitle" class="text-xs sm:text-sm text-slate-500 mb-2.5 font-medium">Hours</p>
             <div class="flex items-center justify-between">
@@ -1118,7 +1034,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
     <div class="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
         <div>
             <div class="font-bold text-slate-800 text-md tracking-tight flex items-center justify-center md:justify-start gap-2">
-                <span class="material-symbols-outlined text-primary text-[20px]">dentistry</span> DentalCare Pro
+                <span class="icon-line text-primary text-[20px]">dentistry</span> DentalCare Pro
             </div>
             <p class="text-xs text-slate-500 mt-1">Providing state-of-the-art dental procedures with dynamic scheduling workflows.</p>
         </div>
@@ -1172,7 +1088,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
             const toast = document.createElement('div');
             
             let bgClass = type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-slate-800 border-slate-700 text-white';
-            let icon = type === 'success' ? '<span class="material-symbols-outlined text-emerald-500 mr-2 text-[20px]">check_circle</span>' : '';
+            let icon = type === 'success' ? '<span class="icon-line text-emerald-500 mr-2 text-[20px]">check_circle</span>' : '';
             
             toast.className = `flex items-center px-4 py-3 rounded-xl border shadow-lg font-medium text-sm toast-enter pointer-events-auto ${bgClass}`;
             toast.innerHTML = `${icon}${message}`;
@@ -1556,14 +1472,14 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 errorMsg.classList.add('opacity-0');
                 setTimeout(() => errorMsg.classList.add('hidden'), 200);
             } else if (emailRegex.test(val)) {
-                indicator.innerHTML = '<span class="material-symbols-outlined text-emerald-500 text-[20px] fade-scale-in">check_circle</span>';
+                indicator.innerHTML = '<span class="icon-line text-emerald-500 text-[20px] fade-scale-in">check_circle</span>';
                 emailHasBeenValid = true;
                 errorMsg.classList.add('opacity-0');
                 setTimeout(() => errorMsg.classList.add('hidden'), 200);
                 if(defaultError) defaultError.classList.add('hidden'); 
             } else {
                 if (emailHasBeenValid) {
-                    indicator.innerHTML = '<span class="material-symbols-outlined text-red-500 text-[20px] fade-scale-in">cancel</span>';
+                    indicator.innerHTML = '<span class="icon-line text-red-500 text-[20px] fade-scale-in">cancel</span>';
                     errorMsg.classList.remove('hidden');
                     setTimeout(() => errorMsg.classList.remove('opacity-0'), 10);
                 } else {
@@ -1603,7 +1519,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
             messageEl.textContent = message;
 
             // Reset state
-            iconEl.className = 'material-symbols-outlined text-[48px]';
+            iconEl.className = 'icon-line text-[48px]';
             altContainer.classList.add('hidden');
             nextContainer.classList.add('hidden');
             actions.innerHTML = '';
@@ -1898,15 +1814,15 @@ $isLoggedIn = isset($_SESSION['user_id']);
 
                 if (isSelected) {
                     item.className = 'slot-item relative bg-primary text-white border-2 border-primary shadow-md cursor-pointer rounded-xl px-4 py-2.5 text-sm font-semibold scale-[1.03] transition-all focus:outline-none focus:ring-2 focus:ring-primary/50 ring-offset-1';
-                    item.innerHTML = `<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">check_circle</span>${time}</span>`;
+                    item.innerHTML = `<span class="flex items-center gap-1.5"><span class="icon-line text-[14px]">check_circle</span>${time}</span>`;
                     item.onclick = () => { inputs.time.value = time; renderSlots(availableSlots); updateModalFooter(); };
                 } else if (isAvailable) {
                     item.className = 'slot-item bg-white border border-slate-200 hover:border-primary hover:text-primary hover:bg-primary/5 hover:shadow-sm cursor-pointer rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 transition-all focus:outline-none focus:ring-2 focus:ring-primary/50 ring-offset-1';
-                    item.innerHTML = `<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px] text-slate-300">schedule</span>${time}</span>`;
+                    item.innerHTML = `<span class="flex items-center gap-1.5"><span class="icon-line text-[14px] text-slate-300">schedule</span>${time}</span>`;
                     item.onclick = () => { inputs.time.value = time; renderSlots(availableSlots); updateModalFooter(); };
                 } else {
                     item.className = 'slot-item bg-slate-50 text-slate-300 line-through cursor-not-allowed rounded-xl px-4 py-2.5 text-sm font-medium pointer-events-none border border-slate-100';
-                    item.innerHTML = `<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">block</span>${time}</span>`;
+                    item.innerHTML = `<span class="flex items-center gap-1.5"><span class="icon-line text-[14px]">block</span>${time}</span>`;
                     item.disabled = true;
                 }
                 return item;
@@ -1920,7 +1836,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 header.className = 'flex items-center gap-2 mb-3';
                 header.innerHTML = `
                     <div class="flex items-center gap-1.5 shrink-0">
-                        <span class="material-symbols-outlined text-[15px] ${colorClass}">${icon}</span>
+                        <span class="icon-line text-[15px] ${colorClass}">${icon}</span>
                         <span class="text-[11px] font-bold uppercase tracking-widest ${colorClass}">${label}</span>
                     </div>
                     <div class="flex-1 h-px bg-slate-200/80"></div>
@@ -2222,7 +2138,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                             dayDiv.classList.add('ring-2', 'ring-emerald-400', 'ring-offset-1', 'bg-emerald-50', 'text-emerald-800');
                             
                             const shortTime = inputs.time.value.replace(' AM','a').replace(' PM','p');
-                            dayDiv.innerHTML = `<span class="font-bold">${day}</span><div class="absolute bottom-[3px] sm:bottom-1 text-[9px] font-bold text-emerald-700 leading-none flex items-center justify-center w-full"><span class="material-symbols-outlined text-[10px] mr-[1px]">schedule</span>${shortTime}</div>`;
+                            dayDiv.innerHTML = `<span class="font-bold">${day}</span><div class="absolute bottom-[3px] sm:bottom-1 text-[9px] font-bold text-emerald-700 leading-none flex items-center justify-center w-full"><span class="icon-line text-[10px] mr-[1px]">schedule</span>${shortTime}</div>`;
                         } else {
                             const dot = dayDiv.querySelector('.status-dot');
                             if (dot) {
@@ -2455,7 +2371,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
         reviewConfirmBtn.addEventListener('click', () => {
             forceSyncNotes();
             
-            reviewConfirmBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-base block">refresh</span> <span class="hidden sm:inline">Processing Booking...</span>';
+            reviewConfirmBtn.innerHTML = '<span class="icon-line animate-spin text-base block">refresh</span> <span class="hidden sm:inline">Processing Booking...</span>';
             reviewConfirmBtn.disabled = true;
             
             const formData = {
@@ -2533,7 +2449,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
         });
 
         function resetConfirmBtn() {
-            reviewConfirmBtn.innerHTML = 'Confirm <span class="hidden sm:inline">Appointment</span> <span class="material-symbols-outlined text-base">check_circle</span>';
+            reviewConfirmBtn.innerHTML = 'Confirm <span class="hidden sm:inline">Appointment</span> <span class="icon-line text-base">check_circle</span>';
             reviewConfirmBtn.disabled = false;
         }
 

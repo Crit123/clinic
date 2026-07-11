@@ -25,8 +25,11 @@ require_once __DIR__ . '/../design-config.php';
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 
-    <!-- Single combined font request -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+    <!-- Material Symbols font request -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+
+    <!-- Portal typography base (Plus Jakarta Sans / Fraunces + .stat-number utility) -->
+    <link rel="stylesheet" href="../../assets/css/theme-base.css"/>
 
     <!-- Tailwind CDN (loaded in <head>, never inside <body> components) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -106,14 +109,14 @@ require_once __DIR__ . '/../design-config.php';
                         "margin-desktop":     "40px"
                     },
                     fontFamily: {
-                        "label-md":          ["Inter"],
-                        "headline-lg":       ["Inter"],
-                        "body-lg":           ["Inter"],
-                        "body-md":           ["Inter"],
-                        "body-sm":           ["Inter"],
-                        "headline-lg-mobile":["Inter"],
-                        "headline-md":       ["Inter"],
-                        "display-lg":        ["Inter"]
+                        "label-md":          ["Plus Jakarta Sans"],
+                        "headline-lg":       ["Plus Jakarta Sans"],
+                        "body-lg":           ["Plus Jakarta Sans"],
+                        "body-md":           ["Plus Jakarta Sans"],
+                        "body-sm":           ["Plus Jakarta Sans"],
+                        "headline-lg-mobile":["Plus Jakarta Sans"],
+                        "headline-md":       ["Plus Jakarta Sans"],
+                        "display-lg":        ["Fraunces"]
                     },
                     fontSize: {
                         "label-md":          ["12px",  { "lineHeight":"16px",  "letterSpacing":"0.05em", "fontWeight":"600" }],

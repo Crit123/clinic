@@ -4,42 +4,15 @@ session_start();
 require_once __DIR__ . '/config/app.php';
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html class="light scroll-smooth scroll-pt-[80px]" lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Booking Confirmed - DentalCare Pro</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="<?= htmlspecialchars($base_url) ?>/assets/js/theme-config.js"></script>
+<link rel="stylesheet" href="<?= htmlspecialchars($base_url) ?>/assets/css/theme-base.css">
 <link rel="stylesheet" href="<?= htmlspecialchars($base_url) ?>/assets/css/responsive.css">
-<script id="tailwind-config">
-        tailwind.config = {
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-background": "#0b1c30",
-                        "on-primary-fixed": "#001b3d",
-                        "surface-container-high": "#dce9ff",
-                        "on-secondary-fixed": "#191c1e",
-                        "on-surface": "#0b1c30",
-                        "secondary-fixed-dim": "#c4c7c9",
-                        "on-primary-fixed-variant": "#00468c",
-                        "secondary": "#5c5f61",
-                        "surface-container-lowest": "#ffffff",
-                        "background": "#f8f9ff",
-                        "surface-tint": "#005db6",
-                        "error": "#ba1a1a",
-                        "primary-container": "#005eb8",
-                        "primary": "#00478d"
-                    },
-                    "fontFamily": {
-                        "sans": ["Inter"]
-                    }
-                }
-            }
-        }
-    </script>
 <style>
     :root { --primary-color: #00478d; }
     
@@ -98,17 +71,17 @@ if (file_exists('components/header-component.php')) {
 
     <!-- Loading State -->
     <div id="loading-state" class="text-center max-w-2xl mx-auto mt-10 fade-in">
-        <span class="material-symbols-outlined animate-spin text-primary text-[40px] mb-4">refresh</span>
+        <span class="icon-line animate-spin text-primary text-[40px] mb-4">refresh</span>
         <h2 class="text-xl font-bold text-slate-800">Verifying Booking Database...</h2>
     </div>
 
     <!-- Error State -->
     <div id="error-state" class="hidden text-center max-w-2xl mx-auto mt-10 fade-in">
-        <span class="material-symbols-outlined text-red-500 text-[40px] mb-4">error</span>
+        <span class="icon-line text-red-500 text-[40px] mb-4">error</span>
         <h2 class="text-xl font-bold text-slate-800 mb-2">Booking Not Found</h2>
         <p class="text-sm text-slate-600 mb-6" id="error-message">We couldn't retrieve your appointment data. It may have been canceled or the reference code is invalid.</p>
         <a href="<?= htmlspecialchars($base_url) ?>/booking.php" class="bg-primary text-white text-sm font-bold px-6 py-3 rounded-xl shadow-sm hover:bg-primary/95 transition-all inline-flex items-center gap-2">
-            <span class="material-symbols-outlined text-base">calendar_month</span> Book New Appointment
+            <span class="icon-line text-base">calendar_month</span> Book New Appointment
         </a>
     </div>
 
@@ -116,7 +89,7 @@ if (file_exists('components/header-component.php')) {
     <div id="success-state" class="hidden w-full">
         <div class="mb-6 text-center max-w-2xl mx-auto mt-2 sm:mt-4">
             <div id="success-icon-container" class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="material-symbols-outlined text-[32px]">check_circle</span>
+                <span class="icon-line text-[32px]">check_circle</span>
             </div>
             <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 mb-2">Appointment Confirmed</h1>
             <p class="text-xs sm:text-sm text-slate-600">Your clinical schedule has been securely saved to our database.</p>
@@ -127,7 +100,7 @@ if (file_exists('components/header-component.php')) {
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 pb-4 border-b border-slate-100 gap-2">
                 <div>
                     <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary text-[22px]">verified</span> Confirmed Itinerary
+                        <span class="icon-line text-primary text-[22px]">verified</span> Confirmed Itinerary
                     </h2>
                 </div>
                 <span class="text-xs font-bold px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-100 transition-all duration-150 self-start sm:self-auto flex items-center gap-1.5">
@@ -146,7 +119,7 @@ if (file_exists('components/header-component.php')) {
                 <!-- Patient Information Display -->
                 <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
                     <div class="bg-slate-50/70 px-4 py-3 border-b border-slate-200 flex items-center gap-2 text-slate-800 font-bold text-[11px] sm:text-xs uppercase tracking-wider">
-                        <span class="material-symbols-outlined text-sm text-primary">person</span> Patient Information
+                        <span class="icon-line text-sm text-primary">person</span> Patient Information
                     </div>
                     <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
                         <div>
@@ -167,7 +140,7 @@ if (file_exists('components/header-component.php')) {
                 <!-- Appointment Details Display -->
                 <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
                     <div class="bg-slate-50/70 px-4 py-3 border-b border-slate-200 flex items-center gap-2 text-slate-800 font-bold text-[11px] sm:text-xs uppercase tracking-wider">
-                        <span class="material-symbols-outlined text-sm text-primary">medical_services</span> Appointment Details
+                        <span class="icon-line text-sm text-primary">medical_services</span> Appointment Details
                     </div>
                     <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                         <div>
@@ -191,7 +164,7 @@ if (file_exists('components/header-component.php')) {
 
                 <!-- Next steps banner -->
                 <div class="flex items-start gap-3 p-4 bg-primary/5 rounded-xl border border-primary/10 text-xs text-slate-600">
-                    <span class="material-symbols-outlined text-primary text-[20px] mt-0.5 shrink-0">event_available</span>
+                    <span class="icon-line text-primary text-[20px] mt-0.5 shrink-0">event_available</span>
                     <div>
                         <p class="font-bold text-slate-900">What's Next?</p>
                         <p class="text-slate-500 mt-0.5 leading-relaxed">We've sent a confirmation email to your address. We'll also remind you 24 hours prior to your scheduled appointment. Please arrive 10 minutes early.</p>
@@ -207,7 +180,7 @@ if (file_exists('components/header-component.php')) {
 
                 <!-- Auto-redirect countdown (shown once booking is confirmed) -->
                 <div id="redirect-countdown" class="hidden items-center gap-2 text-xs sm:text-sm text-slate-500 bg-slate-50 border border-slate-200 rounded-full px-4 py-2">
-                    <span class="material-symbols-outlined text-[16px] text-primary" aria-hidden="true">schedule</span>
+                    <span class="icon-line text-[16px] text-primary" aria-hidden="true">schedule</span>
                     <span>Returning to homepage in <span id="countdown-seconds" class="font-bold text-primary tabular-nums">5</span>s&hellip;</span>
                     <button type="button" id="cancel-redirect" class="ml-1 font-bold text-slate-600 hover:text-slate-900 underline underline-offset-2 transition-colors">
                         Stay here
@@ -222,7 +195,7 @@ if (file_exists('components/header-component.php')) {
     <div class="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
         <div>
             <div class="font-bold text-slate-800 text-md tracking-tight flex items-center justify-center md:justify-start gap-2">
-                <span class="material-symbols-outlined text-primary text-[20px]">dentistry</span> DentalCare Pro
+                <span class="icon-line text-primary text-[20px]">dentistry</span> DentalCare Pro
             </div>
             <p class="text-xs text-slate-500 mt-1">Providing state-of-the-art dental procedures with dynamic scheduling workflows.</p>
         </div>

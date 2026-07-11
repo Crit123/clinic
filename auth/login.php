@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
                 error_log("Failed to link guest bookings for email " . $email . " on registration: " . $e->getMessage());
             }
 
-            jsonResponse(true, 'Registration successful', ['redirect' => '../client/pages/login/dashboard.php']);
+            jsonResponse(true, 'Registration successful', ['redirect' => '../client/pages/dashboard.php']);
         } else {
             jsonResponse(false, 'Registration failed.');
         }
@@ -169,69 +169,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-    tailwind.config = {
-        darkMode: "class",
-        theme: {
-            extend: {
-                "colors": {
-                    "on-background": "#0b1c30",
-                    "on-primary-fixed": "#001b3d",
-                    "surface-container-high": "#dce9ff",
-                    "on-secondary-fixed": "#191c1e",
-                    "on-surface": "#0b1c30",
-                    "secondary-fixed-dim": "#c4c7c9",
-                    "on-primary-fixed-variant": "#00468c",
-                    "secondary": "#5c5f61",
-                    "surface-container-lowest": "#ffffff",
-                    "background": "#f8f9ff",
-                    "surface-tint": "#005db6",
-                    "on-tertiary-fixed": "#002113",
-                    "error": "#ba1a1a",
-                    "primary-container": "#005eb8",
-                    "inverse-primary": "#a9c7ff",
-                    "surface-container": "#e5eeff",
-                    "on-tertiary-container": "#65f2b5",
-                    "surface-container-highest": "#d3e4fe",
-                    "outline": "#727783",
-                    "on-primary": "#ffffff",
-                    "outline-variant": "#c2c6d4",
-                    "inverse-on-surface": "#eaf1ff",
-                    "primary-fixed-dim": "#a9c7ff",
-                    "surface-bright": "#f8f9ff",
-                    "on-primary-container": "#c8daff",
-                    "on-tertiary-fixed-variant": "#005236",
-                    "primary": "#00478d",
-                    "error-container": "#ffdad6",
-                    "on-secondary": "#ffffff",
-                    "surface-container-low": "#eff4ff",
-                    "tertiary-fixed": "#6ffbbe",
-                    "on-surface-variant": "#424752",
-                    "on-tertiary": "#ffffff",
-                    "tertiary-fixed-dim": "#4edea3",
-                    "tertiary": "#005237",
-                    "surface": "#f8f9ff",
-                    "on-error-container": "#93000a",
-                    "surface-variant": "#d3e4fe",
-                    "surface-dim": "#cbdbf5",
-                    "on-secondary-fixed-variant": "#444749",
-                    "primary-fixed": "#d6e3ff",
-                    "inverse-surface": "#213145",
-                    "on-error": "#ffffff",
-                    "secondary-fixed": "#e0e3e5",
-                    "secondary-container": "#e0e3e5",
-                    "tertiary-container": "#006d4a",
-                    "on-secondary-container": "#626567"
-                },
-                "fontFamily": {
-                    "body-md":  ["Inter"]
-                }
-            }
-        }
-    }
-</script>
+<script src="../assets/js/theme-config.js"></script>
+<link rel="stylesheet" href="../assets/css/theme-base.css">
+<link rel="stylesheet" href="../assets/css/responsive.css">
 <style>
     /* Navigation Underline Animation */
     .nav-link { position: relative; text-decoration: none; padding-bottom: 4px; }
@@ -241,8 +181,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .nav-link:hover::after, .nav-link.active::after { transform: scaleX(1); transform-origin: left; }
-
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 
     /* Tab indicator */
     .auth-tab {
@@ -391,7 +329,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-1.5" for="login-email">Email Address</label>
                             <div class="relative">
                                 <input class="auth-input pr-10" id="login-email" type="email" placeholder="you@example.com"/>
-                                <span class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/40 text-[18px]">mail</span>
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 icon-line text-on-surface-variant/40 text-[18px]">mail</span>
                             </div>
                         </div>
                         <div>
@@ -402,7 +340,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             <div class="relative">
                                 <input class="auth-input pr-10" id="login-password" type="password" placeholder="••••••••"/>
                                 <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 hover:text-on-surface-variant transition-colors focus:outline-none" onclick="togglePassword('login-password', this)">
-                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    <span class="icon-line text-[18px]">visibility</span>
                                 </button>
                             </div>
                         </div>
@@ -411,7 +349,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             <span class="text-sm text-on-surface-variant font-medium">Keep me logged in</span>
                         </label>
                         <button class="w-full h-11 rounded-lg bg-primary text-on-primary font-bold text-sm hover:bg-on-primary-fixed-variant active:scale-[0.99] transition-all duration-200 shadow-sm flex items-center justify-center gap-2 mt-1" onclick="handleLogin()">
-                            <span class="material-symbols-outlined text-[18px]">login</span> Log In
+                            <span class="icon-line text-[18px]">login</span> Log In
                         </button>
                     </div>
 
@@ -452,7 +390,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-1.5" for="reg-email">Email Address</label>
                             <div class="relative">
                                 <input class="auth-input pr-10" id="reg-email" type="email" placeholder="you@example.com"/>
-                                <span class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/40 text-[18px]" id="reg-email-icon">mail</span>
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 icon-line text-on-surface-variant/40 text-[18px]" id="reg-email-icon">mail</span>
                             </div>
                             <p class="text-[11px] text-error mt-1.5 hidden" id="reg-email-error">Please enter a valid email address.</p>
                         </div>
@@ -464,7 +402,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             <div class="relative">
                                 <input class="auth-input pr-10" id="reg-password" type="password" placeholder="8–16 characters" maxlength="16" oninput="checkStrength(this.value)"/>
                                 <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 hover:text-on-surface-variant transition-colors focus:outline-none" onclick="togglePassword('reg-password', this)">
-                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    <span class="icon-line text-[18px]">visibility</span>
                                 </button>
                             </div>
                             <p class="text-[11px] text-error mt-1.5 hidden" id="reg-password-max-error">Maximum length is 16 characters.</p>
@@ -472,23 +410,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             <!-- Password Checklist -->
                             <ul id="pw-checklist" class="mt-2 space-y-1">
                                 <li id="rule-length" class="flex items-center gap-1.5 text-[11px] font-medium text-on-surface-variant/60 transition-colors duration-300">
-                                    <span class="material-symbols-outlined text-[14px]">radio_button_unchecked</span>
+                                    <span class="icon-line text-[14px]">radio_button_unchecked</span>
                                     8–16 characters
                                 </li>
                                 <li id="rule-upper" class="flex items-center gap-1.5 text-[11px] font-medium text-on-surface-variant/60 transition-colors duration-300">
-                                    <span class="material-symbols-outlined text-[14px]">radio_button_unchecked</span>
+                                    <span class="icon-line text-[14px]">radio_button_unchecked</span>
                                     1 uppercase letter
                                 </li>
                                 <li id="rule-lower" class="flex items-center gap-1.5 text-[11px] font-medium text-on-surface-variant/60 transition-colors duration-300">
-                                    <span class="material-symbols-outlined text-[14px]">radio_button_unchecked</span>
+                                    <span class="icon-line text-[14px]">radio_button_unchecked</span>
                                     1 lowercase letter
                                 </li>
                                 <li id="rule-number" class="flex items-center gap-1.5 text-[11px] font-medium text-on-surface-variant/60 transition-colors duration-300">
-                                    <span class="material-symbols-outlined text-[14px]">radio_button_unchecked</span>
+                                    <span class="icon-line text-[14px]">radio_button_unchecked</span>
                                     1 number
                                 </li>
                                 <li id="rule-special" class="flex items-center gap-1.5 text-[11px] font-medium text-on-surface-variant/60 transition-colors duration-300">
-                                    <span class="material-symbols-outlined text-[14px]">radio_button_unchecked</span>
+                                    <span class="icon-line text-[14px]">radio_button_unchecked</span>
                                     1 special character
                                 </li>
                             </ul>
@@ -498,7 +436,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             <div class="relative">
                                 <input class="auth-input pr-10" id="reg-confirm" type="password" placeholder="Repeat password"/>
                                 <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 hover:text-on-surface-variant transition-colors focus:outline-none" onclick="togglePassword('reg-confirm', this)">
-                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    <span class="icon-line text-[18px]">visibility</span>
                                 </button>
                             </div>
                             <p class="text-[11px] text-error mt-1.5 hidden" id="reg-confirm-error">Passwords do not match.</p>
@@ -521,7 +459,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
                         <div>
                             <button id="btn-register" class="w-full h-11 rounded-lg bg-primary text-on-primary font-bold text-sm hover:bg-on-primary-fixed-variant active:scale-[0.99] transition-all duration-200 shadow-sm flex items-center justify-center gap-2 mt-1" onclick="handleRegister()">
-                                <span class="material-symbols-outlined text-[18px]">person_add</span> Create Account
+                                <span class="icon-line text-[18px]">person_add</span> Create Account
                             </button>
                         </div>
                     </div>
@@ -550,7 +488,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         <p class="text-center mt-5 text-sm text-on-surface-variant">
             <a href="../index.php" class="inline-flex items-center gap-1 font-semibold text-primary hover:underline">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span> Back to homepage
+                <span class="icon-line text-[16px]">arrow_back</span> Back to homepage
             </a>
         </p>
     </div>
@@ -569,11 +507,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         <!-- Header -->
         <div class="px-6 py-4 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-low rounded-t-2xl">
             <h2 id="legal-modal-title" class="text-lg font-bold text-on-background flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary">gavel</span>
+                <span class="icon-line text-primary">gavel</span>
                 Document Title
             </h2>
             <button onclick="closeLegalModal()" class="text-on-surface-variant hover:text-error transition-colors focus:outline-none rounded-full p-1 hover:bg-error/10">
-                <span class="material-symbols-outlined">close</span>
+                <span class="icon-line">close</span>
             </button>
         </div>
 
@@ -706,7 +644,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         // Populate content
         const data = legalContent[type];
-        titleEl.innerHTML = `<span class="material-symbols-outlined text-primary">${data.icon}</span> ${data.title}`;
+        titleEl.innerHTML = `<span class="icon-line text-primary">${data.icon}</span> ${data.title}`;
         bodyEl.innerHTML = data.body;
 
         // Show modal & prevent background scrolling
@@ -770,7 +708,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // ── Toggle password visibility ────────────────────────────────────────────
     function togglePassword(inputId, btn) {
         const input = document.getElementById(inputId);
-        const icon  = btn.querySelector('.material-symbols-outlined');
+        const icon  = btn.querySelector('.icon-line');
         if (input.type === 'password') {
             input.type = 'text';
             icon.textContent = 'visibility_off';
@@ -820,13 +758,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             error.classList.add('hidden');
         } else if (emailRegex.test(this.value)) {
             icon.textContent = 'check_circle';
-            icon.className = 'absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-emerald-500 text-[18px]';
+            icon.className = 'absolute right-3 top-1/2 -translate-y-1/2 icon-line text-emerald-500 text-[18px]';
             this.classList.remove('input-error');
             this.classList.add('input-valid');
             error.classList.add('hidden');
         } else {
             icon.textContent = 'cancel';
-            icon.className = 'absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-error text-[18px]';
+            icon.className = 'absolute right-3 top-1/2 -translate-y-1/2 icon-line text-error text-[18px]';
             this.classList.add('input-error');
             this.classList.remove('input-valid');
             error.classList.remove('hidden');
@@ -869,10 +807,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         toast.id = id;
         toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg text-sm font-semibold transition-all duration-300 translate-x-10 opacity-0 ${palettes[type]}`;
         toast.innerHTML = `
-            <span class="material-symbols-outlined text-[18px] flex-shrink-0">${icons[type]}</span>
+            <span class="icon-line text-[18px] flex-shrink-0">${icons[type]}</span>
             <span class="flex-grow">${message}</span>
             <button class="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity" onclick="document.getElementById('${id}').remove()">
-                <span class="material-symbols-outlined text-[16px]">close</span>
+                <span class="icon-line text-[16px]">close</span>
             </button>`;
         container.appendChild(toast);
         requestAnimationFrame(() => toast.classList.remove('translate-x-10', 'opacity-0'));

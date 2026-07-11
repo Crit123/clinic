@@ -28,7 +28,7 @@ class PortalTourCompact extends PortalTourCore {
         this.tooltip = document.createElement('div');
         this.tooltip.id = 'tourTooltip';
         // Fixed bottom anchor, safe padding, top rounding
-        this.tooltip.className = 'fixed z-[9998] bg-surface-container-lowest shadow-[0_-10px_40px_rgba(0,0,0,0.15)] bottom-0 left-1/2 -translate-x-1/2 w-full md:w-[600px] rounded-t-3xl p-6 pb-safe mb-0 tour-tooltip-base tour-tooltip-hidden transition-all duration-300';
+        this.tooltip.className = 'fixed z-[9998] bg-surface-container-lowest shadow-[0_-10px_40px_rgba(0,0,0,0.15)] bottom-0 left-1/2 -translate-x-1/2 w-full md:w-[600px] rounded-t-3xl p-6 pb-safe mb-0 tour-tooltip-base tour-tooltip-hidden tour-sheet-spring';
         this.tooltip.setAttribute('role', 'dialog');
         this.tooltip.setAttribute('aria-modal', 'true');
         this.tooltip.setAttribute('aria-label', 'Portal Tour');

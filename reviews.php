@@ -3,7 +3,8 @@
 require_once __DIR__ . '/api/data/services-data.php';
 $services = getAllServices();
 
-$base_url = '/booking-system'; // Base path
+// Global app config — defines $base_url
+require_once __DIR__ . '/config/app.php';
 ?>
 <!DOCTYPE html>
 <html class="light scroll-smooth scroll-pt-[80px]" lang="en">
@@ -21,111 +22,12 @@ $base_url = '/booking-system'; // Base path
     <meta property="og:url" content="https://dentalcarepro.example/reviews.php" />
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-background": "#0b1c30",
-                        "on-primary-fixed": "#001b3d",
-                        "surface-container-high": "#dce9ff",
-                        "on-secondary-fixed": "#191c1e",
-                        "on-surface": "#0b1c30",
-                        "secondary-fixed-dim": "#c4c7c9",
-                        "on-primary-fixed-variant": "#00468c",
-                        "secondary": "#5c5f61",
-                        "surface-container-lowest": "#ffffff",
-                        "background": "#f8f9ff",
-                        "surface-tint": "#005db6",
-                        "on-tertiary-fixed": "#002113",
-                        "error": "#ba1a1a",
-                        "primary-container": "#005eb8",
-                        "inverse-primary": "#a9c7ff",
-                        "surface-container": "#e5eeff",
-                        "on-tertiary-container": "#65f2b5",
-                        "surface-container-highest": "#d3e4fe",
-                        "outline": "#727783",
-                        "on-primary": "#ffffff",
-                        "outline-variant": "#c2c6d4",
-                        "inverse-on-surface": "#eaf1ff",
-                        "primary-fixed-dim": "#a9c7ff",
-                        "surface-bright": "#f8f9ff",
-                        "on-primary-container": "#c8daff",
-                        "on-tertiary-fixed-variant": "#005236",
-                        "primary": "#00478d",
-                        "error-container": "#ffdad6",
-                        "on-secondary": "#ffffff",
-                        "surface-container-low": "#eff4ff",
-                        "tertiary-fixed": "#6ffbbe",
-                        "on-surface-variant": "#424752",
-                        "on-tertiary": "#ffffff",
-                        "tertiary-fixed-dim": "#4edea3",
-                        "tertiary": "#005237",
-                        "surface": "#f8f9ff",
-                        "on-error-container": "#93000a",
-                        "surface-variant": "#d3e4fe",
-                        "surface-dim": "#cbdbf5",
-                        "on-secondary-fixed-variant": "#444749",
-                        "primary-fixed": "#d6e3ff",
-                        "inverse-surface": "#213145",
-                        "on-error": "#ffffff",
-                        "secondary-fixed": "#e0e3e5",
-                        "secondary-container": "#e0e3e5",
-                        "tertiary-container": "#006d4a",
-                        "on-secondary-container": "#626567"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "2xl": "1rem",
-                        "3xl": "1.5rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "gutter": "24px",
-                        "md": "24px",
-                        "margin-mobile": "16px",
-                        "xs": "4px",
-                        "lg": "48px",
-                        "xl": "80px",
-                        "margin-desktop": "64px",
-                        "sm": "12px",
-                        "base": "8px"
-                    },
-                    "fontFamily": {
-                        "label-sm": ["Inter"],
-                        "body-md": ["Inter"],
-                        "headline-md": ["Inter"],
-                        "headline-xl": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "headline-lg-mobile": ["Inter"],
-                        "headline-lg": ["Inter"],
-                        "label-md": ["Inter"]
-                    }
-                }
-            }
-        }
-    </script>
-    
+    <script src="<?= htmlspecialchars($base_url) ?>/assets/js/theme-config.js"></script>
+    <link rel="stylesheet" href="<?= htmlspecialchars($base_url) ?>/assets/css/theme-base.css">
+    <link rel="stylesheet" href="<?= htmlspecialchars($base_url) ?>/assets/css/responsive.css">
+
     <style>
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .fade-in-up.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .material-symbols-outlined.fill-icon {
+        .icon-line.fill-icon {
             font-variation-settings: 'FILL' 1;
         }
         .gradient-text {
@@ -192,7 +94,7 @@ $base_url = '/booking-system'; // Base path
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/30 shadow-sm fade-in-up">
                 
                 <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <span class="material-symbols-outlined text-on-surface-variant text-[20px]">filter_list</span>
+                    <span class="icon-line text-on-surface-variant text-[20px]">filter_list</span>
                     <span class="font-semibold text-sm text-on-background mr-2">Filter:</span>
                     <select id="service-filter" class="flex-grow sm:flex-grow-0 bg-surface border border-outline-variant/40 text-on-surface text-sm rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all shadow-sm">
                         <option value="">All Services</option>
@@ -203,7 +105,7 @@ $base_url = '/booking-system'; // Base path
                 </div>
 
                 <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <span class="material-symbols-outlined text-on-surface-variant text-[20px]">sort</span>
+                    <span class="icon-line text-on-surface-variant text-[20px]">sort</span>
                     <span class="font-semibold text-sm text-on-background mr-2">Sort:</span>
                     <select id="sort-filter" class="flex-grow sm:flex-grow-0 bg-surface border border-outline-variant/40 text-on-surface text-sm rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all shadow-sm">
                         <option value="recent">Most Recent</option>
@@ -225,7 +127,7 @@ $base_url = '/booking-system'; // Base path
             <!-- Empty State -->
             <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 text-center fade-in-up">
                 <div class="w-20 h-20 rounded-full bg-surface-container flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-outline text-[40px]">speaker_notes_off</span>
+                    <span class="icon-line text-outline text-[40px]">speaker_notes_off</span>
                 </div>
                 <h3 class="font-headline-md text-xl font-bold text-on-background mb-2">No reviews found</h3>
                 <p class="text-on-surface-variant mb-6 max-w-md">We couldn't find any reviews matching your selected criteria. Try clearing your filters or be the first to share your experience!</p>
@@ -241,13 +143,13 @@ $base_url = '/booking-system'; // Base path
     <section class="py-16 bg-surface-container border-t border-outline-variant/20 fade-in-up">
         <div class="max-w-3xl mx-auto px-margin-mobile md:px-margin-desktop text-center">
             <div class="w-16 h-16 bg-primary-container rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
-                <span class="material-symbols-outlined text-primary text-[32px] fill-icon">rate_review</span>
+                <span class="icon-line text-primary text-[32px] fill-icon">rate_review</span>
             </div>
             <h2 class="font-headline-lg text-3xl font-bold text-on-background mb-4">Share Your Experience</h2>
             <p class="font-body-md text-on-surface-variant mb-8 text-lg">Your feedback helps us continuously elevate our standard of care and helps other patients make informed decisions.</p>
             <a href="<?= $base_url ?>/submit-feedback.php" class="inline-flex items-center gap-2 h-14 px-8 rounded-xl bg-primary text-on-primary font-label-md font-bold text-base hover:bg-on-primary-fixed-variant hover:shadow-[0_8px_20px_rgba(0,71,141,0.25)] hover:-translate-y-0.5 transition-all duration-300">
                 Write a Review
-                <span class="material-symbols-outlined text-[20px]">edit_document</span>
+                <span class="icon-line text-[20px]">edit_document</span>
             </a>
         </div>
     </section>
@@ -261,7 +163,7 @@ $base_url = '/booking-system'; // Base path
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
             <div class="flex flex-col gap-4">
                 <span class="font-headline-md text-2xl font-bold text-primary flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[32px]">dentistry</span> DentalCare Pro
+                    <span class="icon-line text-[32px]">dentistry</span> DentalCare Pro
                 </span>
                 <p class="font-body-md text-sm text-on-surface-variant max-w-xs mt-2">
                     Exceptional, precision-driven dental care in a state-of-the-art, relaxing environment.
@@ -284,7 +186,7 @@ $base_url = '/booking-system'; // Base path
             </div>
             <div class="flex flex-col gap-4">
                 <h4 class="font-bold text-on-background">Get in Touch</h4>
-                <p class="text-sm text-on-surface-variant flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-primary">call</span> 555-0148</p>
+                <p class="text-sm text-on-surface-variant flex items-center gap-2"><span class="icon-line text-[18px] text-primary">call</span> 555-0148</p>
             </div>
         </div>
         <div class="pt-8 border-t border-outline-variant/20 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
@@ -310,18 +212,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const statsStars = document.getElementById('stats-stars');
 
     // API Path (assuming the script runs at root level like index.php)
-    const API_ENDPOINT = '<?= $base_url ?>/api/feedback-list.php';
+    const API_ENDPOINT = '<?= $base_url ?>/api/feedback/feedback-list.php';
 
     // Helper: Create Star HTML
     const renderStarsHTML = (rating, sizeClass = 'text-[20px]') => {
         let html = '';
         for (let i = 1; i <= 5; i++) {
             if (i <= Math.floor(rating)) {
-                html += `<span class="material-symbols-outlined text-yellow-500 ${sizeClass} fill-icon">star</span>`;
+                html += `<span class="icon-line text-yellow-500 ${sizeClass} fill-icon">star</span>`;
             } else if (i === Math.ceil(rating) && !Number.isInteger(rating)) {
-                html += `<span class="material-symbols-outlined text-yellow-500 ${sizeClass} fill-icon">star_half</span>`;
+                html += `<span class="icon-line text-yellow-500 ${sizeClass} fill-icon">star_half</span>`;
             } else {
-                html += `<span class="material-symbols-outlined text-outline-variant ${sizeClass}">star</span>`;
+                html += `<span class="icon-line text-outline-variant ${sizeClass}">star</span>`;
             }
         }
         return html;
@@ -391,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (review.service_label) {
             const serviceNode = document.createElement('p');
             serviceNode.className = "font-label-sm text-xs text-on-surface-variant flex items-center gap-1 mt-0.5";
-            serviceNode.innerHTML = `<span class="material-symbols-outlined text-[14px] text-green-600">verified</span> ${review.service_label}`;
+            serviceNode.innerHTML = `<span class="icon-line text-[14px] text-green-600">verified</span> ${review.service_label}`;
             userInfo.appendChild(serviceNode);
         }
 

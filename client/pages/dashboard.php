@@ -147,7 +147,7 @@ ob_start();
                 <span class="text-[10px] sm:text-xs text-outline font-semibold hidden sm:block">View List</span>
             </div>
             <p class="font-label-md text-[10px] sm:text-label-md text-on-surface-variant uppercase tracking-wider mb-1 truncate">Upcoming</p>
-            <p id="upcomingCountEl" class="font-headline-lg text-2xl sm:text-headline-lg text-primary" aria-hidden="true">0</p>
+            <p id="upcomingCountEl" class="stat-number font-headline-lg text-2xl sm:text-headline-lg text-primary" aria-hidden="true">0</p>
         </a>
 
         <a href="appointments.php?filter=completed"
@@ -159,7 +159,7 @@ ob_start();
                 <span class="text-[10px] sm:text-xs text-outline font-semibold hidden sm:block">Review Hist.</span>
             </div>
             <p class="font-label-md text-[10px] sm:text-label-md text-on-surface-variant uppercase tracking-wider mb-1 truncate">Completed</p>
-            <p id="completedCountEl" class="font-headline-lg text-2xl sm:text-headline-lg text-primary" aria-hidden="true">0</p>
+            <p id="completedCountEl" class="stat-number font-headline-lg text-2xl sm:text-headline-lg text-primary" aria-hidden="true">0</p>
         </a>
 
         <a href="appointments.php?filter=all"
@@ -171,7 +171,7 @@ ob_start();
                 <span class="text-[10px] sm:text-xs text-outline font-semibold hidden sm:block">View Log</span>
             </div>
             <p class="font-label-md text-[10px] sm:text-label-md text-on-surface-variant uppercase tracking-wider mb-1 truncate">Total Visits</p>
-            <p id="totalVisitsCountEl" class="font-headline-lg text-2xl sm:text-headline-lg text-primary" aria-hidden="true">0</p>
+            <p id="totalVisitsCountEl" class="stat-number font-headline-lg text-2xl sm:text-headline-lg text-primary" aria-hidden="true">0</p>
         </a>
 
         <a href="dental-records.php"
@@ -183,7 +183,7 @@ ob_start();
                 <span class="text-[10px] sm:text-xs text-outline font-semibold hidden sm:block">Browse</span>
             </div>
             <p class="font-label-md text-[10px] sm:text-label-md text-on-surface-variant uppercase tracking-wider mb-1 truncate">Records</p>
-            <p id="recordsCountEl" class="font-headline-lg text-2xl sm:text-headline-lg text-primary" aria-hidden="true">0</p>
+            <p id="recordsCountEl" class="stat-number font-headline-lg text-2xl sm:text-headline-lg text-primary" aria-hidden="true">0</p>
         </a>
     </section>
 
@@ -267,11 +267,11 @@ ob_start();
                 <!-- Stats Row -->
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-surface-container-low rounded-xl p-4 border border-outline-variant text-center">
-                        <p id="daysSinceLastEl" class="font-headline-lg text-2xl font-bold text-primary">--</p>
+                        <p id="daysSinceLastEl" class="stat-number font-headline-lg text-2xl text-primary">--</p>
                         <p class="text-xs text-on-surface-variant mt-1">Days Since Last Visit</p>
                     </div>
                     <div class="bg-surface-container-low rounded-xl p-4 border border-outline-variant text-center">
-                        <p id="avgGapEl" class="font-headline-lg text-2xl font-bold text-primary">--</p>
+                        <p id="avgGapEl" class="stat-number font-headline-lg text-2xl text-primary">--</p>
                         <p class="text-xs text-on-surface-variant mt-1">Avg. Days Between Visits</p>
                     </div>
                 </div>
@@ -731,4 +731,4 @@ $pageContent = ob_get_clean();
 
 // 5. Require the layout shell, which will handle wrapping $pageContent
 require_once __DIR__ . '/../components/layout/main-layout.php';
-?>
+?>  
