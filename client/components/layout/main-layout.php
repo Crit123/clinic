@@ -250,7 +250,7 @@ require_once __DIR__ . '/../design-config.php';
     <?php include __DIR__ . '/../header.php'; ?>
 
     <!-- PAGE SPECIFIC CONTENT INJECTED HERE -->
-    <main class="flex-1 p-gutter md:p-margin-desktop max-w-container-max-width mx-auto w-full space-y-8 overflow-x-hidden">
+    <main class="flex-1 p-gutter md:p-margin-desktop max-w-container-max-width mx-auto w-full space-y-8 overflow-x-clip">
         <?php echo isset($pageContent) ? $pageContent : ''; ?>
     </main>
 

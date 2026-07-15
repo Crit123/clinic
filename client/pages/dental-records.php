@@ -5,7 +5,7 @@
  * Houses radiological imaging (X-rays), clinical treatment notes, and digital prescriptions.
  */
 
-// 1. We require design-config manually at the top so $APP_ENV is available for our logic
+// 1. Layout/theme config shared across pages
 require_once __DIR__ . '/../components/design-config.php';
 
 // 2. Set the variables the layout shell needs
@@ -18,91 +18,59 @@ if (!in_array($currentFilter, ['all', 'xray', 'note', 'prescription'])) {
     $currentFilter = 'all';
 }
 
-// Pre-defined records dataset — fully integrated with appointments.php clinical notes and treatments
-$records = [
-    [
-        'id'          => 'rec-101',
-        'title'       => 'Invisalign Progress 3D Scan',
-        'type'        => 'xray',
-        'display_date'=> 'Oct 24, 2026',
-        'appointment' => 'From your Oct 24 Invisalign Progress Check',
-        'card_icon'   => 'photo_library',
-        'icon_color'  => 'text-indigo-600 bg-indigo-50 border-indigo-100',
-        'details'     => 'Intraoral iTero 3D digital scan modeling progressive alignment shift.',
-        'doctor'      => 'Dr. Maria Santos',
-        'notes'       => '',
-        'download_file'=> 'invisalign-progress-scan-2026.pdf'
-    ],
-    [
-        'id'          => 'rec-102',
-        'title'       => 'Full Mouth Panoramic Dental X-Ray',
-        'type'        => 'xray',
-        'display_date'=> 'Sep 14, 2026',
-        'appointment' => 'From your Sep 14 Invisalign Initial Fitting',
-        'card_icon'   => 'settings_overscan',
-        'icon_color'  => 'text-indigo-600 bg-indigo-50 border-indigo-100',
-        'details'     => 'Comprehensive low-dose digital panoramic radiograph of both dental arches.',
-        'doctor'      => 'Dr. Maria Santos',
-        'notes'       => '',
-        'download_file'=> 'panoramic-xray-sept2026.png'
-    ],
-    [
-        'id'          => 'rec-103',
-        'title'       => 'Clinical Notes: Invisalign Initial Fitting',
-        'type'        => 'note',
-        'display_date'=> 'Sep 14, 2026',
-        'appointment' => 'From your Sep 14 Invisalign Initial Fitting',
-        'card_icon'   => 'description',
-        'icon_color'  => 'text-blue-600 bg-blue-50 border-blue-100',
-        'details'     => 'Orthodontic diagnostic analysis and tray installation summary notes.',
-        'doctor'      => 'Dr. Maria Santos',
-        'notes'       => 'Initial Invisalign tray fitting completed successfully. Attachments are securely bonded on teeth 6, 8, and 11. Patient demonstrated good technique for tray insertion and removal. Scheduled progress checks.',
-        'next_action' => 'Progress review in 4 weeks.',
-        'download_file'=> 'clinical-notes-fitting.pdf'
-    ],
-    [
-        'id'          => 'rec-104',
-        'title'       => 'Clinical Notes: Professional Laser Whitening',
-        'type'        => 'note',
-        'display_date'=> 'Aug 20, 2026',
-        'appointment' => 'From your Aug 20 Professional Laser Whitening',
-        'card_icon'   => 'description',
-        'icon_color'  => 'text-blue-600 bg-blue-50 border-blue-100',
-        'details'     => 'In-office therapeutic summary and baseline shade evaluation documentation.',
-        'doctor'      => 'Dr. Maria Santos',
-        'notes'       => 'Completed in-office professional whitening. Initial shade A3, final shade achieved B1. Post-op instructions given. Recommended sensitivity toothpaste for next 48 hours.',
-        'next_action' => 'Follow white diet rules for 48 hours; next checkup in 6 months.',
-        'download_file'=> 'whitening-notes-aug2026.pdf'
-    ],
-    [
-        'id'          => 'rec-105',
-        'title'       => 'Post-Operative Prescription: Ibuprofen 600mg',
-        'type'        => 'prescription',
-        'display_date'=> 'Jun 05, 2026',
-        'appointment' => 'From your Jun 05 Composite Filling & Polish',
-        'card_icon'   => 'medication',
-        'icon_color'  => 'text-rose-600 bg-rose-50 border-rose-100',
-        'details'     => 'Rx: Ibuprofen 600mg. Dispense 15 tablets. Take 1 tablet by mouth every 6 hours as needed for mild to moderate discomfort.',
-        'doctor'      => 'Dr. Maria Santos',
-        'rx_number'   => 'Rx #984120',
-        'notes'       => '',
-        'download_file'=> 'rx-ibuprofen-filling.pdf'
-    ],
-    [
-        'id'          => 'rec-106',
-        'title'       => 'Clinical Notes: Composite Filling & Polish',
-        'type'        => 'note',
-        'display_date'=> 'Jun 05, 2026',
-        'appointment' => 'From your Jun 05 Composite Filling & Polish',
-        'card_icon'   => 'description',
-        'icon_color'  => 'text-blue-600 bg-blue-50 border-blue-100',
-        'details'     => 'Cavity preparation, restorative composite lining, and occlusion analysis.',
-        'doctor'      => 'Dr. Maria Santos',
-        'notes'       => 'Administered local anesthetic. Restored tooth 14-DO with composite resin. Restored margins are smooth, occlusion is balanced and verified with articulating paper.',
-        'next_action' => 'Avoid extremely cold beverages for 24 hours; next checkup in 6 months.',
-        'download_file'=> 'filling-notes-jun2026.pdf'
-    ]
+// Records now come from the database, scoped to the logged-in patient only.
+// records-guard.php starts the session, checks $_SESSION['user_id'], and
+// exposes $pdo + $currentUserId — same auth used by client/backend/records-list.php.
+require_once __DIR__ . '/../backend/records-auth/records-guard.php';
+
+// Presentation-only lookup — icon/color/label are display concerns, not data,
+// so they're derived here rather than duplicated in every DB row.
+$typeDisplay = [
+    'xray'         => ['label' => 'X-Ray / Scan',    'icon' => 'settings_overscan', 'color' => 'text-indigo-600 bg-indigo-50 border-indigo-100'],
+    'note'         => ['label' => 'Treatment Note',  'icon' => 'description',       'color' => 'text-blue-600 bg-blue-50 border-blue-100'],
+    'prescription' => ['label' => 'Rx Prescription', 'icon' => 'medication',        'color' => 'text-rose-600 bg-rose-50 border-rose-100'],
 ];
+
+try {
+    $sql = "SELECT id, type, title, details, doctor_name AS doctor,
+                   clinical_notes AS notes, next_action, rx_number,
+                   record_date
+            FROM dental_records
+            WHERE user_id = ?";
+    $params = [$currentUserId];
+
+    if ($currentFilter !== 'all') {
+        $sql .= " AND type = ?";
+        $params[] = $currentFilter;
+    }
+
+    $sql .= " ORDER BY record_date DESC, id DESC";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $rows = $stmt->fetchAll();
+} catch (PDOException $e) {
+    error_log('dental-records.php DB error: ' . $e->getMessage());
+    $rows = [];
+}
+
+$records = array_map(function ($row) use ($typeDisplay) {
+    $meta = $typeDisplay[$row['type']] ?? $typeDisplay['note'];
+    return [
+        'id'           => (int) $row['id'],
+        'title'        => $row['title'],
+        'type'         => $row['type'],
+        'display_date' => date('M j, Y', strtotime($row['record_date'])),
+        'appointment'  => '', // populated below only if a booking is linked
+        'card_icon'    => $meta['icon'],
+        'icon_color'   => $meta['color'],
+        'details'      => $row['details'] ?? '',
+        'doctor'       => $row['doctor'],
+        'notes'        => $row['notes'] ?? '',
+        'next_action'  => $row['next_action'] ?? '',
+        'rx_number'    => $row['rx_number'] ?? '',
+    ];
+}, $rows);
 
 // 3. Start intercepting standard output (Output Buffering)
 ob_start();
@@ -117,29 +85,6 @@ ob_start();
         height: 0px !important;
     }
 </style>
-
-<!-- DIAGNOSTIC PANEL (DEVELOPMENT ONLY) -->
-<?php if (APP_ENV === 'development'): ?>
-<section class="bg-surface-container-low rounded-2xl p-4 border border-outline-variant flex flex-wrap gap-4 items-center justify-between"
-         aria-label="Developer diagnostic panel">
-    <div class="space-y-1">
-        <h4 class="font-headline-md text-sm font-semibold text-primary">Dental Records Diagnostic Console
-            <span class="ml-2 text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold uppercase tracking-wide">Dev only</span>
-        </h4>
-        <p class="font-body-sm text-xs text-on-surface-variant">Test client-side category filtering, record searches, diagnostic loaders, and adaptive layouts.</p>
-    </div>
-    <div class="flex flex-wrap gap-3">
-        <button onclick="simulateRecLoading()"
-                class="bg-surface-container-highest hover:bg-surface-variant text-primary font-label-md text-xs py-2 px-4 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-primary flex items-center">
-            <span class="material-symbols-outlined text-sm mr-2" aria-hidden="true">hourglass_empty</span> Simulate Loader
-        </button>
-        <button onclick="forceEmptyRecordsToggle()"
-                class="bg-surface-container-highest hover:bg-surface-variant text-primary font-label-md text-xs py-2 px-4 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-primary flex items-center">
-            <span class="material-symbols-outlined text-sm mr-2" aria-hidden="true">auto_delete</span> Force Empty State
-        </button>
-    </div>
-</section>
-<?php endif; ?>
 
 <!-- INTRO HERO BLOCK -->
 <div class="fade-in flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -211,7 +156,7 @@ ob_start();
             </button>
         </div>
 
-        <button onclick="simulateRecLoading()"
+        <button onclick="refreshRecords()"
                 class="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-[#1652a0] rounded-xl border border-slate-100 transition-all flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 title="Refresh Documents"
                 aria-label="Refresh dental records list">
@@ -286,12 +231,12 @@ ob_start();
                 <!-- Action Controls on the Right -->
                 <div class="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between lg:justify-center gap-3 border-t lg:border-t-0 border-slate-50 pt-4 lg:pt-0">
                     <div class="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
-                        <button onclick="previewDocument('<?php echo $rec['id']; ?>')"
+                        <button onclick="previewDocument(<?php echo (int) $rec['id']; ?>)"
                                 class="flex-1 sm:flex-initial px-5 py-2.5 bg-[#e8f0fb] hover:bg-[#d0e3fc] text-[#1652a0] font-bold text-xs rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-[16px]">visibility</span>
                             <span>View Record</span>
                         </button>
-                        <button onclick="triggerFileDownload('<?php echo htmlspecialchars($rec['download_file'], ENT_QUOTES); ?>')"
+                        <button onclick="downloadRecord(<?php echo (int) $rec['id']; ?>)"
                                 class="flex-1 sm:flex-initial px-5 py-2.5 border border-outline-variant hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                             <span class="material-symbols-outlined text-[16px]">download</span>
                             <span>Download</span>
@@ -603,38 +548,23 @@ function clearRecordsFilters() {
     applyRecordsFilters();
 }
 
-function simulateRecLoading() {
+function refreshRecords() {
     const skeleton = document.getElementById('skeletonLoaderArea');
     const content = document.getElementById('records-list-wrapper');
     content.classList.add('opacity-0', 'hidden');
     skeleton.classList.remove('hidden');
-    
-    setTimeout(() => {
-        skeleton.classList.add('hidden');
-        content.classList.remove('hidden', 'opacity-0');
-        showGlobalToast('success', 'Dental records synced with clinical server database.');
-    }, 1100);
+
+    // Real reload — records are rendered server-side from the DB on each
+    // request (see the PHP block at the top of this file), so a fresh GET
+    // is what actually re-syncs the list.
+    window.location.reload();
 }
 
-function forceEmptyRecordsToggle() {
-    const cards = document.querySelectorAll('.record-card');
-    const container = document.getElementById('recordsCardGrid');
-    const emptyArea = document.getElementById('emptyRecordsArea');
-    
-    if (emptyArea.classList.contains('hidden')) {
-        cards.forEach(card => card.classList.add('hidden'));
-        container.classList.add('hidden');
-        emptyArea.classList.remove('hidden');
-    } else {
-        applyRecordsFilters();
-    }
-}
-
-function triggerFileDownload(filename) {
-    showGlobalToast('info', `Initializing download sequence: ${filename}...`);
-    setTimeout(() => {
-        showGlobalToast('success', `File transfer complete. "${filename}" saved successfully.`);
-    }, 1400);
+function downloadRecord(recordId) {
+    if (!recordId) return;
+    // Streams from client/backend/records-download.php, which re-checks
+    // that this record belongs to the logged-in user before sending it.
+    window.location.href = `../backend/records-auth/records-download.php?id=${encodeURIComponent(recordId)}`;
 }
 
 /* Modal Preview Management */
@@ -701,10 +631,9 @@ function closeRecordModal() {
 }
 
 function submitDownloadAction() {
-    const record = recordsData.find(r => r.id === selectedRecordId);
-    if (record) {
+    if (selectedRecordId) {
         closeRecordModal();
-        triggerFileDownload(record.download_file);
+        downloadRecord(selectedRecordId);
     }
 }
 </script>

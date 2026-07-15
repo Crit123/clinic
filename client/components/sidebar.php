@@ -33,7 +33,6 @@ function nav_link_classes(string $key, string $activePage): string {
 <style>
   /* Collapse layout adjustments */
   #mainSidebar.w-20 .sidebar-logo-area { display: none !important; }
-  #mainSidebar.w-20 #sidebarSearch { justify-content: center; padding-left: 0; padding-right: 0; }
   #mainSidebar.w-20 .sidebar-text { display: none !important; }
   #mainSidebar.w-20 .nav-tooltip { display: none; }
   #mainSidebar.w-20 .nav-item:hover .nav-tooltip { 
@@ -78,11 +77,11 @@ function nav_link_classes(string $key, string $activePage): string {
     <!-- BRAND HEADER -->
     <div class="mb-6 flex items-center justify-between px-3">
         <div class="sidebar-logo-area flex items-center gap-2.5 overflow-hidden">
-            <!-- Medical Logo Mark -->
-            <div class="w-7 h-7 bg-[#1652a0] rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm shadow-[#1652a0]/15">
-                <svg class="w-4 h-4" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path d="M20 8C16.5 8 14 10 12.5 12C11 10 9 9 7.5 10.5C6 12 6.5 15 8 17C9 18.5 10 20 10.5 22C11 24 11 28 13 30C14 31 15.5 31 16.5 30C17.5 29 17.5 26 18 24C18.5 22 19 21 20 21C21 21 21.5 22 22 24C22.5 26 22.5 29 23.5 30C24.5 31 26 31 27 30C29 28 29 24 29.5 22C30 20 31 18.5 32 17C33.5 15 34 12 32.5 10.5C31 9 29 10 27.5 12C26 10 23.5 8 20 8Z" fill="white"/>
-                </svg>
+            <!-- Brand Logo -->
+            <div class="w-7 h-7 bg-[#1652a0] rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm shadow-[#1652a0]/15 overflow-hidden">
+                <img src="<?php echo htmlspecialchars(BASE_PATH); ?>/assets/img/brand-logo.png"
+                     alt="<?php echo htmlspecialchars(SITE_NAME); ?> logo"
+                     class="w-full h-full object-contain p-1"/>
             </div>
             <div>
                 <h1 id="brandText" class="text-[14px] lg:text-[15px] font-bold text-slate-800 leading-none tracking-tight whitespace-nowrap transition-all duration-200">
@@ -100,14 +99,6 @@ function nav_link_classes(string $key, string $activePage): string {
                 class="hidden md:flex p-1.5 rounded-lg text-slate-400 hover:text-[#1652a0] hover:bg-slate-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#1652a0]">
             <span class="material-symbols-outlined text-lg transition-transform duration-300" id="collapseIcon">menu_open</span>
         </button>
-    </div>
-
-    <!-- QUICK SEARCH BAR -->
-    <div class="px-3 mb-5">
-        <div class="flex items-center gap-2 bg-slate-50 border border-slate-50/50 rounded-xl p-2.5 cursor-text transition-all duration-200 hover:border-slate-100" id="sidebarSearch" onclick="document.getElementById('searchInput')?.focus()">
-            <span class="material-symbols-outlined text-slate-400 text-base flex-shrink-0">search</span>
-            <span class="sidebar-text text-[13px] lg:text-[14px] text-tertiary-text select-none font-medium">Quick search…</span>
-        </div>
     </div>
 
     <!-- MAIN SAAS NAVIGATION ITEMS -->
@@ -209,6 +200,8 @@ function nav_link_classes(string $key, string $activePage): string {
 <script>
 window.sidebarForceOpenLock = window.sidebarForceOpenLock || false;
 
+
+
 function toggleMobileSidebar(open) {
     const sidebar = document.getElementById('mainSidebar');
     const backdrop = document.getElementById('sidebarBackdrop');
@@ -235,10 +228,10 @@ function toggleSidebarCollapse() {
     const sidebarTexts = document.querySelectorAll('.sidebar-text');
     const collapseIcon = document.getElementById('collapseIcon');
 
-    const isExpanded = sidebar.classList.contains('w-64') || sidebar.classList.contains('w-[260px]');
+    const isExpanded = sidebar.classList.contains('w-64');
 
     if (isExpanded) {
-        sidebar.classList.remove('w-64', 'w-[260px]');
+        sidebar.classList.remove('w-64');
         sidebar.classList.add('w-20', 'sidebar-collapsed');
         if (brandText) brandText.classList.add('hidden');
         if (taglineText) taglineText.classList.add('hidden');
@@ -248,7 +241,7 @@ function toggleSidebarCollapse() {
         localStorage.setItem('dcpro-sidebar', 'collapsed');
     } else {
         sidebar.classList.remove('w-20', 'sidebar-collapsed');
-        sidebar.classList.add('w-[260px]');
+        sidebar.classList.add('w-64');
         if (brandText) brandText.classList.remove('hidden');
         if (taglineText) taglineText.classList.remove('hidden');
         collapseIcon.textContent = 'menu_open';
@@ -263,8 +256,8 @@ function _shiftContent(widthClass) {
     const content = document.getElementById('contentContainer');
     if (!content) return;
     const mlMap = { 
-        'w-64': ['md:ml-[260px]', 'md:ml-20'], 
-        'w-20': ['md:ml-20', 'md:ml-[260px]'] 
+        'w-64': ['md:ml-64', 'md:ml-20'], 
+        'w-20': ['md:ml-20', 'md:ml-64'] 
     };
     const [add, remove] = mlMap[widthClass];
     content.classList.add(add);
@@ -291,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sidebar = document.getElementById('mainSidebar');
         if (sidebar && window.innerWidth >= 768) {
             sidebar.style.transition = 'none';
-            sidebar.classList.remove('w-64', 'w-[260px]');
+            sidebar.classList.remove('w-64');
             sidebar.classList.add('w-20', 'sidebar-collapsed');
             const brandText = document.getElementById('brandText');
             const taglineText = document.getElementById('taglineText');
@@ -305,19 +298,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const content = document.getElementById('contentContainer');
             if (content) {
                 content.classList.add('md:ml-20');
-                content.classList.remove('md:ml-64', 'md:ml-[260px]');
+                content.classList.remove('md:ml-64');
             }
             requestAnimationFrame(() => { sidebar.style.transition = ''; });
         }
     } else {
         const sidebar = document.getElementById('mainSidebar');
         if (sidebar && window.innerWidth >= 768) {
-            sidebar.classList.add('w-[260px]');
-            sidebar.classList.remove('w-64');
+            sidebar.classList.remove('w-20', 'sidebar-collapsed');
+            sidebar.classList.add('w-64');
             const content = document.getElementById('contentContainer');
             if (content) {
-                content.classList.add('md:ml-[260px]');
-                content.classList.remove('md:ml-64');
+                content.classList.remove('md:ml-20');
+                content.classList.add('md:ml-64');
             }
         }
     }

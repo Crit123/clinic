@@ -5,8 +5,20 @@
  * Tailored for single-practitioner portal (Dr. Maria Santos).
  */
 
-// 1. We require design-config manually at the top so $APP_ENV is available for our logic
+// 1. design-config.php provides BASE_PATH, SITE_NAME, and other shared constants
 require_once __DIR__ . '/../components/design-config.php';
+require_once __DIR__ . '/../../api/helper/_api-helpers.php';
+
+// Session must be active before getCsrfToken() touches $_SESSION — same
+// reasoning as appointments.php: main-layout.php (required at the bottom
+// of this file, via auth-guard.php) also calls session_start(), but
+// that's too late for this line.
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// CSRF token for the booking-create.php POST submission
+$csrfToken = getCsrfToken();
 
 // Shared service taxonomy (replaces local array)
 require_once __DIR__ . '/../components/services-data.php';
@@ -31,30 +43,95 @@ ob_start();
         background-color: #f8f9ff !important;
         box-shadow: 0 4px 20px rgba(0, 49, 100, 0.05);
     }
+
+    /* Mini inline calendar */
+    .cal-day-btn {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 8px;
+        color: #334155;
+        background: transparent;
+        border: 1px solid transparent;
+        transition: all 0.15s ease;
+    }
+    .cal-day-btn:hover:not(:disabled) {
+        background-color: #f1f5f9;
+        border-color: #cbd5e1;
+    }
+    .cal-day-btn:disabled {
+        color: #cbd5e1;
+        cursor: not-allowed;
+    }
+    .cal-day-btn.cal-day-active {
+        background-color: #003164 !important;
+        color: #ffffff !important;
+        border-color: #003164 !important;
+        box-shadow: 0 2px 8px rgba(0, 49, 100, 0.25);
+    }
+    .cal-day-btn.cal-day-today:not(.cal-day-active) {
+        border-color: #1652a0;
+        color: #1652a0;
+    }
+    .cal-nav-btn {
+        width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        color: #64748b;
+        transition: all 0.15s ease;
+        border: 1px solid transparent;
+    }
+    .cal-nav-btn:hover:not(:disabled) {
+        background-color: #f1f5f9;
+        color: #1652a0;
+    }
+    .cal-nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    /* Patient details form enhancements */
+    .field-input-icon-wrap {
+        position: relative;
+    }
+    .field-input-icon-wrap .field-icon {
+        position: absolute;
+        left: 12px;
+        top: 13px;
+        color: #94a3b8;
+        font-size: 18px;
+        pointer-events: none;
+        transition: color 0.15s ease;
+    }
+    .field-input-icon-wrap textarea ~ .field-icon {
+        top: 14px;
+    }
+    .field-input-icon-wrap input:focus ~ .field-icon,
+    .field-input-icon-wrap textarea:focus ~ .field-icon {
+        color: #1652a0;
+    }
+    .field-input-icon-wrap input,
+    .field-input-icon-wrap textarea {
+        padding-left: 40px !important;
+    }
+    .field-input-icon-wrap input {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+    }
+    .field-input-icon-wrap textarea {
+        padding-top: 0.7rem !important;
+        padding-bottom: 0.7rem !important;
+        line-height: 1.5;
+    }
 </style>
 
-<!-- DIAGNOSTIC PANEL (DEVELOPMENT ONLY) -->
-<?php if (APP_ENV === 'development'): ?>
-<section class="bg-surface-container-low rounded-2xl p-4 border border-outline-variant flex flex-wrap gap-4 items-center justify-between"
-         aria-label="Developer diagnostic panel">
-    <div class="space-y-1">
-        <h4 class="font-headline-md text-sm font-semibold text-primary">Booking Engine Diagnostic Console
-            <span class="ml-2 text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold uppercase tracking-wide">Dev only</span>
-        </h4>
-        <p class="font-body-sm text-xs text-on-surface-variant">Verify client-side form validation, pre-visit condition switching, and empty availability states.</p>
-    </div>
-    <div class="flex flex-wrap gap-3">
-        <button onclick="autofillDemoData()"
-                class="bg-surface-container-highest hover:bg-surface-variant text-primary font-label-md text-xs py-2 px-4 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-primary flex items-center">
-            <span class="material-symbols-outlined text-sm mr-2" aria-hidden="true">assignment_turned_in</span> Autofill Form
-        </button>
-        <button onclick="simulateFullyBookedDate()"
-                class="bg-surface-container-highest hover:bg-surface-variant text-primary font-label-md text-xs py-2 px-4 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-primary flex items-center">
-            <span class="material-symbols-outlined text-sm mr-2" aria-hidden="true">block</span> Force "No Slots" Date
-        </button>
-    </div>
-</section>
-<?php endif; ?>
 
 <!-- HERO HEADER -->
 <div class="fade-in flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -68,32 +145,17 @@ ob_start();
     </div>
 </div>
 
-<!-- PERSISTENT CLINICAL ADDRESS BAR -->
-<div class="fade-in bg-slate-50 border border-slate-100 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-semibold text-slate-700">
-    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-        <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-[#1652a0] text-sm" aria-hidden="true">location_on</span>
-            <span><?php echo htmlspecialchars(CLINIC_ADDRESS); ?></span>
-        </div>
-        <div class="hidden sm:block text-slate-300">·</div>
-        <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-[#1652a0] text-sm" aria-hidden="true">contact_support</span>
-            <span>Front Desk: <?php echo htmlspecialchars(CLINIC_PHONE); ?> · <?php echo htmlspecialchars(CLINIC_EMAIL); ?></span>
-        </div>
-    </div>
-</div>
-
 <!-- MAIN LAYOUT: Split Forms and Booking Summary Live Ticket -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     
     <!-- Left & Center: Interactive Steps -->
     <div class="lg:col-span-2 space-y-8">
         
-        <!-- STEP 1: Treatment Category & Specific Service Selection -->
+        <!-- STEP 1: Treatment Category Selection -->
         <section class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_4px_16px_rgba(0,71,141,0.02)] space-y-4">
             <div class="flex items-center space-x-3 border-b border-slate-50 pb-3">
                 <span class="w-7 h-7 bg-blue-50 text-[#1652a0] rounded-full flex items-center justify-center font-bold text-xs">1</span>
-                <h3 class="font-headline-md text-base text-slate-800 font-bold">Select Treatment & Service</h3>
+                <h3 class="font-headline-md text-base text-slate-800 font-bold">Select Treatment</h3>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="categoryGrid">
@@ -105,7 +167,11 @@ ob_start();
                             data-category-id="<?php echo $cat['id']; ?>"
                             data-name="<?php echo htmlspecialchars($cat['name']); ?>"
                             data-pre-visit="<?php echo htmlspecialchars($cat['pre_visit']); ?>"
-                            data-estimate="<?php echo htmlspecialchars($cat['estimate']); ?>">
+                            data-estimate="<?php echo htmlspecialchars($cat['estimate']); ?>"
+                            <?php if (!empty($cat['services'][0])): ?>
+                            data-default-service-id="<?php echo $cat['services'][0]['id']; ?>"
+                            data-default-service-name="<?php echo htmlspecialchars($cat['services'][0]['name'], ENT_QUOTES); ?>"
+                            <?php endif; ?>>
                         <div class="w-12 h-12 rounded-xl border flex items-center justify-center flex-shrink-0 <?php echo $cat['color']; ?>">
                             <span class="material-symbols-outlined text-2xl" aria-hidden="true"><?php echo $cat['icon']; ?></span>
                         </div>
@@ -114,23 +180,6 @@ ob_start();
                             <p class="text-xs text-slate-500 font-medium leading-relaxed"><?php echo htmlspecialchars($cat['desc']); ?></p>
                         </div>
                     </button>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- Specific Service Selection (Hidden until category is picked) -->
-            <div id="serviceSelection" class="hidden pt-4 mt-2 border-t border-slate-50">
-                <label class="block text-xs font-bold text-secondary-text mb-3 uppercase tracking-wide">Specific Service</label>
-                <?php foreach ($serviceCategories as $cat): ?>
-                    <div id="services-for-<?php echo $cat['id']; ?>" class="service-group hidden flex-wrap gap-2">
-                        <?php foreach ($cat['services'] as $svc): ?>
-                            <button type="button"
-                                    onclick="selectService('<?php echo $svc['id']; ?>', '<?php echo htmlspecialchars($svc['name'], ENT_QUOTES); ?>', this)"
-                                    class="service-pill bg-slate-50 hover:bg-slate-100 border border-slate-100/60 rounded-lg py-2.5 px-4 text-xs text-center text-slate-700 font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-primary"
-                                    data-service-id="<?php echo $svc['id']; ?>">
-                                <?php echo htmlspecialchars($svc['name']); ?>
-                            </button>
-                        <?php endforeach; ?>
-                    </div>
                 <?php endforeach; ?>
             </div>
 
@@ -144,13 +193,35 @@ ob_start();
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Date Picker -->
+                <!-- Date Picker: Inline Mini Calendar -->
                 <div>
-                    <label for="booking-date" class="block text-xs font-bold text-secondary-text mb-2.5 uppercase tracking-wide">Preferred Date</label>
-                    <input type="date" 
-                           id="booking-date" 
-                           onchange="handleDateChange(this.value)"
-                           class="w-full border-slate-200 rounded-xl text-sm text-slate-700 py-3 focus:border-primary focus:ring-primary transition-all shadow-sm"/>
+                    <label class="block text-xs font-bold text-secondary-text mb-2.5 uppercase tracking-wide">Preferred Date</label>
+                    <div class="border border-slate-200 rounded-xl p-3 bg-white shadow-sm select-none">
+                        <!-- Month navigation header -->
+                        <div class="flex items-center justify-between mb-2 px-0.5">
+                            <button type="button" id="calPrevBtn" onclick="changeCalendarMonth(-1)" class="cal-nav-btn" aria-label="Previous month">
+                                <span class="material-symbols-outlined text-base">chevron_left</span>
+                            </button>
+                            <span id="calendarMonthLabel" class="text-xs font-bold text-slate-700 tracking-wide"></span>
+                            <button type="button" id="calNextBtn" onclick="changeCalendarMonth(1)" class="cal-nav-btn" aria-label="Next month">
+                                <span class="material-symbols-outlined text-base">chevron_right</span>
+                            </button>
+                        </div>
+                        <!-- Weekday labels -->
+                        <div class="grid grid-cols-7 gap-1 mb-1">
+                            <?php foreach (['S','M','T','W','T','F','S'] as $wd): ?>
+                                <div class="text-center text-[10px] font-bold text-slate-400"><?php echo $wd; ?></div>
+                            <?php endforeach; ?>
+                        </div>
+                        <!-- Day grid (populated by JS) -->
+                        <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1"></div>
+
+                        <!-- Selected date readout -->
+                        <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
+                            <span class="material-symbols-outlined text-sm text-[#1652a0]">event</span>
+                            <span id="calendarSelectedReadout">No date selected yet</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Time Slot Picker -->
@@ -176,12 +247,18 @@ ob_start();
 
         <!-- STEP 3: Patient Profile Details -->
         <section class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_4px_16px_rgba(0,71,141,0.02)] space-y-5">
-            <div class="flex items-center space-x-3 border-b border-slate-50 pb-3">
-                <span class="w-7 h-7 bg-blue-50 text-[#1652a0] rounded-full flex items-center justify-center font-bold text-xs">3</span>
-                <h3 class="font-headline-md text-base text-slate-800 font-bold">Patient Details Form</h3>
+            <div class="flex items-center justify-between border-b border-slate-50 pb-3">
+                <div class="flex items-center space-x-3">
+                    <span class="w-7 h-7 bg-blue-50 text-[#1652a0] rounded-full flex items-center justify-center font-bold text-xs">3</span>
+                    <h3 class="font-headline-md text-base text-slate-800 font-bold">Patient Details Form</h3>
+                </div>
+                <span class="hidden sm:flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-wide">
+                    <span class="material-symbols-outlined text-sm text-slate-300">lock</span>
+                    Secure
+                </span>
             </div>
 
-            <div class="space-y-4">
+            <div class="space-y-5">
                 <!-- Booking For Someone Else Toggle Pill -->
                 <div>
                     <button type="button" 
@@ -197,37 +274,59 @@ ob_start();
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="patient-name" class="block text-xs font-bold text-secondary-text mb-1.5 uppercase tracking-wide">Full Name</label>
-                        <input type="text" 
-                               id="patient-name" 
-                               placeholder="Alex Johnson"
-                               class="w-full border-slate-200 rounded-xl text-sm text-slate-700 focus:border-primary focus:ring-primary transition-all"/>
+                        <div class="field-input-icon-wrap">
+                            <input type="text" 
+                                   id="patient-name" 
+                                   placeholder="Alex Johnson"
+                                   autocomplete="name"
+                                   class="w-full border-slate-200 rounded-xl text-sm text-slate-700 py-3 focus:border-primary focus:ring-primary transition-all"/>
+                            <span class="material-symbols-outlined field-icon" aria-hidden="true">person</span>
+                        </div>
                     </div>
                     <div>
                         <label for="patient-phone" class="block text-xs font-bold text-secondary-text mb-1.5 uppercase tracking-wide">Contact Number</label>
-                        <input type="tel" 
-                               id="patient-phone" 
-                               placeholder="(555) 019-2834"
-                               class="w-full border-slate-200 rounded-xl text-sm text-slate-700 focus:border-primary focus:ring-primary transition-all"/>
+                        <div class="field-input-icon-wrap">
+                            <input type="tel" 
+                                   id="patient-phone" 
+                                   placeholder="(555) 019-2834"
+                                   autocomplete="tel"
+                                   class="w-full border-slate-200 rounded-xl text-sm text-slate-700 py-3 focus:border-primary focus:ring-primary transition-all"/>
+                            <span class="material-symbols-outlined field-icon" aria-hidden="true">call</span>
+                        </div>
                     </div>
                 </div>
 
                 <div>
                     <label for="patient-email" class="block text-xs font-bold text-secondary-text mb-1.5 uppercase tracking-wide">Email Address</label>
-                    <input type="email" 
-                           id="patient-email" 
-                           placeholder="alex@example.com"
-                           class="w-full border-slate-200 rounded-xl text-sm text-slate-700 focus:border-primary focus:ring-primary transition-all"/>
-                    <p id="email-hint" class="hidden text-[11px] text-indigo-600 font-medium mt-1">
+                    <div class="field-input-icon-wrap">
+                        <input type="email" 
+                               id="patient-email" 
+                               placeholder="alex@example.com"
+                               autocomplete="email"
+                               class="w-full border-slate-200 rounded-xl text-sm text-slate-700 py-3 focus:border-primary focus:ring-primary transition-all"/>
+                        <span class="material-symbols-outlined field-icon" aria-hidden="true">mail</span>
+                    </div>
+                    <p id="email-hint" class="hidden text-[11px] text-indigo-600 font-medium mt-1.5 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-xs">info</span>
                         Confirmation will be sent to your email.
                     </p>
                 </div>
 
                 <div>
                     <label for="visit-reason" class="block text-xs font-bold text-secondary-text mb-1.5 uppercase tracking-wide">Reason for Visit (Notes)</label>
-                    <textarea id="visit-reason" 
-                              rows="3" 
-                              placeholder="Please write down any symptoms or dental history Dr. Santos should review."
-                              class="w-full border-slate-200 rounded-xl text-sm text-slate-700 focus:border-primary focus:ring-primary transition-all"></textarea>
+                    <div class="field-input-icon-wrap">
+                        <textarea id="visit-reason" 
+                                  rows="3" 
+                                  placeholder="Please write down any symptoms or dental history Dr. Santos should review."
+                                  class="w-full border-slate-200 rounded-xl text-sm text-slate-700 focus:border-primary focus:ring-primary transition-all"></textarea>
+                        <span class="material-symbols-outlined field-icon" aria-hidden="true">edit_note</span>
+                    </div>
+                </div>
+
+                <!-- Reassurance strip -->
+                <div class="flex items-center gap-2 text-[11px] font-semibold text-slate-400 pt-1">
+                    <span class="material-symbols-outlined text-sm text-slate-300">shield</span>
+                    <span>Your details are encrypted and only shared with Dr. Santos' clinic staff.</span>
                 </div>
             </div>
         </section>
@@ -235,9 +334,9 @@ ob_start();
     </div>
 
     <!-- Right: Interactive Live Booking Receipt Summary -->
-    <div class="space-y-6">
+    <div class="space-y-6 self-start lg:sticky lg:top-24">
         
-        <aside class="bg-white rounded-2xl border border-slate-100 shadow-[0_4px_24px_rgba(0,71,141,0.03)] overflow-hidden sticky top-24">
+        <aside class="bg-white rounded-2xl border border-slate-100 shadow-[0_4px_24px_rgba(0,71,141,0.03)] overflow-hidden">
             <div class="bg-[#003164] p-5 text-white">
                 <div class="flex items-center gap-2 text-xs font-bold text-blue-200 uppercase tracking-widest">
                     <span class="material-symbols-outlined text-sm">schedule</span>
@@ -322,6 +421,8 @@ ob_start();
 
 <!-- PAGE INTERACTIVE BUSINESS LOGIC CONTROLLER -->
 <script>
+const CSRF_TOKEN = <?php echo json_encode($csrfToken); ?>;
+
 let selectedCategory = "";
 let selectedService = "";
 let selectedServiceName = "";
@@ -338,20 +439,23 @@ let sessionUser = {
 };
 let isBookingForOthers = false;
 
-// Minimum date calculation (can book starting tomorrow)
+// Minimum bookable date is tomorrow
+const calMinDate = new Date();
+calMinDate.setDate(calMinDate.getDate() + 1);
+calMinDate.setHours(0, 0, 0, 0);
+
+// Tracks which month/year the mini calendar is currently displaying
+let calendarViewDate = new Date(calMinDate.getFullYear(), calMinDate.getMonth(), 1);
+
 document.addEventListener('DOMContentLoaded', () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const dateInput = document.getElementById('booking-date');
-    if (dateInput) {
-        dateInput.min = tomorrow.toISOString().split('T')[0];
-    }
+    // Build the initial mini calendar view
+    renderCalendar();
 
     // Set default category to preventative to seed dynamic instruction experience
-    selectCategory('prevent');
+    selectCategory('checkup');
 
     // Load active logged-in user profile from session API
-    fetch('api/get-session-user.php')
+    fetch('../../api/get-session-user.php')
         .then(res => {
             if (res.status === 401) throw new Error('Unauthenticated');
             return res.json();
@@ -419,7 +523,7 @@ function selectCategory(catId) {
             card.classList.add('category-card-active');
             
             // Sync live ticket summaries
-            document.getElementById('summaryTreatmentName').textContent = card.dataset.name + " (Please pick a service)";
+            document.getElementById('summaryTreatmentName').textContent = card.dataset.name;
             document.getElementById('summaryCostEstimate').textContent = card.dataset.estimate;
             
             // Sync dynamic pre-visit instruction
@@ -431,42 +535,19 @@ function selectCategory(catId) {
             } else {
                 preVisitBox.classList.add('hidden');
             }
+
+            // With the specific-service picker removed, auto-assign the
+            // category's primary service so booking submission still works.
+            if (card.dataset.defaultServiceId) {
+                selectService(card.dataset.defaultServiceId, card.dataset.defaultServiceName);
+            }
         }
     });
-
-    // Reveal specific service sub-step and filter correctly
-    document.getElementById('serviceSelection').classList.remove('hidden');
-    document.querySelectorAll('.service-group').forEach(group => {
-        group.classList.add('hidden');
-    });
-    const targetGroup = document.getElementById('services-for-' + catId);
-    if (targetGroup) {
-        targetGroup.classList.remove('hidden');
-    }
-
-    // Clear any previously highlighted service pills
-    document.querySelectorAll('.service-pill').forEach(pill => pill.classList.remove('slot-pill-active'));
 }
 
-function selectService(serviceId, name, element = null) {
+function selectService(serviceId, name) {
     selectedService = serviceId;
     selectedServiceName = name;
-
-    // Highlight active service pill
-    document.querySelectorAll('.service-pill').forEach(p => p.classList.remove('slot-pill-active'));
-    
-    if (element) {
-        element.classList.add('slot-pill-active');
-    } else {
-        const targetElement = document.querySelector(`.service-pill[data-service-id="${serviceId}"]`);
-        if (targetElement) targetElement.classList.add('slot-pill-active');
-    }
-
-    // Update live summary
-    const catCard = document.querySelector(`.category-card[data-category-id="${selectedCategory}"]`);
-    if (catCard) {
-        document.getElementById('summaryTreatmentName').textContent = catCard.dataset.name + ' — ' + name;
-    }
 }
 
 function handleDateChange(value) {
@@ -492,6 +573,89 @@ function handleDateChange(value) {
     fetchAvailability(value);
 }
 
+/* ---------------------------------------------------------- */
+/* Inline Mini Calendar: render, navigate, select              */
+/* ---------------------------------------------------------- */
+function toLocalDateString(dateObj) {
+    const y = dateObj.getFullYear();
+    const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const d = String(dateObj.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+}
+
+function changeCalendarMonth(delta) {
+    calendarViewDate.setMonth(calendarViewDate.getMonth() + delta);
+    renderCalendar();
+}
+
+function renderCalendar() {
+    const grid = document.getElementById('calendarDaysGrid');
+    const label = document.getElementById('calendarMonthLabel');
+    const prevBtn = document.getElementById('calPrevBtn');
+    if (!grid || !label) return;
+
+    const year = calendarViewDate.getFullYear();
+    const month = calendarViewDate.getMonth();
+
+    label.textContent = calendarViewDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+    // Disable "previous" navigation once we're on the min-date's month
+    if (prevBtn) {
+        const isMinMonth = (year === calMinDate.getFullYear() && month === calMinDate.getMonth());
+        prevBtn.disabled = isMinMonth;
+    }
+
+    const firstDayOfMonth = new Date(year, month, 1);
+    const startOffset = firstDayOfMonth.getDay(); // 0 = Sunday
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let html = '';
+
+    // Empty leading cells to align first day of the month
+    for (let i = 0; i < startOffset; i++) {
+        html += `<div></div>`;
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const cellDate = new Date(year, month, day);
+        cellDate.setHours(0, 0, 0, 0);
+        const dateStr = toLocalDateString(cellDate);
+
+        const isPast = cellDate < calMinDate;
+        const isSelected = (selectedDate === dateStr);
+        const isToday = (cellDate.getTime() === today.getTime());
+
+        const classes = ['cal-day-btn'];
+        if (isSelected) classes.push('cal-day-active');
+        if (isToday) classes.push('cal-day-today');
+
+        if (isPast) {
+            html += `<button type="button" disabled class="${classes.join(' ')}">${day}</button>`;
+        } else {
+            html += `<button type="button" class="${classes.join(' ')}" onclick="selectCalendarDate('${dateStr}')">${day}</button>`;
+        }
+    }
+
+    grid.innerHTML = html;
+}
+
+function selectCalendarDate(dateStr) {
+    // Re-render to move the highlighted state, then run shared date-change logic
+    handleDateChange(dateStr);
+    renderCalendar();
+
+    const readout = document.getElementById('calendarSelectedReadout');
+    if (readout) {
+        const dateObj = new Date(dateStr + 'T00:00:00');
+        readout.textContent = dateObj.toLocaleDateString('en-US', {
+            weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
+        });
+    }
+}
+
 function fetchAvailability(dateString) {
     const slotsGrid = document.getElementById('slotsGrid');
     const noSlotsMessage = document.getElementById('noSlotsMessage');
@@ -509,7 +673,7 @@ function fetchAvailability(dateString) {
         </div>
     `;
 
-    fetch(`api/availability.php?date=${dateString}`)
+    fetch(`../../api/availability.php?date=${dateString}`)
         .then(res => {
             if (!res.ok) throw new Error('Failed to retrieve slot availability.');
             return res.json();
@@ -753,9 +917,12 @@ function submitBooking() {
     `;
 
     // Make standard post request with application JSON parameters
-    fetch('api/booking-create.php', {
+    fetch('../../api/booking-create.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': CSRF_TOKEN
+        },
         body: JSON.stringify({
             firstName,
             lastName,
@@ -802,54 +969,6 @@ function submitBooking() {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHTML;
     });
-}
-
-/* Diagnostic simulation helpers */
-function autofillDemoData() {
-    document.getElementById('patient-name').value = "Alex Johnson";
-    document.getElementById('patient-phone').value = "555-0199";
-    
-    if (!document.getElementById('patient-email').value) {
-        document.getElementById('patient-email').value = "alex.johnson@example.com";
-    }
-    
-    document.getElementById('visit-reason').value = "Consultation for routine Invisalign cleaning adjustments.";
-    
-    selectCategory('prevent');
-    selectService('checkup', 'Routine Checkup & Cleaning');
-    
-    // Automatically set a date (2 weeks out)
-    const targetDate = new Date();
-    targetDate.setDate(targetDate.getDate() + 14);
-    const dateInput = document.getElementById('booking-date');
-    dateInput.value = targetDate.toISOString().split('T')[0];
-    selectedDate = dateInput.value;
-
-    const dateObj = new Date(selectedDate + 'T00:00:00');
-    document.getElementById('summaryDate').textContent = dateObj.toLocaleDateString('en-US', {
-        month: 'short', day: 'numeric', year: 'numeric'
-    });
-
-    // Populate mock demo sessions
-    renderSlots(['09:00 AM', '10:00 AM', '01:00 PM']);
-
-    // Auto select first generated demo session 
-    setTimeout(() => {
-        const firstSlotBtn = document.querySelector('.slot-btn');
-        if (firstSlotBtn) {
-            selectTimeSlot('09:00 AM', firstSlotBtn);
-        }
-    }, 50);
-
-    updateSummaryPatientName();
-    showGlobalToast('info', 'Demo parameters loaded. Preview complete booking details.');
-}
-
-function simulateFullyBookedDate() {
-    renderSlots([]); // Triggers immediate screen conversion into full booking fallback
-    selectedTime = "";
-    document.getElementById('summaryTime').textContent = "Not selected";
-    showGlobalToast('warning', 'Simulated State: Current chosen date has 0 open slots.');
 }
 </script>
 
