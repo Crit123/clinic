@@ -2,11 +2,14 @@
 /**
  * emergency-care.php
  * Dental Emergency Center for DentalCare Pro.
- * Frontend-only implementation for priority contact and urgent appointment requests.
+ * Submits real urgent requests to the messaging backend
+ * (client/backend/messages-auth/message-submit.php) and tracks status
+ * via message-status.php using the returned case code.
  */
 
 // Include relies on standard internal system path resolution, undisturbed by nested sub-directories
 require_once __DIR__ . '/../../components/design-config.php';
+require_once __DIR__ . '/../../../api/helper/_api-helpers.php';
 
 $activePage = 'emergency';
 $pageTitle  = 'Emergency Care';
@@ -71,7 +74,7 @@ ob_start();
     </div>
     
     <div class="mt-6 flex justify-end">
-        <button onclick="clearEmergencyCase()" class="text-xs text-slate-400 hover:text-slate-600 font-medium underline">Dismiss Case Demo</button>
+        <button onclick="clearEmergencyCase()" class="text-xs text-slate-400 hover:text-slate-600 font-medium underline">Stop tracking on this device</button>
     </div>
 </div>
 
@@ -174,11 +177,12 @@ ob_start();
             <!-- Hidden inputs mapped from cards -->
             <input type="hidden" id="selectedSymptom" name="symptom" value="">
             <input type="hidden" id="selectedSeverity" name="severity" value="">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(getCsrfToken()); ?>">
 
             <!-- Description -->
             <div class="space-y-1.5">
                 <label for="description" class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Brief Description <span class="text-rose-500">*</span></label>
-                <textarea id="description" required aria-required="true" rows="3" placeholder="Tell us briefly what happened and how you are feeling." class="w-full border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:border-rose-500 focus:ring-rose-500 shadow-sm resize-none py-3"></textarea>
+                <textarea id="description" name="description" required aria-required="true" rows="3" placeholder="Tell us briefly what happened and how you are feeling." class="w-full border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:border-rose-500 focus:ring-rose-500 shadow-sm resize-none py-3"></textarea>
             </div>
 
             <!-- Contact Preference -->
@@ -213,7 +217,7 @@ ob_start();
  */
 const emergencyData = {
     toothache: {
-        id: 'toothache', icon: '😣', label: 'Severe Toothache',
+        id: 'toothache', icon: 'sentiment_very_dissatisfied', label: 'Severe Toothache',
         priority: 'High', priorityClass: 'bg-rose-100 text-rose-700 border-rose-200',
         action: 'Immediate Clinic Attention',
         tips: [
@@ -224,7 +228,7 @@ const emergencyData = {
         ]
     },
     swelling: {
-        id: 'swelling', icon: '😷', label: 'Swelling',
+        id: 'swelling', icon: 'health_and_safety', label: 'Swelling',
         priority: 'High', priorityClass: 'bg-rose-100 text-rose-700 border-rose-200',
         action: 'Seek Urgent Care',
         tips: [
@@ -234,7 +238,7 @@ const emergencyData = {
         ]
     },
     broken: {
-        id: 'broken', icon: '🦷', label: 'Broken Tooth',
+        id: 'broken', icon: 'dentistry', label: 'Broken Tooth',
         priority: 'Moderate', priorityClass: 'bg-amber-100 text-amber-700 border-amber-200',
         action: 'Schedule Visit Soon',
         tips: [
@@ -245,7 +249,7 @@ const emergencyData = {
         ]
     },
     bleeding: {
-        id: 'bleeding', icon: '🩸', label: 'Bleeding',
+        id: 'bleeding', icon: 'water_drop', label: 'Bleeding',
         priority: 'High', priorityClass: 'bg-rose-100 text-rose-700 border-rose-200',
         action: 'Urgent Care Required',
         tips: [
@@ -256,7 +260,7 @@ const emergencyData = {
         ]
     },
     trauma: {
-        id: 'trauma', icon: '⚡', label: 'Trauma',
+        id: 'trauma', icon: 'bolt', label: 'Trauma',
         priority: 'High', priorityClass: 'bg-rose-100 text-rose-700 border-rose-200',
         action: 'Call Clinic or ER',
         tips: [
@@ -267,7 +271,7 @@ const emergencyData = {
         ]
     },
     filling: {
-        id: 'filling', icon: '🧩', label: 'Lost Filling',
+        id: 'filling', icon: 'extension', label: 'Lost Filling',
         priority: 'Low', priorityClass: 'bg-emerald-100 text-emerald-700 border-emerald-200',
         action: 'Schedule within days',
         tips: [
@@ -293,7 +297,7 @@ function initSymptomCards() {
         btn.id = `card-${symptom.id}`;
         btn.className = `flex flex-col items-center justify-center p-4 gap-2 rounded-xl border border-slate-200 bg-white hover:border-rose-400 hover:shadow-md transition-all text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500`;
         btn.innerHTML = `
-            <span class="text-3xl mb-1">${symptom.icon}</span>
+            <span class="material-symbols-outlined text-3xl text-slate-500 mb-1" aria-hidden="true">${symptom.icon}</span>
             <span class="text-xs font-bold text-slate-700">${symptom.label}</span>
         `;
         btn.onclick = () => selectSymptom(symptom.id);
@@ -316,12 +320,17 @@ function selectSymptom(id) {
     // Update UI Cards
     Object.keys(emergencyData).forEach(key => {
         const card = document.getElementById(`card-${key}`);
+        const icon = card.querySelector('.material-symbols-outlined');
         if (key === id) {
             card.classList.add('border-rose-500', 'ring-2', 'ring-rose-200', 'bg-rose-50');
             card.classList.remove('border-slate-200', 'bg-white');
+            icon.classList.add('text-rose-600');
+            icon.classList.remove('text-slate-500');
         } else {
             card.classList.remove('border-rose-500', 'ring-2', 'ring-rose-200', 'bg-rose-50');
             card.classList.add('border-slate-200', 'bg-white');
+            icon.classList.remove('text-rose-600');
+            icon.classList.add('text-slate-500');
         }
     });
 
@@ -341,107 +350,152 @@ function selectSymptom(id) {
 }
 
 /**
- * Intercept form submission
+ * Intercept form submission — sends a real request to the messaging
+ * backend (category='emergency') and stores only the returned case_code
+ * client-side, as a convenience pointer for this browser to re-check
+ * status later. The case_code itself is not sensitive/secret in the way
+ * a password is, but message-status.php still rate-limits lookups by IP.
  */
-function handleEmergencySubmit(e) {
+async function handleEmergencySubmit(e) {
     e.preventDefault();
-    
+
     if (!activeSymptom) {
         document.getElementById('symptomError').classList.remove('hidden');
         return;
     }
 
-    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
-    
-    // UI Loading State
+
     submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-lg">sync</span> Sending Alert...';
     submitBtn.disabled = true;
     submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
 
-    setTimeout(() => {
-        // Generate Mock Case Data
-        const caseData = {
-            id: 'EMG-' + Math.floor(1000 + Math.random() * 9000),
-            timestamp: new Date().toISOString(),
-            symptom: activeSymptom,
-            priority: emergencyData[activeSymptom].priority,
-            priorityClass: emergencyData[activeSymptom].priorityClass,
-            status: 1 // 1: Submitted, 2: Review, 3: Contacted, 4: Resolved
-        };
+    const symptomInfo = emergencyData[activeSymptom];
+    const description = form.querySelector('#description').value.trim();
+    const contactPref = form.querySelector('input[name="contact_pref"]:checked');
 
-        // Save to localStorage
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(caseData));
+    const body = new URLSearchParams();
+    body.set('category', 'emergency');
+    body.set('subject', `${symptomInfo.label} (${symptomInfo.priority} priority)`);
+    body.set('body', `${description}\n\nPreferred contact method: ${contactPref ? contactPref.value : 'not specified'}`);
+    body.set('csrf_token', form.querySelector('input[name="csrf_token"]').value);
 
-        // Show Success Toast
-        if (typeof showGlobalToast === 'function') {
-            showGlobalToast('success', 'Emergency request received. Please see your Action Center.');
-        } else {
-            alert('Emergency request received! Refer to the Action Center at the top.');
+    try {
+        const res = await fetch('<?php echo BASE_PATH; ?>/client/backend/messages-auth/message-submit.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body.toString()
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+            if (typeof showGlobalToast === 'function') {
+                showGlobalToast('error', data.message || 'Unable to submit your request.');
+            } else {
+                alert(data.message || 'Unable to submit your request.');
+            }
+            return;
         }
-        
+
+        // Store only the case code — the actual record and its status
+        // live server-side; this is just so this browser can re-check it.
+        localStorage.setItem(STORAGE_KEY, data.case_code);
+
+        if (typeof showGlobalToast === 'function') {
+            showGlobalToast('success', `Emergency request received. Case ${data.case_code}.`);
+        } else {
+            alert(`Emergency request received! Case ${data.case_code}.`);
+        }
+
         // Reset Form & UI
-        e.target.reset();
+        form.reset();
         activeSymptom = null;
         document.getElementById('selectedSymptom').value = '';
         document.getElementById('selectedSeverity').value = '';
         document.getElementById('assessmentPanel').classList.add('hidden');
         Object.keys(emergencyData).forEach(key => {
             const card = document.getElementById(`card-${key}`);
+            const icon = card.querySelector('.material-symbols-outlined');
             card.classList.remove('border-rose-500', 'ring-2', 'ring-rose-200', 'bg-rose-50');
             card.classList.add('border-slate-200', 'bg-white');
+            icon.classList.remove('text-rose-600');
+            icon.classList.add('text-slate-500');
         });
 
+        await loadEmergencyCase();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (err) {
+        console.error('Emergency submit failed:', err);
+        if (typeof showGlobalToast === 'function') {
+            showGlobalToast('error', 'Network error — please try again.');
+        }
+    } finally {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
         submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
-
-        // Update Tracker UI
-        loadEmergencyCase();
-        
-        // Scroll to top to see tracker
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    }, 1000);
+    }
 }
 
 /**
- * Load and render active case in Action Center
+ * Load and render the active case in the Action Center by asking the
+ * backend for real status, using the case_code this browser remembers.
+ * This is the only source of truth for status now — nothing here
+ * fabricates progress client-side.
  */
-function loadEmergencyCase() {
-    const rawData = localStorage.getItem(STORAGE_KEY);
+async function loadEmergencyCase() {
+    const caseCode = localStorage.getItem(STORAGE_KEY);
     const actionCenter = document.getElementById('patientActionCenter');
-    
-    if (!rawData) {
+
+    if (!caseCode) {
         actionCenter.classList.add('hidden');
         return;
     }
 
-    const caseData = JSON.parse(rawData);
-    actionCenter.classList.remove('hidden');
+    try {
+        const res = await fetch(`<?php echo BASE_PATH; ?>/client/backend/messages-auth/message-status.php?case=${encodeURIComponent(caseCode)}`);
+        const data = await res.json();
 
-    // Populate Data
-    document.getElementById('trackerCaseId').textContent = caseData.id;
-    
-    const date = new Date(caseData.timestamp);
-    document.getElementById('trackerTime').textContent = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + ' - ' + date.toLocaleDateString();
+        if (!data.success) {
+            // Case not found (e.g. cleared server-side) — stop pointing at it.
+            localStorage.removeItem(STORAGE_KEY);
+            actionCenter.classList.add('hidden');
+            return;
+        }
 
-    const badge = document.getElementById('trackerPriorityBadge');
-    badge.className = `text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${caseData.priorityClass}`;
-    badge.textContent = `${caseData.priority} Priority`;
+        const msg = data.message;
+        actionCenter.classList.remove('hidden');
 
-    updateTrackerProgress(caseData.status);
+        document.getElementById('trackerCaseId').textContent = msg.case_code;
 
-    // Mock automatic progression to "Under Review" for demo purposes after 3 seconds
-    if (caseData.status === 1) {
-        setTimeout(() => {
-            const updatedData = JSON.parse(localStorage.getItem(STORAGE_KEY));
-            if (updatedData && updatedData.status === 1) {
-                updatedData.status = 2;
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedData));
-                updateTrackerProgress(2);
-            }
-        }, 3000);
+        const date = new Date(msg.created_at);
+        document.getElementById('trackerTime').textContent =
+            date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' - ' + date.toLocaleDateString();
+
+        // Priority badge isn't stored server-side (it's derived from the
+        // symptom picked at submit time, not a DB column), so we fall back
+        // to a neutral label here rather than guessing.
+        const badge = document.getElementById('trackerPriorityBadge');
+        badge.className = 'text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border bg-slate-100 text-slate-600 border-slate-200';
+        badge.textContent = msg.category.toUpperCase();
+
+        // Map the backend's 3 real statuses onto the 4 visual steps:
+        // 'new' -> Submitted, 'in_progress' with no reply yet -> Under
+        // Review, 'in_progress' with at least one staff reply -> Contacted,
+        // 'resolved' -> Resolved.
+        let step = 1;
+        if (msg.status === 'in_progress') {
+            step = (data.replies && data.replies.length > 0) ? 3 : 2;
+        } else if (msg.status === 'resolved') {
+            step = 4;
+        }
+
+        updateTrackerProgress(step);
+
+    } catch (err) {
+        console.error('Failed to load emergency case status:', err);
     }
 }
 
@@ -470,7 +524,9 @@ function updateTrackerProgress(status) {
 }
 
 /**
- * Clear case (For demo purposes)
+ * Stops this browser from tracking the case locally. Does NOT delete or
+ * resolve the actual case server-side -- it only clears the local pointer,
+ * same as closing a tab wouldn't cancel a real request.
  */
 function clearEmergencyCase() {
     localStorage.removeItem(STORAGE_KEY);
@@ -481,6 +537,16 @@ function clearEmergencyCase() {
 document.addEventListener('DOMContentLoaded', () => {
     initSymptomCards();
     loadEmergencyCase();
+
+    // Re-check status periodically while a case is being tracked, so a
+    // staff reply or status change shows up without a manual reload.
+    // 30s is deliberately conservative -- this hits message-status.php's
+    // rate limiter budget, not something to poll aggressively.
+    setInterval(() => {
+        if (localStorage.getItem(STORAGE_KEY)) {
+            loadEmergencyCase();
+        }
+    }, 30000);
 });
 </script>
 

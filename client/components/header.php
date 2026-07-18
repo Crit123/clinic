@@ -513,7 +513,7 @@ async function loadHeaderNotifications() {
     if (!listEl) return;
 
     try {
-        const res = await fetch('../backend/dashboard-backend.php?action=get_notifications');
+        const res = await fetch('<?php echo BASE_PATH; ?>/client/backend/dashboard-backend.php?action=get_notifications');
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!data || !data.success || !data.notifications) throw new Error(data?.message || 'Unknown error');

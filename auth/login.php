@@ -51,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
             session_regenerate_id(true); // Prevent session fixation
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['first_name'];
+            recordSessionLogin($pdo, $user['id']);
             jsonResponse(true, 'Login successful', ['redirect' => '../client/pages/dashboard.php']);
         } else {
             jsonResponse(false, 'Invalid email or password.');
@@ -93,6 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
             session_regenerate_id(true); // Prevent session fixation
             $_SESSION['user_id'] = $pdo->lastInsertId();
             $_SESSION['user_name'] = $firstName;
+            recordSessionLogin($pdo, (int) $_SESSION['user_id']);
 
             // Auto-link existing guest bookings under this email (case-insensitive)
             try {
@@ -147,6 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             session_regenerate_id(true); // Prevent session fixation
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['first_name'];
+            recordSessionLogin($pdo, $user['id']);
             header("Location: ../client/pages/dashboard.php");
             exit;
         } else {

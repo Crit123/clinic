@@ -3,4 +3,7 @@
 clinicdb.sql
 feedbackdb.sql
 records.sql
+emergency-requests.sql
+messages.sql
+profile-settings.sql
 .env

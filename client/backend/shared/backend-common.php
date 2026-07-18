@@ -85,13 +85,28 @@ if (!function_exists('requireMethod')) {
 
 /**
  * Validates the CSRF token for state-changing (POST) actions.
- * Expects the client to send it as the 'X-CSRF-Token' header
- * (see CSRF_TOKEN bootstrap pattern used in login.php).
+ * Checks, in order: the 'X-CSRF-Token' header, a 'csrf_token' field in
+ * $_POST (covers both application/x-www-form-urlencoded and
+ * multipart/form-data bodies, e.g. the avatar upload), and finally the
+ * parsed JSON body via getRequestInput() as a last resort. Logs which of
+ * these was empty when validation fails, to make future CSRF issues
+ * easier to diagnose without guessing.
  */
 if (!function_exists('requireCsrf')) {
     function requireCsrf(): void {
-        $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+        $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN']
+            ?? $_POST['csrf_token']
+            ?? getRequestInput()['csrf_token']
+            ?? '';
+
         if (!validateCsrfToken($csrfToken)) {
+            error_log(sprintf(
+                '[CSRF] Validation failed for %s?action=%s -- token present: %s, session token set: %s',
+                $_SERVER['REQUEST_URI'] ?? 'unknown',
+                $_GET['action'] ?? 'unknown',
+                $csrfToken !== '' ? 'yes' : 'no',
+                isset($_SESSION['csrf_token']) ? 'yes' : 'no'
+            ));
             jsonResponse(false, 'Invalid or missing CSRF token.');
         }
     }
