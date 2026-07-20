@@ -2,10 +2,17 @@
 /**
  * support.php
  * Patient Support Center for DentalCare Pro.
- * Frontend-only implementation with FAQs, contact info, and ticket submission simulation.
+ * Ticket submission is now backed by support-backend.php (messages table).
  */
 
+// Ensure the real, cookie-backed session is active before getCsrfToken()
+// touches $_SESSION below -- same fix applied to profile-settings.php.
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../components/design-config.php';
+require_once __DIR__ . '/../../api/helper/_api-helpers.php'; // getCsrfToken()
 
 $activePage = 'support';
 $pageTitle  = 'Support Center';
@@ -53,21 +60,21 @@ ob_start();
                 <span class="material-symbols-outlined text-slate-400 text-[20px] mt-0.5" aria-hidden="true">call</span>
                 <div class="leading-tight">
                     <span class="block font-semibold text-slate-800 mb-0.5">Phone</span>
-                    <?php echo htmlspecialchars(CLINIC_PHONE); ?>
+                    <a href="tel:+15555550148" class="text-[#1652a0] hover:underline">(555) 555-0148</a>
                 </div>
             </div>
             <div class="flex items-start gap-3">
                 <span class="material-symbols-outlined text-slate-400 text-[20px] mt-0.5" aria-hidden="true">mail</span>
                 <div class="leading-tight">
                     <span class="block font-semibold text-slate-800 mb-0.5">Email</span>
-                    <a href="mailto:<?php echo htmlspecialchars(CLINIC_EMAIL); ?>" class="text-[#1652a0] hover:underline"><?php echo htmlspecialchars(CLINIC_EMAIL); ?></a>
+                    <a href="mailto:info@dentalcarepro.com" class="text-[#1652a0] hover:underline">info@dentalcarepro.com</a>
                 </div>
             </div>
             <div class="flex items-start gap-3">
                 <span class="material-symbols-outlined text-slate-400 text-[20px] mt-0.5" aria-hidden="true">location_on</span>
                 <div class="leading-tight">
                     <span class="block font-semibold text-slate-800 mb-0.5">Clinic Address</span>
-                    <?php echo htmlspecialchars(CLINIC_ADDRESS); ?>
+                    123 Dental Suite, Medical District
                 </div>
             </div>
         </div>
@@ -125,16 +132,6 @@ ob_start();
 
             <div class="bg-surface-container-lowest border border-slate-100 rounded-xl overflow-hidden shadow-sm transition-all group">
                 <button onclick="toggleFaq(this)" aria-expanded="false" class="w-full text-left px-5 py-4 flex items-center justify-between focus-visible:outline-none focus-visible:bg-slate-50 hover:bg-slate-50 transition-colors">
-                    <span class="font-semibold text-sm text-slate-800 pr-4">How do I update my insurance info?</span>
-                    <span class="material-symbols-outlined text-slate-400 transition-transform duration-200 faq-icon flex-shrink-0" aria-hidden="true">add</span>
-                </button>
-                <div class="hidden px-5 pb-5 text-sm text-slate-600 border-t border-slate-50 pt-3 leading-relaxed">
-                    You can update your active insurance provider, member ID, and upload a photo of your new insurance card in your <a href="profile-settings.php" class="text-[#1652a0] font-semibold hover:underline">Profile Settings</a> under the "Billing & Insurance" tab.
-                </div>
-            </div>
-
-            <div class="bg-surface-container-lowest border border-slate-100 rounded-xl overflow-hidden shadow-sm transition-all group">
-                <button onclick="toggleFaq(this)" aria-expanded="false" class="w-full text-left px-5 py-4 flex items-center justify-between focus-visible:outline-none focus-visible:bg-slate-50 hover:bg-slate-50 transition-colors">
                     <span class="font-semibold text-sm text-slate-800 pr-4">Can I join a waitlist for an earlier date?</span>
                     <span class="material-symbols-outlined text-slate-400 transition-transform duration-200 faq-icon flex-shrink-0" aria-hidden="true">add</span>
                 </button>
@@ -153,12 +150,12 @@ ob_start();
         </div>
         
         <form id="supportForm" onsubmit="handleSupportSubmit(event)" class="space-y-4">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(getCsrfToken()); ?>">
             <div class="space-y-1.5">
                 <label for="category" class="block text-xs font-bold text-secondary-text uppercase tracking-wide">Category</label>
                 <select id="category" required aria-required="true" class="w-full border-slate-200 rounded-xl text-sm text-slate-700 bg-white focus:border-[#1652a0] focus:ring-[#1652a0] shadow-sm py-2.5">
                     <option value="" disabled selected>Select a topic...</option>
                     <option value="appointments">Appointments & Scheduling</option>
-                    <option value="billing">Billing & Insurance</option>
                     <option value="records">Dental Records / X-Rays</option>
                     <option value="account">Account Settings</option>
                     <option value="other">Other Inquiry</option>
@@ -205,36 +202,57 @@ function toggleFaq(btn) {
     }
 }
 
-function handleSupportSubmit(e) {
+async function handleSupportSubmit(e) {
     e.preventDefault();
-    
-    const submitBtn = e.target.querySelector('button[type="submit"]');
+
+    const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
-    
+
     submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-lg">sync</span> Sending...';
     submitBtn.disabled = true;
 
-    setTimeout(() => {
-        // Use custom inline message box to completely avoid native alert()
+    const body = new URLSearchParams();
+    body.set('csrf_token', form.querySelector('input[name="csrf_token"]').value);
+    body.set('category', document.getElementById('category').value);
+    body.set('subject', document.getElementById('subject').value);
+    body.set('message', document.getElementById('message').value);
+
+    try {
+        const res = await fetch('<?php echo BASE_PATH; ?>/client/backend/support-backend.php?action=submit_ticket', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body.toString()
+        });
+        const data = await res.json();
+
+        const message = data.success
+            ? `${data.message} Reference: ${data.case_code}`
+            : (data.message || 'Something went wrong. Please try again.');
+
         if (typeof showGlobalToast === 'function') {
-            showGlobalToast('success', 'Your support ticket has been submitted. We will contact you shortly.');
+            showGlobalToast(data.success ? 'success' : 'error', message);
         } else {
             const fallbackToast = document.createElement('div');
             fallbackToast.className = 'fixed bottom-6 right-6 bg-slate-800 text-white px-6 py-4 rounded-xl shadow-xl z-50 font-medium text-sm flex items-center gap-3';
-            fallbackToast.innerHTML = `<span class="material-symbols-outlined text-emerald-400">check_circle</span> Your support ticket has been submitted. We will contact you shortly.`;
+            fallbackToast.innerHTML = `<span class="material-symbols-outlined ${data.success ? 'text-emerald-400' : 'text-red-400'}">${data.success ? 'check_circle' : 'error'}</span> ${message}`;
             document.body.appendChild(fallbackToast);
-            
+
             setTimeout(() => {
                 fallbackToast.style.transition = 'opacity 0.5s ease';
                 fallbackToast.style.opacity = '0';
                 setTimeout(() => fallbackToast.remove(), 500);
             }, 5000);
         }
-        
-        e.target.reset();
+
+        if (data.success) form.reset();
+    } catch (err) {
+        console.error('Failed to submit support ticket:', err);
+        showGlobalToast?.('error', 'Network error — please try again.');
+    } finally {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
-    }, 600);
+    }
 }
 </script>
 
